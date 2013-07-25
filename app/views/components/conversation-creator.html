@@ -1,0 +1,182 @@
+<div id="conversation">
+	<div id="canvas"></div>
+	
+	<input type="checkbox" name="handler-right" class="handler" id="handler-right" onclick="null" />
+	<input type="checkbox" name="handler-left" class="handler" id="handler-left" onclick="null" />
+
+	<div id="sidebar-right">
+	    <div class="row-fluid">
+			<div class="span12 well">
+				<div class="span8 queue">
+					<div class="span10 progress progress-striped active" style="margin-bottom: 0;">
+						<div class="bar"><span></span></div>
+					</div>
+					<span class="span2" style="margin-top: 5px;">{{conversation.images.finished}} / {{conversation.images.count}}</span>
+				</div>
+				<div class="span4 text-center">
+					<div class="btn-group">
+					  	<button class="btn" ng-disabled="conversation.images.empty" ng-click="refresh()"><i class="icon-refresh"></i></button>
+					  	<button class="btn btn-primary" ng-disabled="conversation.images.empty" ng-click="generate()"><i class="icon-cog"></i> Generate</button>
+					  	<button class="btn btn-success" ng-disabled="conversation.isDownloadDisabled"><i class="icon-download-alt"></i> Download Zip</button>
+					</div>
+				</div>
+			</div>
+			<div class="tabbable" style="padding: 15px 10px;">
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#1" data-toggle="tab">Selected</a></li>
+					<li><a href="#2" data-toggle="tab">Generated</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="1">
+				    	<ul class="thumbnails img-list" style="padding:20px"></ul>
+					</div>
+					<div class="tab-pane" id="2">
+						<ul class="thumbnails svg-list"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="content" class="span12 prefix conversation">
+		<!--Sidebar-->
+		<aside id="sidebar" class="span6">
+			<h3>Choose Templates</h3>
+			<div class="accordion" id="accordion">
+			 	<div class="accordion-group">
+			 		<div class="accordion-heading">
+			 			<a class="accordion-toggle open" data-title="Template 1" data-toggle="collapse" data-parent="#accordion" href="#tpl-1">
+			 				Template 1
+			 			</a>
+			 		</div>
+			 		<div id="tpl-1" class="accordion-body collapse in">
+			 			<div class="accordion-inner">
+			 				<div ng-include src="'app/views/conversation-setting.html'"></div>
+			 			</div>
+			 		</div>
+			 	</div>
+			 	<div class="accordion-group">
+			 		<div class="accordion-heading">
+			 			<a class="accordion-toggle" data-title="Template 2" data-toggle="collapse" data-parent="#accordion" href="#tpl-2">
+			 				Template 2
+			 			</a>
+			 		</div>
+			 		<div id="tpl-2" class="accordion-body collapse">
+			 			<div class="accordion-inner">
+			 				<div ng-include src="'app/views/conversation-setting.html'"></div>
+			 			</div>
+			 		</div>
+			 	</div>
+			 	<div class="accordion-group">
+			 		<div class="accordion-heading">
+			 			<a class="accordion-toggle" data-title="Template 3" data-toggle="collapse" data-parent="#accordion" href="#tpl-3">
+			 				Template 3
+			 			</a>
+			 		</div>
+			 		<div id="tpl-3" class="accordion-body collapse">
+			 			<div class="accordion-inner">
+			 				<div ng-include src="'app/views/conversation-setting.html'"></div>
+			 			</div>
+			 		</div>
+			 	</div>
+			 	<div class="accordion-group">
+			 		<div class="accordion-heading">
+			 			<a class="accordion-toggle" data-title="Template 4" data-toggle="collapse" data-parent="#accordion" href="#tpl-4">
+			 				Template 4
+			 			</a>
+			 		</div>
+			 		<div id="tpl-4" class="accordion-body collapse">
+			 			<div class="accordion-inner">
+			 				<div ng-include src="'app/views/conversation-setting.html'"></div>
+			 			</div>
+			 		</div>
+			 	</div>
+			 	<div class="accordion-group">
+			 		<div class="accordion-heading">
+			 			<a class="accordion-toggle" data-title="Template 5" data-toggle="collapse" data-parent="#accordion" href="#tpl-5">
+			 				Template 5
+			 			</a>
+			 		</div>
+			 		<div id="tpl-5" class="accordion-body collapse">
+			 			<div class="accordion-inner">
+			 				<div ng-include src="'app/views/conversation-setting.html'"></div>
+			 			</div>
+			 		</div>
+			 	</div>
+			 	<div class="accordion-group">
+			 		<div class="accordion-heading">
+			 			<a class="accordion-toggle" data-title="Template 6" data-toggle="collapse" data-parent="#accordion" href="#tpl-6">
+			 				Template 6
+			 			</a>
+			 		</div>
+			 		<div id="tpl-6" class="accordion-body collapse">
+			 			<div class="accordion-inner">
+			 				<div ng-include src="'app/views/conversation-setting.html'"></div>
+			 			</div>
+			 		</div>
+			 	</div>
+			 </div>
+		</aside>
+		<section id="editor" class="span6">
+			<div class="slider">
+		    	<a href class="nav-sidebar btn" data-sidebar="handler-right"><i class="icon-long-arrow-left"></i></a>
+		    </div>
+			<div class="wrap">		          
+				<div class="template img-polaroid">
+					<svg id="svg-conversation" width="403" height="403" version="1.1"
+						xmlns="http://www.w3.org/2000/svg"
+						xlink="http://www.w3.org/1999/xlink">
+						<g id="bg">
+							<rect fill="black" fill-opacity="0.7" height="100%" width="100%"/>
+							<image id="SvgjsImage1005" xlink:href="{{conversation.template}}" width="403" height="403"/>
+						</g>
+						<svg id="logo" x="{{conversation.logo.position.x}}" y="{{conversation.logo.position.y}}" cursor="move">
+							<rect class="placeholder" fill="white" width="175" height="55" x="0" y="0"/>
+							<image id="SvgjsImage1004" xlink:href="assets/img/dummy/165x45.png" width="165" height="45" x="5" y="5"/>
+						</svg>
+						<svg id="spot1" x="{{conversation.spot1.position.x}}" y="{{conversation.spot1.position.y}}" cursor="move">
+							<defs id="SvgjsDefs1002">
+								<clipPath id="spot1-clip-placeholder">
+									<rect id="SvgjsRect1003" width="80" height="80" rx="50" x="0" y="0"/>
+								</clipPath>
+								<clipPath id="spot1-clip-image">
+									<rect id="SvgjsRect1004" width="70" height="70" rx="50" x="5" y="5"/>
+								</clipPath>
+							</defs>
+							<rect class="placeholder" clip-path="url(#spot1-clip-placeholder)" fill="white" width="80" height="80" x="0" y="0"/>
+							<image id="SvgjsImage1008" xlink:href="assets/img/dummy/70x70.png" width="70" height="70" clip-path="url(#spot1-clip-image)" x="5" y="5" class="background"/>
+						</svg>
+						<svg id="spot2" x="{{conversation.spot2.position.x}}" y="{{conversation.spot2.position.y}}" cursor="move">
+							<defs id="SvgjsDefs1003">
+								<clipPath id="spot2-clip-placeholder">
+									<rect id="SvgjsRect1005" width="80" height="80" rx="50" x="0" y="0"/>
+								</clipPath>
+								<clipPath id="spot2-clip-image">
+									<rect id="SvgjsRect1006" width="70" height="70" rx="50" x="5" y="5"/>
+								</clipPath>
+							</defs>
+							<rect class="placeholder" clip-path="url(#spot2-clip-placeholder)" fill="white" width="80" height="80" x="0" y="0"/>
+							<image id="SvgjsImage1009" xlink:href="assets/img/dummy/70x70.png" width="70" height="70" clip-path="url(#spot2-clip-image)" x="5" y="5" class="background"/>
+						</svg>
+					</svg>
+				</div>
+				<div id="drop-backgrounds" class="background margin-top">
+					<div class="drop">
+						<div class="input-button">
+							<button id="btn-upload-backgrounds" class="btn">Add Backgrounds</button>
+							<input type="file" id="input-upload-backgrounds" name="file[]" class="hide" multiple />
+							<br/><br/>
+							<span class="drop-instructions">or Drag and Drop file here</span>
+							<span class="drop-over">Drop files here!</span>
+						</div>
+					</div>
+					<div class="drop-loading"><i class="icon-spinner icon-spin icon-4x"></i></div>
+				</div>
+				<div class="margin-top">
+					<a href class="btn btn-block btn-success" ng-click="generate()">Generate Image</a>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+

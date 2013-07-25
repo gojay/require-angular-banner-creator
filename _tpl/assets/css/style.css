@@ -1,0 +1,278 @@
+body {
+	font-size: 12px;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.prefix {
+	margin-left: 0;
+}
+
+.margin-top {
+	margin-top: 20px
+}
+
+.margin-top-bottom {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.breadcrumb {
+	background-color: #FFF;
+	border-bottom: 1px solid #EEEEEE;
+	border-radius: none;
+	border-top: 1px solid #EEEEEE;
+	padding: 15px 20px;
+	margin-bottom: 0;
+}
+
+.breadcrumb > li {
+	border: medium none;
+}
+
+.form-inline {
+	padding-top: 20px;
+}
+
+li a {
+	color: #221f1f;
+	font: bold 20px/20px arial;
+}
+
+a:hover {
+	color: #3685C6;
+	text-decoration: none;
+}
+
+.breadcrumb > li > .divider {
+	color: #221F1F;
+	font: bold 20px/20px arial;
+	padding: 0 5px;
+}
+
+.breadcrumb > .active {
+	color: #3685c6;
+	font: bold 20px/20px arial;
+}
+
+#logo {
+	margin: 0 auto;
+	padding: 15px 0 15px 20px;
+}
+
+.page-header2 {
+    margin: 20px 0 30px;
+    padding-bottom: 9px;
+}
+
+.creditDani {
+	text-align: center;
+	border-top: 1px solid #eee;
+	margin-top: 20px;
+	padding: 10px 0;
+}
+
+.img-polaroid {
+	background-color: #F5F4F4;
+	border: 1px solid #C6C6C6;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+}
+
+.img-polaroid-ipad {
+	background-color: #FFFFFF;
+    border: 1px solid #C6C6C6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin: 9px 0;
+    padding: 32px;
+}
+
+.templateSelector, .colorDevider {
+	margin: 0;
+}
+
+.templateSelector a {
+	color: #221F1F;
+	font: bold 18px/20px arial;
+	padding-left: 20px;
+}
+
+.templateSelector a:hover {
+	color: #3685C6;
+	text-decoration: none;
+}
+
+.templateSelector .active a {
+	color: #3685c6;
+}
+
+.page-header {
+	padding: 20px 0;
+	border-bottom: 1px solid #CCC;
+	margin: 0;
+}
+.page-header.active {
+	border-bottom: none;
+}
+.page-header.well {
+	padding: 10px 20px 20px;
+}
+.page-header a {
+	color: #221f1f;
+	font-size: 18px;
+	font-weight: bold;
+	padding: 0 20px 20px;
+}
+.page-header.active a {
+	color: #08C;
+	border-bottom: none;
+}
+
+
+h4 {
+	font: normal 18px/20px arial;
+	/*margin: 0;*/
+}
+
+ul, ol {
+	margin: 40px 0 20px;
+	padding: 0;
+}
+
+li {
+	border-top: 1px solid #EEEEEE;
+	list-style: none outside none;
+	margin: 0;
+	padding: 10px 0;
+}
+
+.btn-primary {
+	background-color: #66B74A;
+	background-image: linear-gradient(to bottom, #86D969, #66B74A);
+	background-repeat: repeat-x;
+	border-color: rgba(35, 124, 12, 0.1) rgba(35, 124, 12, 0.1) rgba(35, 124, 12, 0.25);
+	color: #FFFFFF;
+	margin-bottom: 0;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
+	color: #ffffff;
+	background-color: #66B74A;
+	*background-color: #66B74A;
+}
+
+.form-search .radio, .form-search .checkbox, .form-inline .radio, .form-inline .checkbox {
+	margin-bottom: 0;
+	padding-left: 50px;
+}
+
+.form-inline:first-child {
+	padding-top: 0; 
+}
+
+
+#editor {
+	padding-left: 20px;
+}
+
+#editorGrey {
+	background: none repeat scroll 0 0 #EEEEEE;
+	padding: 0 0 20px 20px;
+}
+
+.editBackground {
+	width: 220px;
+}
+
+#selectBackground {
+	border: 2px dashed #EEEEEE;
+	margin: 20px 0;
+	padding: 40px 0 30px 104px;
+	width: 284px;
+}
+
+.anDevider {
+	font: bold 20px/20px arial;
+	margin: 35px 0 0;
+	position: absolute;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+	border-top-left-radius: 10px;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+	border-top-right-radius: 10px;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+	border-bottom-left-radius: 10px;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+	border-bottom-right-radius: 10px;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+	background-image: linear-gradient(to bottom, #86D969, #66B74A);
+	border: 1px solid #237c0c;
+	color: #555555;
+	font-weight: normal;
+	padding: 0;
+}
+
+.ui-slider-vertical .ui-slider-handle {
+	left: -1px;
+	margin-bottom: 0;
+	margin-left: 0;
+}
+
+.ui-slider .ui-slider-handle {
+	cursor: default;
+	height: 50px;
+	position: absolute;
+	width: 12px;
+	z-index: 2;
+}
+
+.ui-widget-content a {
+	color: #222222;
+}
+
+.ui-widget-content {
+	background: #dbd9d9;
+	color: #222222;
+}
+
+.ui-widget {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 1.1em;
+}
+
+.ui-slider-vertical {
+	height: 100px;
+	width: 1em;
+}
+
+.ui-slider {
+	position: relative;
+	text-align: left;
+}
+
+.slider-wrapper {
+	text-align: center;
+}
+.slider-wrapper h5 {
+	font-size: 14px;
+}
+.slider-vertical {
+	height: 200px;
+	margin: 0 auto;
+}
+.slider-vertical + input {
+	width: 40px; 
+	margin-top: 10px;
+}

@@ -1,0 +1,39 @@
+<div id="splash">
+	<!--Sidebar-->
+	<aside id="sidebar" class="span5">
+		<h3>Choose Templates</h3>
+		<div class="accordion" id="accordion">
+		 	<div class="accordion-group">
+		 		<div class="accordion-heading">
+		 			<a class="accordion-toggle open" data-title="Splash Screen Image" data-toggle="collapse" data-parent="#accordion" href="#tpl-splash">
+		 				Splash Screen Image
+		 			</a>
+		 		</div>
+		 		<div id="tpl-splash" class="accordion-body collapse in">
+		 			<div class="accordion-inner gray">
+		 				<div ng-include src="'app/views/splash-setting.html'"></div>
+					</div>
+		 		</div>
+		 	</div>
+		 	<div class="accordion-group">
+		 		<div class="accordion-heading">
+		 			<a class="accordion-toggle" data-title="Home Background Image" data-toggle="collapse" data-parent="#accordion" href="#tpl-bg">
+		 				Home Background Image
+		 			</a>
+		 		</div>
+		 		<div id="tpl-bg" class="accordion-body collapse">
+		 			<div class="accordion-inner gray">
+		 				<div ng-include src="'app/views/splash-setting.html'"></div>
+		 			</div>
+		 		</div>
+		 	</div>
+		 </div>
+	</aside>
+	<!--Content-->
+	<section id="editor" class="span7">
+		<div class="template">
+			<img src="assets/img/images2.png" class="img-polaroid img-tpl-splash show">
+			<img src="assets/img/images2.png" class="img-polaroid img-tpl-bg">
+		</div>
+	</section>
+</div>

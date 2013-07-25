@@ -1,0 +1,159 @@
+<form class="form-horizontal">
+	<fieldset>
+		<div class="accordion" id="accordion2">
+			<div class="accordion-group">
+				<div class="accordion-heading">
+			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Background">
+			        	Background
+			      	</a>
+			    </div>
+			    <div id="Background" class="accordion-body collapse in">
+			      	<div class="accordion-inner">
+			        	<div class="control-group">
+							<label class="control-label" style="margin-left:0; text-align:left;">Upload Background</label>
+							<div class="controls" style="margin-left:0;">
+								<input type="file" id="input-background" class="hide" />
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" style="width: 100%; text-align:left;">FB Resize</label>
+							<div class="controls" style="margin-left: 0;">
+								<input type="number" id="input-logo-width" class="input-small" placeholder="width" ng-model="banner.fb.w" /> X 
+								<input type="text" id="input-logo-height" class="input-small" placeholder="height" ng-model="banner.fb.h" disabled="true" />
+							</div>
+						</div>
+			      	</div>
+			    </div>
+			</div>
+			<div class="accordion-group">
+				<div class="accordion-heading">
+			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#logo">
+			        	Logo
+			      	</a>
+			    </div>
+			    <div id="logo" class="accordion-body collapse">
+			      	<div class="accordion-inner">
+						<div class="control-group">
+							<div class="controls" style="margin-left: 0;">
+								<input type="checkbox" id="hide" ng-click="hideLogo($event)" /> 
+								<label for="hide">Hide Logo</label>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" style="width: 100px; text-align:left;">Upload Logo</label>
+							<div class="controls" style="margin-left: 100px;">
+								<input type="file" id="input-logo" class="hide" />
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" style="width: 100%; text-align:left;">Resize</label>
+							<div class="controls" style="margin-left: 0;">
+								<input type="number" id="input-logo-width" class="input-small" placeholder="width" ng-model="banner.logo.w" /> X 
+								<input type="text" id="input-logo-height" class="input-small" placeholder="height" ng-model="banner.logo.h" disabled="true" />
+							</div>
+						</div>
+						<div class="control-group">
+							<div class="controls" style="margin-left: 0;">
+								<input type="checkbox" id="placeholder" ng-click="addWhitePlaceholder($event)" /> 
+								<label for="placeholder">Add Placeholder</label>
+							</div>
+						</div>
+			      	</div>
+			    </div>
+			</div>
+			<div class="accordion-group" ng-hide="isNoPrize">
+				<div class="accordion-heading">
+			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Prizes">
+			        	Prizes
+			      	</a>
+			    </div>
+			    <div id="Prizes" class="accordion-body collapse">
+			      	<div class="accordion-inner">
+						<div class="control-group" ng-show="tplShowPrice >= 1">
+							<label class="control-label" style="width: 100px; text-align:left;">Upload Prize 1</label>
+							<div class="controls" style="margin-left: 100px;">
+								<input type="file" id="input-price-1" class="hide" />
+							</div>
+						</div>
+						<div class="control-group" ng-show="tplShowPrice >= 2">
+							<label class="control-label" style="width: 100px; text-align:left;">Upload Prize 2</label>
+							<div class="controls" style="margin-left: 100px;">
+								<input type="file" id="input-price-2" class="hide" />
+							</div>
+						</div>
+						<div class="control-group" ng-show="tplShowPrice >= 3">
+							<label class="control-label" style="width: 100px; text-align:left;">Upload Prize 3</label>
+							<div class="controls" style="margin-left: 100px;">
+								<input type="file" id="input-price-3" class="hide" />
+							</div>
+						</div>
+			      	</div>
+			    </div>
+			</div>
+			<div class="accordion-group">
+				<div class="accordion-heading">
+			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Text">
+			        	Text
+			      	</a>
+			    </div>
+			    <div id="Text" class="accordion-body collapse">
+			      	<div class="accordion-inner">
+						<div class="control-group">
+							<label>Title <a href class="pull-right" data-toggle="tooltip" data-placement="left" title="Add a new line by comma"><i class="icon-question-sign" style="margin-left:10px"></i></a></label>
+							<div class="controls" style="margin-left: 0;">
+								<input type="text" class="input-large" ng-model="banner.title.text">
+								<p class="help-block text-right">Limit : {{banner.title.counter}}/{{banner.title.limit}}</p>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Description</label>
+							<div class="controls" style="margin-left: 0;">
+								<textarea class="input-large" ng-model="banner.description.text" placeholder="Enter content description here.." rows="8"></textarea>
+								<p class="help-block text-right">Limit : {{banner.description.counter}}/{{banner.description.limit}}</p>
+							</div>
+						</div>
+						<div class="control-group" ng-hide="isNoPrize">
+							<label>Prize Header</label>
+							<div class="controls" style="margin-left: 0;">
+								<input type="text" class="input-large" ng-model="banner.price.title" />
+							</div>
+						</div>
+						<div class="control-group" ng-show="tplShowPrice >= 1">
+							<label>Prize 1</label>
+							<div class="controls" style="margin-left: 0;">
+								<textarea class="input-large" ng-model="banner.price.one.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+								<p class="help-block text-right">Limit : {{banner.price.one.counter}}/{{banner.price.one.limit}}</p>
+							</div>
+						</div>
+						<div class="control-group" ng-show="tplShowPrice >= 2">
+							<label>Prize 2</label>
+							<div class="controls" style="margin-left: 0;">
+								<textarea class="input-large" ng-model="banner.price.two.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+								<p class="help-block text-right">Limit : {{banner.price.two.counter}}/{{banner.price.two.limit}}</p>
+							</div>
+						</div>
+						<div class="control-group" ng-show="tplShowPrice >= 3">
+							<label>Prize 3</label>
+							<div class="controls" style="margin-left: 0;">
+								<textarea class="input-large" ng-model="banner.price.three.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+								<p class="help-block text-right">Limit : {{banner.price.three.counter}}/{{banner.price.three.limit}}</p>
+							</div>
+						</div>
+			      	</div>
+			    </div>
+			</div>
+		</div>
+	</fieldset>
+</form>
+<!-- <button class="btn btn-primary btn-block" type="button" ng-click="foreignToSVGXML($event)">
+	Foreign To SVGXML
+</button>
+<button class="btn btn-primary btn-block" type="button" ng-click="test($event)">
+	Test
+</button> -->
+<button class="btn btn-primary btn-block" type="button" ng-click="convert($event)">
+	<i class="icon-picture"></i> Generate Image
+</button>
+<button class="btn btn-primary btn-block" type="button" ng-click="inspect($event)">
+	Inspect
+</button>

@@ -1,0 +1,428 @@
+
+html, body {
+	height: 100%;
+}
+
+body.noise {
+	background-image: url(../img/bg-noise.png);
+}
+body.white {
+	background-color: #FFF;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+ /* Wrapper for page content to push down footer */
+#wrap {
+	overflow: auto;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	/* Negative indent footer by it's height */
+	margin: 0 auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+	height: 60px;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+	#footer {
+		margin-left: -20px;
+	  	margin-right: -20px;
+	  	padding-left: 20px;
+	  	padding-right: 20px;
+	}
+}
+/* helper */
+
+.full-height {
+	height: 100%;
+}
+.prefix {
+	margin-left: 0 !important;
+}
+.margin-top-zero {
+	margin-top: 0 !important;
+}
+.margin-bottom-zero {
+	margin-top: 0 !important;
+}
+.margin-top-bottom-jumbo {
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+.margin-top-bottom {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.margin-bottom-only {
+	margin-top: 0 !important;
+	margin-bottom: 20px !important;
+}
+.border-none {
+	border: none;
+}
+.text-left {
+	text-align: left
+}
+.text-center {
+	text-align: center
+}
+.text-right {
+	text-align: right
+}
+
+.container > hr {
+	margin: 40px 0;
+}
+
+/* Custom container */
+
+.container-narrow {
+	margin: 0 auto;
+	max-width: 700px;
+}
+.container-narrow > hr {
+	margin: 30px 0;
+}
+
+.container > .hero-unit,
+.container-narrow > .row-fluid > .content{
+	display: none;
+}
+.container-narrow > .hero-unit {
+	display: block
+}
+
+/* hero */
+
+.hero-unit {
+	background-color: transparent;
+	margin-bottom: 0;
+}
+.hero-unit > .row-fluid {
+	margin-top: 60px;
+}
+.hero-unit h1 {
+	text-transform: uppercase;
+	text-align: center;
+	font-family: Courier, monospace;
+	font-size: 100px;
+	color: rgba(0,0,0,0.7);
+}
+.hero-unit p {
+	font-size: 14px;
+}
+.Three-Dee{
+	line-height: 1em;
+	font-weight:bold;
+	text-shadow:0px 0px 0 rgb(240,240,240),1px 1px 0 rgb(234,234,234),2px 2px 0 rgb(229,229,229),3px 3px 0 rgb(223,223,223),4px 4px 0 rgb(218,218,218),5px 5px 0 rgb(212,212,212),6px 6px 0 rgb(207,207,207),7px 7px 0 rgb(201,201,201),8px 8px 0 rgb(196,196,196),9px 9px 0 rgb(190,190,190),10px 10px 0 rgb(185,185,185),11px 11px 0 rgb(179,179,179), 12px 12px 0 rgb(174,174,174),13px 13px 12px rgba(0,0,0,0.5),13px 13px 1px rgba(0,0,0,0.5),0px 0px 12px rgba(0,0,0,.2);
+}
+
+/* Supporting marketing content */
+
+.marketing {
+	margin: 60px 0;
+}
+.marketing p + h4 {
+	margin-top: 28px;
+}
+.marketing + hr {
+	display: none;
+}
+
+.modal-large{
+   width:1170px;
+   margin-left:-585px;
+}
+
+.modal-large {
+   width:940px;
+   margin-left:-470px;
+}
+
+.sidebar .left-side {
+	margin-top: 80px;
+}
+
+.sidebar {
+	padding: 10px 0;
+	background-color: #f5f5f5;
+	border: 1px solid #DDD;
+}
+.sidebar h1,
+.sidebar h5,
+.sidebar .nav li a {
+	padding-left: 30px;
+}
+.sidebar .nav {
+	border: none;
+}
+.sidebar .nav li:not(.active):first-child {
+	border-top: 1px solid #DDD;
+}
+.sidebar .nav li:not(.active) {
+	border-bottom: 1px solid #DDD;
+}
+.sidebar .nav li a {
+	margin-bottom: 0;
+}
+.sidebar .nav li.active a {
+	border-left: 0;
+}
+
+#content h3 {
+	margin: 0 20px 0;
+}
+#content hr {
+	margin: 5px 0;
+}
+
+/* drop element */
+
+.drop-area {
+	position: absolute;
+}
+.drop-area.over {
+	border: 2px dashed #000;
+	background-color: rgba(255, 255, 255, 0.75);
+}
+.drop-area.over:after {
+	content: attr(data-title);
+	display: block;
+	position: absolute;
+	top: 45%;
+	font-size: 30px;
+	font-weight: bold;
+	color: #000;
+}
+
+#drop-logo {
+	width: 200px;
+	height: 100px;
+	top: 100px;
+	left: 30px;
+}
+#drop-logo.over:after {
+	font-size: 18px;
+	left: 16%;
+}
+#drop-background {
+	width: 810px;
+	height: 381px;
+	top: 60px;
+}
+#drop-background.over:after {
+	left: 30%;
+}
+#drop-price-1 {
+	width: 345px;
+	height: 188px;
+	top: 263px;
+	left: 445px;
+}
+#drop-price-1.over:after {
+	left: 18%;
+}
+
+/* drop area */
+
+.drop-element,
+.drop-element-2 {
+	height: 100px;
+	text-align: center;
+	border: 2px dashed #ddd;
+	padding: 20px 10px;
+}
+
+.drop-element .drop-instructions,
+.drop-element-2 .drop-instructions {
+	display: block;
+	height: 30px;
+}
+
+.drop-element .drop-over,
+.drop-element-2 .drop-over {
+	display: none;
+	font-size: 25px;
+	height: 30px;
+}
+		
+.drop-element.over,
+.drop-element-2.over {
+	background: #ffffa2;
+	border: 2px dashed #000;
+}
+
+.drop-element.over .drop-instructions,
+.drop-element-2.over .drop-instructions {
+	display: none;
+}
+
+.drop-element.over .drop-over,
+.drop-element-2.over .drop-over {
+	display: block;
+}
+
+.drop-element.over .drop-over,
+.drop-element-2.over .drop-over {
+	display: block;
+	font-size: 25px;
+}
+
+.accordion-inner input[type="text"]:not(.input-small),
+.accordion-inner textarea {
+	width: 94%;
+}
+
+input[type="checkbox"] ~ label {
+	display: inline;
+	padding-left: 5px;
+	position: relative;
+	top: 3px;
+}
+
+#crop-wrapper {
+	width:100%; 
+	position: fixed; 
+	bottom:0;
+	z-index: 1020;
+	padding: 10px 0;
+	background-color: rgba(0,0,0,0.2); 
+	text-align: center;
+}
+#crop-wrapper button {
+	margin: 0 5px;
+}
+
+/* background */
+
+.loading > span,
+.upload > span,
+.generate > span {
+	display: block;
+	position: relative;
+	left: -30px;
+}
+
+.thumbnails li {
+	position: relative;
+}
+ul.img-list li:nth-child(4n+1),
+ul.svg-list li:nth-child(odd){
+	margin-left: 0;
+}
+ul.img-list li img {
+	height: 250px;
+}
+
+li > .wait,
+li > .upload,
+li > .generate {
+	visibility: hidden;
+	position: absolute;
+}
+ul.img-list  > li > .wait {
+	left: 40%;
+	top: 45%;
+}
+ul.img-list  > li > .upload,
+ul.img-list  > li > .generate {
+	left: 43%;
+	top: 40%;
+}
+ul.svg-list  > li > .wait {
+	top: 45%;
+	left: 45%;
+}
+ul.svg-list  > li > .upload,
+ul.svg-list  > li > .generate {
+	left: 45%;
+	top: 40%;
+}
+li > .wait > i {
+	color: darkgray;
+}
+li > .upload > i {
+	color: cornflowerblue;
+}
+li > .generate > i {
+	color: darkgreen;
+}
+li > .upload > span,
+li > .generate > span {
+	left: -12px;
+	font-weight: bold;
+}
+li.wait .wait,
+li.upload .upload,
+li.generate .generate {
+	visibility: visible;
+}
+li.wait img,
+li.wait .thumbnail {
+	opacity: 0.1;
+}
+li.upload img,
+li.upload .thumbnail {
+	opacity: 0.25;
+}
+li.generate img,
+li.generate .thumbnail {
+	opacity: 0.45;
+}
+
+.progress > .bar > span {
+	display:block; 
+	padding-top:5px;
+}
+
+input#spinner {
+	margin-bottom:0.2em; 
+	font-size:14px
+}
+
+#page-feed section {
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+#page-feed section h2 {
+	color:#ddd;
+}
+
+#page-feed section .drop-element,
+#page-feed section .drop-element-2,
+#page-feed section .editor {
+	display:none;
+}
+#page-feed section.active h2 {
+	color:#333;
+}
+#page-feed section.active > .drop-element,
+#page-feed section.active > .drop-element-2 {
+	display:block;
+}
+#page-feed section.active > .editor-wrapper {
+	position: relative;
+	min-height: 350px;
+	margin:20px 0;
+}
+
+.jPicker.Container {
+	position: fixed !important;
+}
+
+.splash-wrapper {
+	text-align: center;
+	padding-top: 5px; 
+	background-color: #eeeeee;
+}

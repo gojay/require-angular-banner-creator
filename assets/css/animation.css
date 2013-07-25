@@ -1,0 +1,111 @@
+
+@import url("animation-keyframes.css");
+
+html {
+    -webkit-perspective: 500px;
+	-webkit-perspective-origin-x: 50%;
+	-webkit-perspective-origin-y: 50%;
+	/*background: gray;*/
+}
+
+.after-animation {
+	height: auto;
+	overflow: auto !important;
+}
+
+.rotateInLeft {
+	-webkit-animation: rotateInLeft 1s linear 0s 1 forwards;
+	-moz-animation: rotateInLeft 1s linear 0s 1 forwards;
+	-ms-animation: rotateInLeft 1s linear 0s 1 forwards;
+	-o-animation: rotateInLeft 1s linear 0s 1 forwards;
+	animation: rotateInLeft 1s linear 0s 1 forwards; 
+}
+.rotateOutLeft {
+	-webkit-animation: rotateOutLeft 1s linear 0s 1 forwards;
+	-moz-animation: rotateOutLeft 1s linear 0s 1 forwards;
+	-ms-animation: rotateOutLeft 1s linear 0s 1 forwards;
+	-o-animation: rotateOutLeft 1s linear 0s 1 forwards;
+	animation: rotateOutLeft 1s linear 0s 1 forwards; 
+}
+
+.rotateInRight {
+	-webkit-animation: rotateInRight 1s linear 0s 1 forwards;
+	-moz-animation: rotateInRight 1s linear 0s 1 forwards;
+	-ms-animation: rotateInRight 1s linear 0s 1 forwards;
+	-o-animation: rotateInRight 1s linear 0s 1 forwards;
+	animation: rotateInRight 1s linear 0s 1 forwards; 
+}
+.rotateInRightWithoutToKeyframe {
+	-webkit-animation: rotateInRightWithoutToKeyframe 1s linear 0s 1 forwards;
+	-moz-animation: rotateInRightWithoutToKeyframe 1s linear 0s 1 forwards;
+	-ms-animation: rotateInRightWithoutToKeyframe 1s linear 0s 1 forwards;
+	-o-animation: rotateInRightWithoutToKeyframe 1s linear 0s 1 forwards;
+	animation: rotateInRightWithoutToKeyframe 1s linear 0s 1 forwards; 
+}
+.rotateOutRight {
+	-webkit-animation: rotateOutRight 1s linear 0s 1 forwards;
+	-moz-animation: rotateOutRight 1s linear 0s 1 forwards;
+	-ms-animation: rotateOutRight 1s linear 0s 1 forwards;
+	-o-animation: rotateOutRight 1s linear 0s 1 forwards;
+	animation: rotateOutRight 1s linear 0s 1 forwards; 
+}
+
+.whirlIn {
+	-webkit-animation: whirlIn 1s linear 0s 1 forwards;
+	-moz-animation: whirlIn 1s linear 0s 1 forwards;
+	-ms-animation: whirlIn 1s linear 0s 1 forwards;
+	-o-animation: whirlIn 1s linear 0s 1 forwards;
+	animation: whirlIn 1s linear 0s 1 forwards; 
+}
+.whirlOut {
+	-webkit-animation: whirlOut 1s linear 0s 1 forwards;
+	-moz-animation: whirlOut 1s linear 0s 1 forwards;
+	-ms-animation: whirlOut 1s linear 0s 1 forwards;
+	-o-animation: whirlOut 1s linear 0s 1 forwards;
+	animation: whirlOut 1s linear 0s 1 forwards; 
+}
+
+.slideInSkew {
+	-webkit-animation: slideInSkew 1s linear 0s 1 forwards;
+	-moz-animation: slideInSkew 1s linear 0s 1 forwards;
+	-ms-animation: slideInSkew 1s linear 0s 1 forwards;
+	-o-animation: slideInSkew 1s linear 0s 1 forwards;
+	animation: slideInSkew 1s linear 0s 1 forwards;
+}
+.slideOutSkew {
+	-webkit-animation: slideOutSkew 1s linear 0s 1 forwards;
+	-moz-animation: slideOutSkew 1s linear 0s 1 forwards;
+	-ms-animation: slideOutSkew 1s linear 0s 1 forwards;
+	-o-animation: slideOutSkew 1s linear 0s 1 forwards;
+	animation: slideOutSkew 1s linear 0s 1 forwards;
+}
+
+.tumbleIn {
+	-webkit-animation: tumbleIn 1s linear 0s 1 forwards;
+	-moz-animation: tumbleIn 1s linear 0s 1 forwards;
+	-ms-animation: tumbleIn 1s linear 0s 1 forwards;
+	-o-animation: tumbleIn 1s linear 0s 1 forwards;
+	animation: tumbleIn 1s linear 0s 1 forwards;
+}
+.tumbleOut {
+	-webkit-animation: tumbleOut 1s linear 0s 1 forwards;
+	-moz-animation: tumbleOut 1s linear 0s 1 forwards;
+	-ms-animation: tumbleOut 1s linear 0s 1 forwards;
+	-o-animation: tumbleOut 1s linear 0s 1 forwards;
+	animation: tumbleOut 1s linear 0s 1 forwards;
+}
+
+.expandIn {
+	-webkit-animation: expandIn 1s linear 0s 1 forwards;
+	-moz-animation: expandIn 1s linear 0s 1 forwards;
+	-ms-animation: expandIn 1s linear 0s 1 forwards;
+	-o-animation: expandIn 1s linear 0s 1 forwards;
+	animation: expandIn 1s linear 0s 1 forwards;
+}
+.collapseOut {
+	-webkit-animation: tumbleOut 1s linear 0s 1 forwards;
+	-moz-animation: tumbleOut 1s linear 0s 1 forwards;
+	-ms-animation: tumbleOut 1s linear 0s 1 forwards;
+	-o-animation: tumbleOut 1s linear 0s 1 forwards;
+	animation: tumbleOut 1s linear 0s 1 forwards;
+}

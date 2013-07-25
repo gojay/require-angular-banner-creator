@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Banner Creator | Conversation</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- Le styles -->
+	<link href="assets/css/bootstrap.css" rel="stylesheet">
+	<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="assets/css/styles.css" rel="stylesheet">
+
+	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Le fav and touch icons -->
+	<link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/images/favicon.ico">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/images/apple-touch-icon-114x114.png">
+</head>
+<body>
+	<div class="container">
+		<header class="row-fluid">
+			<!--Logo header-->
+			<h1 class="span8 logo"><img src="assets/img/logo.png" /></h1>
+			<!--Breadcrumb-->
+			<nav class="span12 prefix">
+				<ul class="breadcrumb">
+					<li>
+						<a href="#">Home</a><span class="divider">/</span>
+					</li>
+					<li>
+						<a href="#">Facebook Conversation Template</a><span class="divider">/</span>
+					</li>
+					<li class="active">
+						Template 1
+					</li>
+				</ul>
+			</nav>
+		</header><!--/row-->
+		<div id="wrapper" class="row-fluid">
+			<input type="checkbox" name="handler-right" class="handler" id="handler-right" onclick="null" />
+			<input type="checkbox" name="handler-left" class="handler" id="handler-left" onclick="null" />
+
+			<!-- <div id="menu">
+			    <ul>
+			        <li><a href="#">Home</a></li>
+			        <li><a href="#">Our work</a></li>
+			        <li><a href="#" class="active">Our clients</a></li>
+			        <li><a href="#">Who are we ?</a></li>
+			        <li><a href="#">Get in touch</a></li>
+			    </ul>
+			</div> -->
+
+			<div id="favorites">
+			    <div class="row-fluid">
+					<div class="tabbable" style="padding: 15px 10px;">
+						<ul class="nav nav-tabs">
+							<li class="active"><a href="#1" data-toggle="tab">Images</a></li>
+							<li><a href="#2" data-toggle="tab">SVG</a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="1">
+						    	<ul class="thumbnails" style="padding:20px">
+					              	<li class="span3">
+					                	<a href="#" class="thumbnail">
+					                  		<img src="http://placehold.it/260x180" alt="">
+					                	</a>
+					              	</li>
+					              	<li class="span3">
+					                	<a href="#" class="thumbnail">
+					                  		<img src="http://placehold.it/260x180" alt="">
+					                	</a>
+					              	</li>
+					              	<li class="span3">
+					                	<a href="#" class="thumbnail">
+					                  		<img src="http://placehold.it/260x180" alt="">
+					                	</a>
+					              	</li>
+					              	<li class="span3">
+					                	<a href="#" class="thumbnail">
+					                  		<img src="http://placehold.it/260x180" alt="">
+					                	</a>
+					              	</li>
+					            </ul>
+							</div>
+							<div class="tab-pane" id="2">
+								<p>Howdy, I'm in Section 2.</p>
+							</div>
+						</div>
+					</div>
+			    </div>
+			</div>
+
+			<div id="content" class="span12 prefix">
+				<!--Sidebar-->
+				<aside id="sidebar" class="span6">
+					<h3>Choose Templates</h3>
+					<div class="accordion" id="accordion">
+					 	<div class="accordion-group">
+					 		<div class="accordion-heading">
+					 			<a class="accordion-toggle open" data-title="Template 1" data-toggle="collapse" data-parent="#accordion" href="#tpl-1">
+					 				Template 1
+					 			</a>
+					 		</div>
+					 		<div id="tpl-1" class="accordion-body collapse in">
+					 			<div class="accordion-inner">
+					 				<!-- form setting -->
+			 						<div class="form-inline">
+										<h4>Logo</h4>
+										<p>Upload Logo Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-logo-hide-1">
+													<input type="checkbox" id="checkbox-logo-hide-1" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-logo-placeholder-1">
+													<input type="checkbox" id="checkbox-logo-placeholder-1" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Design Element 1</h4>
+										<p>Upload Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot1-hide-1">
+													<input type="checkbox" id="checkbox-spot1-hide-1" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot1-placeholder-1">
+													<input type="checkbox" id="checkbox-spot1-placeholder-1" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Design Element 2</h4>
+										<p>Upload Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot2-hide-1">
+													<input type="checkbox" id="checkbox-spot2-hide-1" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot2-placeholder-1">
+													<input type="checkbox" id="checkbox-spot2-placeholder-1" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Background</h4>
+										<div class="row-fluid">
+											<div class="span5">
+												<p><small>Select color</small></p>
+												<input type="text" class="input-small" placeholder="#FFFFFF">
+												<input type="color" class="input-small" style="width: 20px;">
+											</div>
+											<div class="span2 relative" style="height: 60px;">
+												<p class="anDevider">AND</p>
+											</div>
+											<div class="span5">
+												<p><small>Second Color For Gradient</small></p>
+												<input type="text" class="input-small" placeholder="#FFFFFF">
+												<input type="color" class="input-small" style="width: 20px;">
+											</div>
+										</div>
+									</div>
+					 				<!-- /form setting -->
+					 			</div>
+					 		</div>
+					 	</div>
+					 	<div class="accordion-group">
+					 		<div class="accordion-heading">
+					 			<a class="accordion-toggle" data-title="Template 2" data-toggle="collapse" data-parent="#accordion" href="#tpl-2">
+					 				Template 2
+					 			</a>
+					 		</div>
+					 		<div id="tpl-2" class="accordion-body collapse">
+					 			<div class="accordion-inner">
+					 				<!-- form setting -->
+			 						<div class="form-inline">
+										<h4>Logo</h4>
+										<p>Upload Logo Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-logo-hide-2">
+													<input type="checkbox" id="checkbox-logo-hide-2" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-logo-placeholder-2">
+													<input type="checkbox" id="checkbox-logo-placeholder-2" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Design Element 1</h4>
+										<p>Upload Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot1-hide-2">
+													<input type="checkbox" id="checkbox-spot1-hide-2" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot1-placeholder">
+													<input type="checkbox" id="checkbox-spot1-placeholder-2" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Design Element 2</h4>
+										<p>Upload Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot2-hide-2">
+													<input type="checkbox" id="checkbox-spot2-hide-2" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot2-placeholder-2">
+													<input type="checkbox" id="checkbox-spot2-placeholder-2" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Background</h4>
+										<div class="row-fluid">
+											<div class="span5">
+												<p><small>Select color</small></p>
+												<input type="text" class="input-small" placeholder="#FFFFFF">
+												<input type="color" class="input-small" style="width: 20px;">
+											</div>
+											<div class="span2 relative" style="height: 60px;">
+												<p class="anDevider">AND</p>
+											</div>
+											<div class="span5">
+												<p><small>Second Color For Gradient</small></p>
+												<input type="text" class="input-small" placeholder="#FFFFFF">
+												<input type="color" class="input-small" style="width: 20px;">
+											</div>
+										</div>
+									</div>
+					 				<!-- /form setting -->
+					 			</div>
+					 		</div>
+					 	</div>
+					 	<div class="accordion-group">
+					 		<div class="accordion-heading">
+					 			<a class="accordion-toggle" data-title="Template 3" data-toggle="collapse" data-parent="#accordion" href="#tpl-3">
+					 				Template 3
+					 			</a>
+					 		</div>
+					 		<div id="tpl-3" class="accordion-body collapse">
+					 			<div class="accordion-inner">
+					 				<!-- form setting -->
+			 						<div class="form-inline">
+										<h4>Logo</h4>
+										<p>Upload Logo Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-logo-hide">
+													<input type="checkbox" id="checkbox-logo-hide" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-logo-placeholder">
+													<input type="checkbox" id="checkbox-logo-placeholder" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Design Element 1</h4>
+										<p>Upload Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot1-hide-3">
+													<input type="checkbox" id="checkbox-spot1-hide-3" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot1-placeholder-3">
+													<input type="checkbox" id="checkbox-spot1-placeholder-3" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Design Element 2</h4>
+										<p>Upload Image (use PNG for tansparent background)</p>
+										<div class="row-fluid">
+											<div class="span4">
+												<button class="btn btn-success">Select an image</button>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot2-hide-3">
+													<input type="checkbox" id="checkbox-spot2-hide-3" value=""> Hide Logo
+												</label>
+											</div>
+											<div class="span4">
+												<label for="checkbox-spot2-placeholder-3">
+													<input type="checkbox" id="checkbox-spot2-placeholder-3" value=""> Add Placeholder
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-inline">
+										<h4>Background</h4>
+										<div class="row-fluid">
+											<div class="span5">
+												<p><small>Select color</small></p>
+												<input type="text" class="input-small" placeholder="#FFFFFF">
+												<input type="color" class="input-small" style="width: 20px;">
+											</div>
+											<div class="span2 relative" style="height: 60px;">
+												<p class="anDevider">AND</p>
+											</div>
+											<div class="span5">
+												<p><small>Second Color For Gradient</small></p>
+												<input type="text" class="input-small" placeholder="#FFFFFF">
+												<input type="color" class="input-small" style="width: 20px;">
+											</div>
+										</div>
+									</div>
+					 				<!-- /form setting -->
+					 			</div>
+					 		</div>
+					 	</div>
+					 </div>
+				</aside>
+				<!--Content-->
+				<section id="editor" class="span6">
+					<div class="slider pull-right">
+		            	<!-- <a href="#" data="handler-left"><i class="icon-arrow-right"></i></a> -->
+		            	<a href="#" class="nav-sidebar" data-sidebar="handler-right">← Sidebar</a>
+		            </div>
+					<div class="wrap">		          
+						<div class="template">
+							<img src="conversation/tpl-1.png" class="img-polaroid img-tpl-1 show">
+							<img src="conversation/tpl-2.png" class="img-polaroid img-tpl-2">
+							<img src="conversation/tpl-3.png" class="img-polaroid img-tpl-3">
+						</div>
+						<div class="background margin-top">
+							<div class="drop">
+								<div class="input-button">
+									<a href class="btn">Add Backgrounds</a>
+									<p>Or Drag and Drop file here</p>
+								</div>
+							</div>
+						</div>
+						<div class="margin-top">
+							<a href class="btn btn-block btn-success">Generate Image</a>
+						</div>
+					</div>
+				</section>
+				
+			</div>
+		</div>
+		<footer>
+			<p class="credit">Developed by <a href="http://github.com/gojay">Dani Gojay</a> from <a href="http://conversion-hub.com"> Conversion Hub</a></p>
+		</footer>
+	</div><!--/.fluid-container-->
+
+	<!-- Le javascript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="assets/js/jquery.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script>
+		$(function(){
+
+			$('label').click(function() {});
+
+		    var $editorTpl = $('#editor .template');
+
+			$('.collapse').live('show', function(){
+				var $link = $(this).parent().find('a');
+			    $(this).parent().find('a').addClass('open'); //add active state to button on open
+			    // show tpl content editor 
+			    var imgTplClass = '.img-' + this.id;
+			    $(imgTplClass , $editorTpl).show();
+			    // get title
+			    var title = $link.data('title');
+			    // chnage breadcumb active title
+			    $('nav > ul > li.active').text(title);
+			});
+
+			$('.collapse').live('hide', function(){
+			    $(this).parent().find('a').removeClass('open'); //remove active state to button on close
+			    // hide preview tpl
+			    var imgTplClass = '.img-' + this.id;
+			    $(imgTplClass, $editorTpl).hide();
+			});
+
+			$('a.nav-sidebar').click(function(){
+				var className = $(this).data('sidebar');
+				$('input[name="'+ className +'"]').click();
+			});
+		});	
+	</script>
+</body>
+</html>
