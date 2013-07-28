@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-controller="PageController">
+<html>
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="chrome=1" />
@@ -13,10 +13,9 @@
 	<link href="assets/css/bootstrap.css" rel="stylesheet">         
 	<link href="assets/css/bootstrap-responsive.css" rel="stylesheet"> -->	
 
-	<!-- CDN
+	<!-- CDN -->
 	<link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet"> 
-	-->
-	<link href="assets/css/jquery-ui/smoothness/jquery-ui.css" rel="stylesheet">
+	<!-- <link href="assets/css/jquery-ui/smoothness/jquery-ui.css" rel="stylesheet"> -->
 	<!-- Bootstrap & Font Awesome -->
 	<link href="assets/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
 	<link href="assets/css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -28,6 +27,7 @@
 	<link href="assets/css/imgareaselect-default.css" rel="stylesheet">
 	<link href="assets/css/jpicker/css/jPicker-1.1.6.css" rel="stylesheet">
 	<link href="assets/css/jpicker/jPicker.css" rel="stylesheet">
+	<link href="assets/css/scrollbar.css" rel="stylesheet">
 
 	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 	<!--[if lt IE 9]>
@@ -41,13 +41,13 @@
 			<!--Logo header-->
 			<h1 class="logo"><img src="assets/img/logo.png" /></h1>
 			<!--Breadcrumb-->
-			<nav ng-class="{true:'show', false:'hide'}[page.isContent]">
+			<nav ng-class="{true:'show', false:'hide'}[$root.showBreadcrumb]">
 				<ul class="breadcrumb">
 					<li>
 						<a href="#/">Home</a><span class="divider">/</span>
 					</li>
 					<li>
-						<a href="#">{{$root.breadcrumb.current}}</a><span class="divider">/</span>
+						<a href>{{$root.breadcrumb.current}}</a><span class="divider">/</span>
 					</li>
 					<li class="active">
 						{{$root.breadcrumb.active}}

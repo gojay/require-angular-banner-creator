@@ -1,9 +1,6 @@
 define(['controllers/controllers'], function(controllers){
-	controllers.controller('SplashController', ['$scope', '$timeout', '$compile', 'page', 'imageReader',
-		function($scope, $timeout, $compile, page, imageReader){
-			// set page title n enable content
-			page.setTitle('| Splash');
-			page.isContent = true;
+	controllers.controller('MobileController', ['$scope', '$timeout', '$compile', 'imageReader',
+		function($scope, $timeout, $compile, imageReader){
 
 			var $editorTpl = $('#editor .template');
 

@@ -5,7 +5,7 @@
 // | Version       2.0                                                      |
 // | Last modified 15/07/2013                                               |
 // | Email         dani.gojay@gmail.com                                     |
-// | Web           http://github.com/gojay, http://gojayincode.com          |
+// | Web           http://github.com/gojay & http://gojayincode.com         |
 // +------------------------------------------------------------------------+
 
 require.config({
@@ -28,9 +28,6 @@ require.config({
 		domReady     : 'vendor/domReady'
 	},
 	shim: {
-		// jquery: {
-		// 	exports: 'jQuery'
-		// },
 		jqueryui: ['jquery'],
 		blockUI: ['jquery'],
 		imgareaselect: ['jquery'],
@@ -58,7 +55,6 @@ require([
 	// providers
 	'providers/debugProvider',
 	'providers/transitionProvider',
-	'providers/pageProvider',
 	'providers/imageReaderProvider',
 	// filters
 	'filters/comaToNewLine',
@@ -69,11 +65,10 @@ require([
 	'directives/conversationCreator',
 	'directives/splashCreator',
 	// controllers
-	'controllers/pageController',
 	'controllers/homeController',
 	'controllers/bannerController',
 	'controllers/conversationController',
-	'controllers/splashController',
+	'controllers/mobileController',
 	// plugins & helpers
 	'blockUI',
 	'imgareaselect',
@@ -87,15 +82,14 @@ require([
 function(angular, app, domReady){
 	'use strict';
 
-	app.config(['$routeProvider', 'debugProvider', 'transitionProvider', 'pageProvider', 'imageReaderProvider',
-		function($routeProvider, debugProvider, transitionProvider, pageProvider, imageReaderProvider){
+	app.config(['$routeProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
+		function($routeProvider, debugProvider, transitionProvider, imageReaderProvider){
 			// enable/disable debuging
 			debugProvider.setDebug(true);
 			// transition config  
 			transitionProvider.setStartTransition('expandIn');
 			transitionProvider.setPageTransition('tumble');
 			transitionProvider.setPage('html');
-
 			// router
 			$routeProvider
 				.when('/', {
@@ -110,7 +104,7 @@ function(angular, app, domReady){
 						}
 					}
 				})
-				.when('/banner', {
+				.when('/facebook/banner', {
 					title : '| Banner',
 					breadcrumb : {
 						current:  'Facebook Banner Template',
@@ -126,7 +120,7 @@ function(angular, app, domReady){
 						}
 					}
 				})
-				.when('/conversation', {
+				.when('/facebook/conversation', {
 					title : '| Conversation',
 					breadcrumb : {
 						current:  'Facebook Conversation Template',
@@ -142,14 +136,14 @@ function(angular, app, domReady){
 						}
 					}
 				})
-				.when('/splash', {
-					title : '| Splash',
+				.when('/mobile', {
+					title : '| Mobile',
 					breadcrumb : {
 						current:  'Mobile SplashScreen & Background',
 						active :  'Splash Screen'
 					},
-					templateUrl : 'app/views/splash.html',
-					controller  : 'SplashController',
+					templateUrl : 'app/views/mobile.html',
+					controller  : 'MobileController',
 					resolve: {
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
@@ -163,20 +157,19 @@ function(angular, app, domReady){
 				.otherwise({ redirectTo:'/' });
 		}
 	])
-	.run(function($rootScope, transition, page) {
+	.run(function($rootScope, transition) {
 		// change transition when start route 
 		$rootScope.$on('$routeChangeStart', function(scope, next, current) {
 			console.log('Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
 			$rootScope.showBreadcrumb = false;
-			transition.change();
+			if(current === undefined) transition.start();
+			else transition.change();
 		});
 		// inject page_title form current route
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
-			console.log(current.$$route.title);
 			$rootScope.pageTitle = current.$$route.title;
 			$rootScope.showBreadcrumb = (current.$$route.breadcrumb === undefined) ? false : true ;
 			$rootScope.breadcrumb = current.$$route.breadcrumb;
-			console.log('showBreadcrumb', $rootScope.showBreadcrumb);
 		});
 	});
 	domReady(function() {

@@ -4,8 +4,8 @@ define([
 	'jquery',
 	'jqueryui'
 ], function(directives){
-	directives.directive('conversationCreator', ['$compile', '$timeout', 'ConversationTpl', 'imageReader',
-		function($compile, $timeout, ConversationTpl, imageReader){
+	directives.directive('conversationCreator', ['$compile', '$timeout', 'ConversationTpl', 'ConversationConfig', 'imageReader',
+		function($compile, $timeout, ConversationTpl, ConversationConfig, imageReader){
 			// Runs during compile
 			return {
 				restrict: 'EAC', // E = Element, A = Attribute, C = Class, M = Comment
@@ -15,72 +15,82 @@ define([
 
 					var self = this;
 
-					var ID = null;
+					var ID       = null,
+						index    = 1,
+						sizes    = 0,
+						requests = [];
 
-					var index    = 1;
-					var requests = [];
-					var sizes    = 0;
-
-					self.sectionBg = $('#drop-backgrounds');
-					self.buttonBg  = $('#btn-upload-backgrounds');
-
-					self.templates = ConversationTpl;
-
+					// define elements
+					self.btnLogo    = $('#btn-input-logo');
+					self.btnSpot1   = $('#btn-input-spot1');
+					self.btnSpot2   = $('#btn-input-spot2');
+					self.btnBg      = $('#btn-upload-backgrounds');
+					self.sectionBg  = $('#drop-backgrounds');
+					// define templates
+					self.templates  = ConversationTpl;
+					// define dimensions
+					self.dimensions = ConversationConfig.dimensions;
+					// define jsZip
 					self.zip = new JSZip();
 
 					// model
-					$scope.conversation = {
-						logo : {
-							hide: false,
-							placeholder: true,
-							position: {
-								x: 18,
-								y: 78
-							}
-						},
-						spot1 : {
-							hide: false,
-							placeholder: true,
-							clip: 'square',
-							position: {
-								x: 65,
-								y: 266
-							}
-						},
-						spot2 : {
-							hide: false,
-							placeholder: true,
-							clip: 'square',
-							position: {
-								x: 266,
-								y: 266
-							}
-						},
-						align: {
-							x: 'none',
-							y: 'none'
-						},
-						images : {
-							empty    : true,
-							count    : 0,
-							finished : 0
-						},
-						template : ConversationTpl[0],
-						isDownloadDisabled : true
-					};
+					$scope.conversation = ConversationConfig.data;
 
-					var hideElement = function(checked, element){
-						var $logo = $('svg#' + element);
+					/* scope watchers */
+
+					// logo
+					$scope.$watch('conversation.logo.hide', function(checked){
+						console.log(checked);
+						self.hideElement(checked, 'logo');
+					});
+					$scope.$watch('conversation.logo.placeholder', function(checked){
+						console.log(checked);
+						self.addPlaceholder(checked, 'logo');
+					});
+					// spot1
+					$scope.$watch('conversation.spot1.hide', function(checked){
+						console.log(checked);
+						self.hideElement(checked, 'spot1');
+					});
+					$scope.$watch('conversation.spot1.placeholder', function(checked){
+						console.log(checked);
+						self.addPlaceholder(checked, 'spot1');
+					});
+					$scope.$watch('conversation.spot1.clip', function(clip){
+						console.log('clip', clip);
+						self.setClip(clip, 'spot1');
+					});
+					// spot2
+					$scope.$watch('conversation.spot2.hide', function(checked){
+						console.log(checked);
+						self.hideElement(checked, 'spot2');
+					});
+					$scope.$watch('conversation.spot2.placeholder', function(checked){
+						console.log(checked);
+						self.addPlaceholder(checked, 'spot2');
+					});
+					$scope.$watch('conversation.spot2.clip', function(clip){
+						console.log('clip', clip);
+						self.setClip(clip, 'spot2');
+					});
+
+					/* scope listener */
+
+					self.hideElement = function(checked, element){
+						// var $logo = $('svg#' + element);
+						var $logo = $('svg.g_' + element);
 						if(checked) $logo.hide();
 						else $logo.show();
 					};
-					var addPlaceholder = function(checked, element){
-						var $svgEl = $('svg#' + element);
+					self.addPlaceholder = function(checked, element){
+						// var $svgEl = $('svg#' + element);
+						var $svgEl = $('svg.g_' + element);
 						if(checked) $('.placeholder', $svgEl).show();
 						else $('.placeholder', $svgEl).hide();
 					};
-					var setClip = function(type, element){
-						var $svgEl = $('svg#' + element);
+					self.setClip = function(type, element){
+						// var $svgEl = $('svg#' + element);
+						var $svgEl = $('svg.g_' + element);
 						if(type == 'circle'){
 							$svgEl
 								.find('.placeholder')
@@ -96,63 +106,28 @@ define([
 						}
 					};
 
-					/* scope watchers */
-
-					// logo
-					$scope.$watch('conversation.logo.hide', function(checked){
-						console.log(checked);
-						hideElement(checked, 'logo');
-					});
-					$scope.$watch('conversation.logo.placeholder', function(checked){
-						console.log(checked);
-						addPlaceholder(checked, 'logo');
-					});
-					// spot1
-					$scope.$watch('conversation.spot1.hide', function(checked){
-						console.log(checked);
-						hideElement(checked, 'spot1');
-					});
-					$scope.$watch('conversation.spot1.placeholder', function(checked){
-						console.log(checked);
-						addPlaceholder(checked, 'spot1');
-					});
-					$scope.$watch('conversation.spot1.clip', function(clip){
-						console.log('clip', clip);
-						setClip(clip, 'spot1');
-					});
-					// spot2
-					$scope.$watch('conversation.spot2.hide', function(checked){
-						console.log(checked);
-						hideElement(checked, 'spot2');
-					});
-					$scope.$watch('conversation.spot2.placeholder', function(checked){
-						console.log(checked);
-						addPlaceholder(checked, 'spot2');
-					});
-					$scope.$watch('conversation.spot2.clip', function(clip){
-						console.log('clip', clip);
-						setClip(clip, 'spot2');
-					});
+					// simetris
 
 					var currentYPos = {el:null, y:null};
 					var currentXPos = {el:null, x:null};
 
+					self.getX = function(el, x){
+						var s1 = $scope.conversation[el];
+						var w1 = s1.placeholder ? 80 : 70;
+						return 403 - w1 - (x ? x : s1.position.x);
+					};
+
 					$scope.setAlignX = function(){
-						console.log($scope.conversation.align);
 						var alignX = $scope.conversation.align.x;
 						var x, cx;
 						switch(alignX){
 							case 'x1':
-								var s1 = $scope.conversation['spot2'];
-								var w1 = s1.placeholder ? 80 : 70;
-								x = 403 - s1.position.x - w1;
-								cx = 'spot1';
+								x  = self.getX('spot1');
+								cx = 'spot2';
 								break;
 							case 'x2':
-								var s2 = $scope.conversation['spot1'];
-								var w2 = s2.placeholder ? 80 : 70;
-								x = 403 - s2.position.x - w2;
-								cx = 'spot2';
+								x  = self.getX('spot2');
+								cx = 'spot1';
 								break;
 							default:
 								x  = currentXPos.x;
@@ -164,22 +139,19 @@ define([
 							currentXPos.el = cx;
 							currentXPos.x  = $scope.conversation[cx].position.x;
 							$scope.conversation[cx].position.x = x;
-							console.log($scope.conversation[cx]);
 						}
 					};
-
 					$scope.setAlignY = function(){
-						console.log($scope.conversation.align);
 						var alignY = $scope.conversation.align.y;
 						var y, cy;
 						switch(alignY){
 							case 'y1':
-								y = $scope.conversation['spot2'].position.y;
-								cy = 'spot1';
-								break;
-							case 'y2':
 								y = $scope.conversation['spot1'].position.y;
 								cy = 'spot2';
+								break;
+							case 'y2':
+								y = $scope.conversation['spot2'].position.y;
+								cy = 'spot1';
 								break;
 							default:
 								y  = currentYPos.y;
@@ -191,34 +163,23 @@ define([
 							currentYPos.el = cy;
 							currentYPos.y  = $scope.conversation[cy].position.y;
 							$scope.conversation[cy].position.y = y;
-							console.log($scope.conversation[cy]);
 						}
 					};
 
-					$scope.refresh = function(){
-						var $svg = $('svg#svg-conversation').clone();
-						$svg.attr('id', '');
-
-						$('#sidebar-right ul.svg-list').html('');
-						angular.forEach(requests, function(file,i){
-							self.addSVGList($svg, null);
-						});
-					};
+					// generate
 
 					$scope.generate = function(){
 						console.log('generate');
+						// set wait
 						$('ul.img-list > li').addClass('wait');
 						$('ul.svg-list > li').addClass('wait');
-
+						// set ID (unique name), timestamp
 						ID = new Date().getTime();
 
-						console.info('start chainedMultipleUpload...');
+						console.info('start deferred multiple files...');
 
-						setTimeout(function() {
-							$scope.$apply(function(scope){
-								scope.conversation.images.count = requests.length;
-							});
-							self.chainedMultipleUpload(requests, sizes).done(function(response){
+						$timeout(function() {
+							self.deferredMultipleUpload(requests, sizes).done(function(response){
 								console.log(response);
 								// generated zip 
 								var DOMURL = window.URL || window.mozURL;
@@ -238,72 +199,194 @@ define([
 						}, 1000);
 					};
 
-					// handle multiple files (background images)
-					self.handleMultipleFiles = function(files, tpl, callback){
-						var countFiles = files.length;
-						var $svg = $('svg#svg-conversation').clone();
-						$svg.attr('id', '');
-						// looping files
-						angular.forEach(files, function(file,i){
-							// validation file image selected
-							self.imageValidation(file);
-							// file reader
-							var fileReader = new FileReader();
-							fileReader.onload = (function(blob){
-								return function(e){
-									sizes += blob.size;
-									requests.push({
-										blob:blob,
-										size:sizes,
-										index:index
-									});
-									var callback = null;
-									if(requests.length == countFiles)
-									{
-										callback = function(){
-											console.log('requests', requests);
-											$scope.$apply(function(scope){
-												scope.conversation.images.empty = false;
-												scope.conversation.images.count = requests.length;
-											});
-											$timeout(function(){
-												$('.drop', self.sectionBg).removeClass('loading');
-												// open sidebar
-												$('#editor a.nav-sidebar').addClass('btn-primary').click();
-											}, 1000);
-										};
-									}
-									// add to list
-									self.addImgList({id:'img-page-'+index, imguri:e.target.result}, callback);
-									self.addSVGList($svg, callback);
-									// increase index
-									index++;
-								};
-							})(file);
-							// read as data uri
-							fileReader.readAsDataURL(file);
+					// handle single file (template image)
+					self.handleSingleFile = function(file, name, callback){
+						// validation file image selected
+						self.imageValidation(file, true);
+						// show loading
+						$('#editor .template').block({
+							overlayCSS: {
+								backgroundColor: '#fff',
+								opacity: 0.8
+							},
+							message: '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Uploading',
+							css: {
+								border: 'none',
+								background: 'none',
+								color: '#3685C6'
+							}
+						});
+						// file reader
+						var fileReader = new FileReader();
+						fileReader.onload = (function(blob){
+							return function(e){
+								var type = name.replace(/\d/, '');
+								var dimension = self.dimensions[type];
+								self.uploadFile({
+									file  : blob,
+									name  : name,
+									width : dimension.w,
+									height: dimension.h,
+									crop  : true
+								}).then(function(response){
+									console.log(response);
+									$('#editor .template').unblock();
+									if(callback) callback(response);
+								});
+							};
+						})(file);
+						// read as data uri
+						fileReader.readAsDataURL(file);
+					};
+					// handle multiple files (background images) /w Deferred
+					self.handleDeferredMultipleFiles = function(files){
+						var currentFile = self.taskList(files, 0);
+						for (var i = 1; i < files.length; i++) {
+							currentFile = currentFile.pipe(function(j) {
+								return self.taskList(files, j);
+							});
+						}
+						$.when(currentFile).done(function(res) {
+							console.log("Finished add to list", res);
+							$scope.$apply(function(scope){
+								scope.conversation.images.empty = false;
+								scope.conversation.images.count = res.length;
+							});
+							$timeout(function(){
+								// $('.drop', self.sectionBg).removeClass('loading');
+								$('.drop', self.sectionBg).unblock();
+								// open sidebar
+								$('#editor a.nav-sidebar').addClass('btn-primary').click();
+							}, 1000);
 						});
 					};
+					self.taskList = function(files, _index){
+						var defer = $.Deferred();
+						// get file
+						var file = files[_index];
+						// validation file image selected
+						self.imageValidation(file);
+						// file reader
+						var fileReader = new FileReader();
+						fileReader.onload = (function(blob){
+							return function(e){
+								console.log(index, blob);
+								// get an image
+								var image = e.target.result;
+								// add queues
+								sizes += blob.size;
+								requests.push({
+									image:image,
+									blob:blob,
+									size:sizes,
+									index:index
+								});
+
+								// add to list
+								self.addImgList({id:index, imguri:image});
+								self.addSVGList({id:index, imguri:image});
+
+								index++;
+								// resolve
+								var next = _index + 1;
+								var res  = files.length == next ? requests : next ;
+								defer.resolve(res);
+							};
+						})(file);
+						// read as data uri
+						fileReader.readAsDataURL(file);
+						// return promise
+						return defer.promise();
+					};
 					// image validation
-					self.imageValidation = function(file){
+					self.imageValidation = function(file, showAlert){
 						// validation file image selected
 						if (!(file.type && file.type.match('image.*'))) {
-							// file type is not allowed 
-							// alert('File '+ file.name +' is not image. Only JPG, PNG or GIF files are allowed');
-							// throw new Error('Only JPG, PNG or GIF files are allowed');
+							if( showAlert ){
+								// file type is not allowed 
+								alert('File '+ file.name +' is not image. Only JPG, PNG or GIF files are allowed');
+								throw new Error('Only JPG, PNG or GIF files are allowed');
+							}
 							return;
 						}
 						// max 10 mB
 						else if (!(file.size && file.size < 10485760)) {
-							// file size > 1MB
-							// alert('File '+ file.name +' is too big!!');
-							// throw new Error('File is too big!!');
+							if( showAlert ){
+								// file size > 10MB
+								alert('File '+ file.name +' is too big!!');
+								throw new Error('File is too big!!');
+							}
 							return;
 						}
 					};
+					// add to list
+					self.addImgList = function(data){
+						var $li  = '<li id="li-img-'+ data.id +'" class="span3">'+
+										'<div class="wait"><i class="icon-spinner icon-spin icon-large"></i> Waiting...</div>'+
+										'<div class="upload"><i class="icon-spinner icon-spin icon-4x"></i> <span>Uploading..</span></div>'+
+										'<div class="generate"><i class="icon-spinner icon-spin icon-4x"></i> <span>Generating..</span></div>'+
+										'<div class="success"><i class="icon-ok icon-4x"></i></div>'+
+										'<img src="'+ data.imguri +'" />'+
+									'</li>';
+						$('#panel-right ul.img-list').append($li);
+					};
+					self.addSVGList = function(data){
+						var $svg = self.getSVGCompiled(data);
+
+						var $thumb = $('<div class="thumbnail border-none text-center"></div>').append($svg);
+
+						var $li = $('<li id="li-svg-'+data.id+'" class="span6">');
+						$li.append('<div class="wait"><i class="icon-spinner icon-spin icon-large"></i> Waiting...</div>')
+							.append('<div class="upload"><i class="icon-spinner icon-spin icon-4x"></i> <span>Uploading..</span></div>')
+							.append('<div class="generate"><i class="icon-spinner icon-spin icon-4x"></i> <span>Generating..</span></div>')
+							.append('<div class="success"><i class="icon-ok icon-4x"></i></div>')
+							.append($thumb);
+
+						$('#panel-right ul.svg-list').append($li);
+					};
+					// compile SVG 
+					self.getSVGCompiled = function(data){
+						var $svg = $('svg#svg-conversation').clone();
+						$svg.removeAttr('id');
+
+						var bg    = $('#bg', $svg);
+						var logo  = $('#logo', $svg);
+						var spot1 = $('#spot1', $svg);
+						var spot2 = $('#spot2', $svg);
+
+						// background
+						$('image.image', bg).attr('xlink:href', data.imguri).css('display', 'block');
+						$('image.tpl', bg).attr('xlink:href', '{{conversation.template}}');
+						// logo
+						logo.removeAttr('cursor')
+							.attr({
+								id:'logo-'+ data.id,
+								x:'{{conversation.logo.position.x}}',
+								y:'{{conversation.logo.position.y}}'
+							})
+							.find('image').attr('xlink:href', '{{conversation.logo.image}}');
+						// spot 1 / element 1
+						spot1.removeAttr('cursor')
+							.attr({
+								id:'spot1-'+ data.id,
+								x:'{{conversation.spot1.position.x}}',
+								y:'{{conversation.spot1.position.y}}'
+							})
+							.find('image').attr('xlink:href', '{{conversation.spot1.image}}');
+						// spot 2 / element 2
+						spot2.removeAttr('cursor')
+							.attr({
+								id:'spot2-'+ data.id,
+								x:'{{conversation.spot2.position.x}}',
+								y:'{{conversation.spot2.position.y}}'
+							})
+							.find('image').attr('xlink:href', '{{conversation.spot2.image}}');
+
+						return $compile($svg)($scope);
+					};
 
 					// monitoring multiple uploads
-					self.chainedMultipleUpload = function(requests, sizes){
+					self.deferredMultipleUpload = function(requests, sizes){
 						var deferred = $.Deferred();
 						// get count requests
 						var countRequest = requests.length;
@@ -313,31 +396,33 @@ define([
 							var index = request.index;
 							return promise.pipe(function(){
 								// get elements
-								var $imgIndex = $('#img-page-' + index);
-								var $svgIndex = $('#svg-page-' + index);
-								// get list element
-								var $liImg = $imgIndex.parents('li');
-								var $liSVG = $svgIndex.parents('li');
+								var $liImg = $('#li-img-' + index);
+								var $liSVG = $('#li-svg-' + index);
+								var $svg   = $('.thumbnail > svg', $liSVG);
+
+								console.log(index, $svg[0]);
+
 								// change upload view
 								$liImg.switchClass('wait', 'upload', 0);
 								$liSVG.switchClass('wait', 'upload', 0);
 								// upload to resize
 								return self.uploadFile({
 									file  : request.blob,
-									name  : 'bg-' + request.index,
-									width : 403,
-									height: 403,
+									name  : 'conversation-bg-' + index,
+									width : self.dimensions.bg.w,
+									height: self.dimensions.bg.h,
 									crop  : true
 								}).pipe(function(response){
 									console.log('response', index, response);
+									console.log($('#bg > image.image', $svg)[0]);
 									// change bg image
-									// $imgIndex.attr('src', response.dataURI);
-									$svgIndex.find('image.background')[0].setAttribute('xlink:href',response.dataURI);
+									$('img', $liImg).attr('src', response.dataURI);
+									$('#bg > image.image', $svg).attr('xlink:href',response.dataURI);
 									// change generate view
 									$liImg.switchClass('upload', 'generate', 0);
 									$liSVG.switchClass('upload', 'generate', 0);
 									// generate image
-									return self.generateImage($svgIndex[0]).done(function(imgDataURI){
+									return self.generateImage($svg[0]).done(function(imgDataURI){
 										// add to zip
 										self.zip.file('image_'+index+'.jpg', imgDataURI, {base64: true});
 										// applying finished images
@@ -358,13 +443,14 @@ define([
 							});
 						}, deferred.promise());
 
-						// starting chain
+						// starting deferreda
 						deferred.resolve();
 
 						// return final promise
 						return promises;
 					};
 					// upload to resize image
+					// using jQuery Ajax for pipeline in deferred
 					self.uploadFile = function(data){
 						console.log(data);
 						// create form data
@@ -385,6 +471,7 @@ define([
 							dataType	: 'json'
 						});
 					};
+
 					// SVG generate image
 					self.generateImage = function(svg, el){
 						var deferred = $.Deferred();
@@ -416,29 +503,6 @@ define([
 
 						return deferred.promise();
 					};
-					// add to list
-					self.addImgList = function(data){
-						var $li  = '<li class="span3">'+
-										'<div class="wait"><i class="icon-spinner icon-spin icon-large"></i> Waiting...</div>'+
-										'<div class="upload"><i class="icon-spinner icon-spin icon-4x"></i> <span>Uploading..</span></div>'+
-										'<div class="generate"><i class="icon-spinner icon-spin icon-4x"></i> <span>Generating..</span></div>'+
-										'<div class="success"><i class="icon-ok icon-4x"></i></div>'+
-										'<img id="'+ data.id +'" src="'+ data.imguri +'" />'+
-									'</li>';
-						$('#sidebar-right ul.img-list').append($li);
-					};
-					self.addSVGList = function($svg, callback){
-						var $thumb = $('<div class="thumbnail border-none text-center"></div>').append($svg);
-						var $li  = '<li class="span6">' +
-										'<div class="wait"><i class="icon-spinner icon-spin icon-large"></i> Waiting...</div>'+
-										'<div class="upload"><i class="icon-spinner icon-spin icon-4x"></i> <span>Uploading..</span></div>'+
-										'<div class="generate"><i class="icon-spinner icon-spin icon-4x"></i> <span>Generating..</span></div>'+
-										'<div class="success"><i class="icon-ok icon-4x"></i></div>'+
-										$thumb.prop('outerHTML') +
-									'</li>';
-						$('#sidebar-right ul.svg-list').append($li);
-						if(callback) callback();
-					};
 				},
 				link: function($scope, iElm, iAttrs, controller) {
 
@@ -463,36 +527,86 @@ define([
 
 					$('.collapse').live('hide', function() {
 						$(this).parent().find('a').removeClass('open'); //remove active state to button on close
-						// hide preview tpl
-						// var imgTplClass = 'conversation-' + this.id;
-						// var index = imgTplClass.match(/\d/)[0] - 1;
-						// $('.' + imgTplClass, $editorTpl).removeClass('show');
-						// $scope.conversation.template.list[index].show = false;
 					});
 
-					/* handler sidebar images */
+					/* handling right sidebar */
 
 					$('a.nav-sidebar').click(function() {
 						var className = $(this).data('sidebar');
 						$('input[name="' + className + '"]').click();
+						var parent = $(this).parent();
+						$timeout(function(){
+							if(parent.hasClass('open'))
+								parent.removeClass('open');
+							else
+								parent.addClass('open');
+						}, 400);
 					});
 
 					/* Initialize event listener */
 
+					// event listener button logo input file
+					controller.btnLogo.live('click', function() {
+						$(this).next()
+							.bind('change', function(evt){
+								var file = evt.target.files[0];
+								controller.handleSingleFile(file, 'logo', function(response){
+									console.log('response logo', response);
+									$scope.$apply(function(scope){
+										scope.conversation.logo.image = response.dataURI;
+									});
+								});
+							}).click();
+					});
+					// event listener button spot1 input file
+					controller.btnSpot1.live('click', function() {
+						$(this).next()
+							.bind('change', function(evt){
+								var file = evt.target.files[0];
+								controller.handleSingleFile(file, 'spot1', function(response){
+									console.log('response spot1', response);
+									$scope.$apply(function(scope){
+										scope.conversation.spot1.image = response.dataURI;
+									});
+								});
+							}).click();
+					});
+					// event listener button spot2 input file
+					controller.btnSpot2.live('click', function() {
+						$(this).next()
+							.bind('change', function(evt){
+								var file = evt.target.files[0];
+								controller.handleSingleFile(file, 'spot2', function(response){
+									console.log('response spot2', response);
+									$scope.$apply(function(scope){
+										scope.conversation.spot2.image = response.dataURI;
+									});
+								});
+							}).click();
+					});
+
 					var $dropAreaBG = $('.drop', controller.sectionBg);
 
 					// handling button add backgrounds
-					controller.buttonBg.click(function() {
-						$('#input-upload-backgrounds').click();
+					controller.btnBg.click(function() {
+						$(this).next().bind('change', function(evt){
+							var tpl = $scope.conversation.template;
+							$dropAreaBG.block({
+								overlayCSS: {
+									backgroundColor: '#fff',
+									opacity: 0.8
+								},
+								message: '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Reading files',
+								css: {
+									border: 'none',
+									background: 'none',
+									color: '#3685C6'
+								}
+							});
+							controller.handleDeferredMultipleFiles(evt.target.files);
+						}).click();
 					});
-					// event listener add backgrounds input file
-					$('#input-upload-backgrounds').bind('change', function(evt){
-						var selected   = $scope.conversation.template.selected;
-						var tpl        = $scope.conversation.template.list[selected];
-						console.log('selected', selected);
-						$dropAreaBG.addClass('loading');
-						controller.handleMultipleFiles(evt.target.files, tpl);
-					});
+
 					// drag n drop events
 					$dropAreaBG
 						// event drop 
@@ -501,7 +615,20 @@ define([
 							evt.preventDefault();
 
 							$dropAreaBG.removeClass('over');
-							$dropAreaBG.addClass('loading');
+							// $dropAreaBG.addClass('loading');
+
+							$dropAreaBG.block({
+								overlayCSS: {
+									backgroundColor: '#fff',
+									opacity: 0.8
+								},
+								message: '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Reading files',
+								css: {
+									border: 'none',
+									background: 'none',
+									color: '#3685C6'
+								}
+							});
 
 							// get files
 							var original = evt.originalEvent,
@@ -512,7 +639,7 @@ define([
 							// get template
 							var tpl = $scope.conversation.template;
 
-							controller.handleMultipleFiles(files, tpl);
+							controller.handleDeferredMultipleFiles(files);
 						})
 						// event drag over
 						.bind('dragover', function(evt) {
@@ -536,17 +663,6 @@ define([
 							}
 						});
 
-					/* Image reader */
-
-					imageReader.init({
-						inputFileEl   : '#input-logo',
-						inputFileText : 'Select an image',
-						section       : 'logo',
-						compile       : function(buttonEl, changeEl, blob, image){
-
-						}
-					});
-
 					/* handling draggable SVG */
 
 					// define bounds svg elements
@@ -556,41 +672,70 @@ define([
 					};
 
 					// drag callback svg elements
+
 					var startDragSVG = function(event, ui) {
-						var id = event.target.id.replace(/\d/,'');
-						var max = bounds[id];
+						var id   = event.target.id;
+						var type = id.replace(/\d/,'');
+						var max  = bounds[type];
 						var offset = $('#editor .template').offset();
-						var y = ui.offset.top - offset.top;
-						var x = ui.offset.left - offset.left;
-						event.target.setAttribute('x', x >= max.x ? max.x : x);
-						event.target.setAttribute('y', y >= max.y ? max.y : y);
+						// set X
+						var x    = ui.offset.left - offset.left;
+						var xVal = (x >= max.x) ? max.x : x;
+						event.target.setAttribute('x', xVal);
+						// simetris X
+						if(id == 'spot1' && $scope.conversation.align.x == 'x1'){
+							var getX = controller.getX(id, xVal);
+							document.getElementById('spot2').setAttribute('x', getX);
+						} else if (id == 'spot2' && $scope.conversation.align.x == 'x2'){
+							var getX = controller.getX(id, xVal);
+							document.getElementById('spot1').setAttribute('x', getX);
+						}
+						// set Y
+						var y    = ui.offset.top - offset.top;
+						var yVal = (y >= max.y) ? max.y : y;
+						event.target.setAttribute('y', yVal);
+						// simetris Y
+						if(id == 'spot1' && $scope.conversation.align.y == 'y1'){
+							document.getElementById('spot2').setAttribute('y', yVal);
+						} else if (id == 'spot2' && $scope.conversation.align.y == 'y2'){
+							document.getElementById('spot1').setAttribute('y', yVal);
+						}
 					};
 					var stopDragSVG = function(event, ui) {
-						var id = event.target.id;
+						var id  = event.target.id;
 						var offset = $('#editor .template').offset();
 						var y = ui.offset.top - offset.top;
 						var x = ui.offset.left - offset.left;
 						$scope.conversation[id].position = {x:x, y:y};
+						// simetris
+						var align = $scope.conversation.align;
+						if(id == 'spot1' && (align.x !== 'none' || align.y !== 'none')){
+							var sId = document.getElementById('spot2');
+							$scope.conversation['spot2'].position = {x:sId.getAttribute('x'), y:sId.getAttribute('y')};
+						} else if (id == 'spot2' && (align.x !== 'none' || align.y !== 'none')){
+							var sId = document.getElementById('spot1');
+							$scope.conversation['spot1'].position = {x:sId.getAttribute('x'), y:sId.getAttribute('y')};
+						}
 					};
 
-					// event draggable
+					// draggable
 					$('#logo')
 						.draggable({
-							cursor: "move", 
+							cursor: "move",
 							containment: "#editor .template",
 							drag: startDragSVG,
 							stop: stopDragSVG
 						});
 					$('#spot1')
 						.draggable({
-							cursor: "move", 
+							cursor: "move",
 							containment: "#editor .template",
 							drag: startDragSVG,
 							stop: stopDragSVG
 						});
 					$('#spot2')
 						.draggable({
-							cursor: "move", 
+							cursor: "move",
 							containment: "#editor .template",
 							drag: startDragSVG,
 							stop: stopDragSVG

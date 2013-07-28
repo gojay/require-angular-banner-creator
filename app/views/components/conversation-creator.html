@@ -4,7 +4,7 @@
 	<input type="checkbox" name="handler-right" class="handler" id="handler-right" onclick="null" />
 	<input type="checkbox" name="handler-left" class="handler" id="handler-left" onclick="null" />
 
-	<div id="sidebar-right">
+	<div id="panel-right" style="margin-top: 58px;">
 	    <div class="row-fluid">
 			<div class="span12 well">
 				<div class="span8 queue">
@@ -15,13 +15,13 @@
 				</div>
 				<div class="span4 text-center">
 					<div class="btn-group">
-					  	<button class="btn" ng-disabled="conversation.images.empty" ng-click="refresh()"><i class="icon-refresh"></i></button>
-					  	<button class="btn btn-primary" ng-disabled="conversation.images.empty" ng-click="generate()"><i class="icon-cog"></i> Generate</button>
-					  	<button class="btn btn-success" ng-disabled="conversation.isDownloadDisabled"><i class="icon-download-alt"></i> Download Zip</button>
+					  	<!-- <button class="btn" ng-disabled="conversation.images.empty" ng-click="refresh()"><i class="icon-refresh"></i></button> -->
+					  	<a href class="btn btn-primary" ng-disabled="conversation.images.empty" ng-click="generate()"><i class="icon-cog"></i> Generate</a>
+					  	<a href id="downloadZip" class="btn btn-success" ng-disabled="conversation.isDownloadDisabled"><i class="icon-download-alt"></i> Download Zip</a>
 					</div>
 				</div>
 			</div>
-			<div class="tabbable" style="padding: 15px 10px;">
+			<div class="span12 prefix tabbable" style="padding: 15px 10px;">
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#1" data-toggle="tab">Selected</a></li>
 					<li><a href="#2" data-toggle="tab">Generated</a></li>
@@ -119,22 +119,23 @@
 		</aside>
 		<section id="editor" class="span6">
 			<div class="slider">
-		    	<a href class="nav-sidebar btn" data-sidebar="handler-right"><i class="icon-long-arrow-left"></i></a>
+		    	<a href class="nav-sidebar btn" data-sidebar="handler-right"></a>
 		    </div>
-			<div class="wrap">		          
+			<div class="wrap-editor">		          
 				<div class="template img-polaroid">
 					<svg id="svg-conversation" width="403" height="403" version="1.1"
 						xmlns="http://www.w3.org/2000/svg"
 						xlink="http://www.w3.org/1999/xlink">
 						<g id="bg">
 							<rect fill="black" fill-opacity="0.7" height="100%" width="100%"/>
-							<image id="SvgjsImage1005" xlink:href="{{conversation.template}}" width="403" height="403"/>
+							<image class="image" xlink:href="" width="100%" height="100%" style="display:none"/>					
+							<image class="tpl" xlink:href="{{conversation.template}}" width="100%" height="100%"/>
 						</g>
-						<svg id="logo" x="{{conversation.logo.position.x}}" y="{{conversation.logo.position.y}}" cursor="move">
+						<svg id="logo" class="g_logo" x="{{conversation.logo.position.x}}" y="{{conversation.logo.position.y}}" cursor="move">
 							<rect class="placeholder" fill="white" width="175" height="55" x="0" y="0"/>
-							<image id="SvgjsImage1004" xlink:href="assets/img/dummy/165x45.png" width="165" height="45" x="5" y="5"/>
+							<image id="SvgjsImage1005" xlink:href="{{conversation.logo.image}}" width="165" height="45" x="5" y="5"/>
 						</svg>
-						<svg id="spot1" x="{{conversation.spot1.position.x}}" y="{{conversation.spot1.position.y}}" cursor="move">
+						<svg id="spot1" class="g_spot1" x="{{conversation.spot1.position.x}}" y="{{conversation.spot1.position.y}}" cursor="move">
 							<defs id="SvgjsDefs1002">
 								<clipPath id="spot1-clip-placeholder">
 									<rect id="SvgjsRect1003" width="80" height="80" rx="50" x="0" y="0"/>
@@ -144,9 +145,9 @@
 								</clipPath>
 							</defs>
 							<rect class="placeholder" clip-path="url(#spot1-clip-placeholder)" fill="white" width="80" height="80" x="0" y="0"/>
-							<image id="SvgjsImage1008" xlink:href="assets/img/dummy/70x70.png" width="70" height="70" clip-path="url(#spot1-clip-image)" x="5" y="5" class="background"/>
+							<image id="SvgjsImage1008" xlink:href="{{conversation.spot1.image}}" width="70" height="70" clip-path="url(#spot1-clip-image)" x="5" y="5" class="background"/>
 						</svg>
-						<svg id="spot2" x="{{conversation.spot2.position.x}}" y="{{conversation.spot2.position.y}}" cursor="move">
+						<svg id="spot2" class="g_spot2" x="{{conversation.spot2.position.x}}" y="{{conversation.spot2.position.y}}" cursor="move">
 							<defs id="SvgjsDefs1003">
 								<clipPath id="spot2-clip-placeholder">
 									<rect id="SvgjsRect1005" width="80" height="80" rx="50" x="0" y="0"/>
@@ -156,7 +157,7 @@
 								</clipPath>
 							</defs>
 							<rect class="placeholder" clip-path="url(#spot2-clip-placeholder)" fill="white" width="80" height="80" x="0" y="0"/>
-							<image id="SvgjsImage1009" xlink:href="assets/img/dummy/70x70.png" width="70" height="70" clip-path="url(#spot2-clip-image)" x="5" y="5" class="background"/>
+							<image id="SvgjsImage1009" xlink:href="{{conversation.spot2.image}}" width="70" height="70" clip-path="url(#spot2-clip-image)" x="5" y="5" class="background"/>
 						</svg>
 					</svg>
 				</div>
@@ -173,10 +174,11 @@
 					<div class="drop-loading"><i class="icon-spinner icon-spin icon-4x"></i></div>
 				</div>
 				<div class="margin-top">
-					<a href class="btn btn-block btn-success" ng-click="generate()">Generate Image</a>
+					<a href class="btn btn-block btn-success" ng-disabled="conversation.images.empty" ng-click="generate()">Generate Image</a>
 				</div>
 			</div>
 		</section>
 	</div>
+	<script type="application/javascript" src="app/scripts/vendor/iscroll.js?v4"></script>
 </div>
 

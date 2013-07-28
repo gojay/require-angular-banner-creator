@@ -4,7 +4,8 @@
 	<p>Upload Logo Image (use PNG for tansparent background)</p>
 	<div class="row-fluid">
 		<div class="span4">
-			<button id="conversation-input-logo" class="btn btn-success">Select an image</button>
+			<a href id="btn-input-logo" class="btn btn-success">Select an image</a>
+			<input type="file" id="input-upload-logo" name="file" class="hide" />
 		</div>
 		<div class="span4">
 			<label for="checkbox-logo-hide">
@@ -23,7 +24,8 @@
 	<p>Upload Image (use PNG for tansparent background)</p>
 	<div class="row-fluid">
 		<div class="span4" style="margin-top: 10px;">
-			<button class="btn btn-success">Select an image</button>
+			<button id="btn-input-spot1" class="btn btn-success">Select an image</button>
+			<input type="file" id="input-upload-spot1" name="file" class="hide" />
 		</div>
 		<div class="span8">
 			<div class="row-fluid">
@@ -58,7 +60,8 @@
 	<p>Upload Image (use PNG for tansparent background)</p>
 	<div class="row-fluid">
 		<div class="span4" style="margin-top: 10px;">
-			<button class="btn btn-success">Select an image</button>
+			<button id="btn-input-spot2" class="btn btn-success">Select an image</button>
+			<input type="file" id="input-upload-spot2" name="file" class="hide" />
 		</div>
 		<div class="span8">
 			<div class="row-fluid">
@@ -95,8 +98,8 @@
 		<div class="span8">
 			<select ng-model="conversation.align.x" ng-change="setAlignX()">
 				<option value="none">none</option>
-				<option value="x2">Element 1</option>
-				<option value="x1">Element 2</option>
+				<option value="x1">Element 1</option>
+				<option value="x2">Element 2</option>
 			</select>
 		</div>
 	</div>
@@ -105,8 +108,8 @@
 		<div class="span8">
 			<select ng-model="conversation.align.y" ng-change="setAlignY()">
 				<option value="none">none</option>
-				<option value="y2">Element 1</option>
-				<option value="y1">Element 2</option>
+				<option value="y1">Element 1</option>
+				<option value="y2">Element 2</option>
 			</select>
 		</div>
 	</div>

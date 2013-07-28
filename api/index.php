@@ -217,7 +217,6 @@ $app->post('/upload', function() use ($app, $upload_dir, $upload_url) {
 				);
 			}
 		}
-		sleep(1);
 		// send response
 		echo json_encode($response);
 	} 
