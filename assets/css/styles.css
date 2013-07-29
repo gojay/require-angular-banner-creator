@@ -42,13 +42,17 @@ body {
 .margin-bottom {
 	margin-bottom: 20px;
 }
+.margin-bottom-only {
+	margin-top: 0 !important;
+	margin-bottom: 20px !important;
+}
 
 .margin-bottom-zero {
 	margin-bottom: 0;
 }
 
 .border-none {
-	border: none;
+	border: none !important;
 }
 
 .radius-none {
@@ -109,9 +113,9 @@ header nav {
 		padding: 15px 0;
 		border-bottom: 1px solid #CCC;
 	}
-	#editor .col ul li:last-child {
+	/*#editor .col ul li:last-child {
 		border-bottom: 0;
-	}
+	}*/
 
 	#editor .col label
 	{
@@ -432,19 +436,19 @@ footer p.credit {
 /* jQuery ui */
 
 .ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
-	border-top-left-radius: 10px;
+	border-top-left-radius: 5px;
 }
 
 .ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
-	border-top-right-radius: 10px;
+	border-top-right-radius: 5px;
 }
 
 .ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
-	border-bottom-left-radius: 10px;
+	border-bottom-left-radius: 5px;
 }
 
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
-	border-bottom-right-radius: 10px;
+	border-bottom-right-radius: 5px;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
@@ -474,7 +478,6 @@ footer p.credit {
 }
 
 .ui-widget-content {
-	background: #dbd9d9;
 	color: #222222;
 }
 
@@ -491,6 +494,7 @@ footer p.credit {
 .ui-slider {
 	position: relative;
 	text-align: left;
+	background: #dbd9d9;
 }
 
 .slider-vertical {

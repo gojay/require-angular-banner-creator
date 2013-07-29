@@ -6,9 +6,9 @@ include 'vendor/class.upload.php';
 // class Exception
 include 'Exception.php';
 // class DB NotORM
-include 'db/config.php';
+// include 'db/config.php';
 
-/* RESTFUL API */
+/* Functions */
 
 function _objectToArray($d) {
 	if (is_object($d)) {
@@ -46,6 +46,8 @@ function objectToArray($obj, $serialized = false)
 	return $data;
 }  
 
+/* RESTFUL API */
+
 Slim\Slim::registerAutoLoader();
 $app = new Slim\Slim();
 
@@ -79,7 +81,7 @@ $dummy = array(
 	),
 );
 
-$app->get('/banner', function() use ($app, $db, $dummy){
+$app->get('/banner', function() use ($app, $dummy){
 	$app->response()->header("Content-Type", "application/json");
 	try {
 		echo json_encode($dummy);
@@ -88,7 +90,7 @@ $app->get('/banner', function() use ($app, $db, $dummy){
 		$app->halt(500, $e->getMessage());
 	}
 });
-$app->get('/banner/:banner_id', function($banner_id) use ($app, $db, $dummy){
+$app->get('/banner/:banner_id', function($banner_id) use ($app, $dummy){
 	$app->response()->header("Content-Type", "application/json");
 	try {
 		$data = $dummy[$banner_id];
@@ -99,7 +101,7 @@ $app->get('/banner/:banner_id', function($banner_id) use ($app, $db, $dummy){
 	}
 });
 
-$app->post('/banner', function() use ($app, $db){
+$app->post('/banner', function() use ($app){
 	$app->response()->header("Content-Type", "application/json");
 	$body = $app->request()->getBody();
 	$json = json_decode($body);
@@ -108,7 +110,7 @@ $app->post('/banner', function() use ($app, $db){
 	echo json_encode($data);
 });
 
-$app->put('/banner/:banner_id', function($banner_id) use ($app, $db){
+$app->put('/banner/:banner_id', function($banner_id) use ($app){
 	$app->response()->header("Content-Type", "application/json");
 	$body = $app->request()->getBody();
 	$data = json_decode($body);
@@ -116,7 +118,7 @@ $app->put('/banner/:banner_id', function($banner_id) use ($app, $db){
 	echo json_encode($data);
 });
 
-$app->delete('/banner/:banner_id', function($banner_id) use ($app, $db){
+$app->delete('/banner/:banner_id', function($banner_id) use ($app){
 	$app->response()->header("Content-Type", "application/json");
 	$body = $app->request()->getBody();
 	$data = json_decode($body);

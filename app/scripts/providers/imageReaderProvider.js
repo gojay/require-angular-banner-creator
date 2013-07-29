@@ -44,7 +44,7 @@ define(['providers/providers'], function(providers){
 					}
 
 					var defaults = {
-						dropArea      : '#drop-area',
+						buttonClass   : null,
 						inputFileEl   : '#input-file',
 						inputFileText : 'Upload File',
 						section       : 'background',
@@ -75,7 +75,8 @@ define(['providers/providers'], function(providers){
 					// create the button input file
 					var buttonField = document.createElement('button');
 					buttonField.setAttribute('id', buttonFileId.replace(/\#/, ''));
-					buttonField.setAttribute('class', 'btn');
+					var btnClass = (config.buttonClass !== null) ? 'btn ' + config.buttonClass : 'btn';
+					buttonField.setAttribute('class', btnClass);
 					buttonField.innerHTML = config.inputFileText;
 					// append child
 					$(config.inputFileEl).parent().prepend(buttonField);

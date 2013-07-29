@@ -3,8 +3,8 @@
 	<div class="row-fluid">
 		<div class="span5">
 			<p>Select color</p>
-			<input type="text" style="width: 70px;" placeholder="#FFFFFF">
-			<input type="color" class="input-small" style="width: 20px;">
+			<input id="input-bg-color" value="#FFFFFF">
+			<!-- <input type="color" class="input-small" style="width: 20px;"> -->
 		</div>
 		<div class="span2 relative" style="height: 60px;">
 			<p class="anDevider">OR</p>
@@ -12,26 +12,32 @@
 		<div class="span5">
 			<p>Upload image</p>
 			<button class="btn btn-success">Select an image</button>
+			<input type="file" id="input-logo" class="hide" />
 		</div>
 	</div>
 </div>
 <div class="form-inline">
 	<h4>Logo</h4>
 	<p>Upload Logo Image (use PNG for tansparent background)</p>
-	<button class="btn btn-success">Select an image</button>
+	<!-- <button class="btn btn-success">Select an image</button> -->
+	<input type="file" id="input-logo" class="hide" />
 </div>
 <div class="form-inline">
 	<h4>Reposition</h4>
 	<div class="row-fluid">
 		<div class="span6 text-center">
 			<h5>Client logo</h5>
-			<div class="slider-vertical"></div>
-			<input type="number" value="45">
+			<!-- <div class="slider-vertical"></div>
+			<input type="number" value="45"> -->
+			<div id="slider-vertical-header" class="margin-bottom-only" style="height: 200px; margin: 0 auto;"></div>
+			<input id="input-reposition-header" ng-disabled="!splash.editor.logo.y" ng-model="splash.editor.logo.p" style="width:40px; margin: 5px; border:none" />
 		</div>
 		<div class="span6 text-center">
 			<h5>Conversion Hub Logo</h5>
-			<div class="slider-vertical"></div>
-			<input type="number" value="20">
+			<!-- <div class="slider-vertical"></div>
+			<input type="number" value="20"> -->
+  			<div id="slider-vertical-footer" class="margin-bottom-only" style="height: 200px; margin: 0 auto;"></div>
+  			<input id="input-reposition-footer" ng-model="splash.editor.ch.p" style="width:40px; margin: 5px; border:none" />
 		</div>
 	</div>
 </div>

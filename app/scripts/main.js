@@ -110,7 +110,8 @@ function(angular, app, domReady){
 						current:  'Facebook Banner Template',
 						active :  'Template 1'
 					},
-					templateUrl : 'app/views/banner.html',
+					// templateUrl : 'app/views/banner.html',
+					template    : '<h3>Under construction</h3>',
 					controller  : 'BannerController',
 					resolve: {
 						delay: function($q, $timeout) {
@@ -162,8 +163,7 @@ function(angular, app, domReady){
 		$rootScope.$on('$routeChangeStart', function(scope, next, current) {
 			console.log('Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
 			$rootScope.showBreadcrumb = false;
-			if(current === undefined) transition.start();
-			else transition.change();
+			transition.change();
 		});
 		// inject page_title form current route
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {

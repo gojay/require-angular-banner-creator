@@ -1,8 +1,61 @@
-define(['controllers/controllers'], function(controllers){
-	controllers.controller('MobileController', ['$scope', '$timeout', '$compile', 'imageReader',
-		function($scope, $timeout, $compile, imageReader){
+define([
+	'controllers/controllers',
+	'services/splashService',
+	'jquery',
+	'jqueryui'
+], function(controllers){
+	controllers.controller('MobileController', ['$scope', '$timeout', '$compile', 'SplashConfig', 'imageReader',
+		function($scope, $timeout, $compile, SplashConfig, imageReader){
+			/*
+			 * original iphone4  
+			 *  dimension : 640 X 920
+			 *  client logo : 447 X 220
+			 *  CH logo : 608 X 306
+			 *
+			 * original iphone5  
+			 *  dimension : 640 X 1096
+			 *  client logo : 447 X 220
+			 *  CH logo : 608 X 306
+			 *
+			 * original ipad  
+			 *  dimension : 1536 X 2048
+			 *  client logo : 1102 X 512
+			 *  CH logo : 608 X 306
+			*/
+			$scope.isDownloadDisabled = true;
+			$scope.splash = SplashConfig;
 
-			var $editorTpl = $('#editor .template');
+			// default
+			var splashType  = 'iphone4';
+			// define dimensions
+			var svgDimension  = $scope.splash.dimensions[splashType];
+			var logoDimension = $scope.splash.logo[splashType];
+			var chDimension   = $scope.splash.ch[splashType];
+			// calculate height logo
+			var h    = svgDimension.height;
+			var maxH = h - chDimension.height;
+
+			console.log('svgDimension', svgDimension);
+			console.log('logoDimension', logoDimension);
+			console.log('chDimension', chDimension);
+
+			/* scope inject & watcher */
+
+			$scope.splash.editor.ch.y = chDimension.y;
+			$scope.splash.editor.ch.p = Math.round(chDimension.y/h*100);
+
+			console.log('editor', $scope.splash.editor);
+
+			$scope.$watch('splash.editor.ch.p', function(input){
+				var value = Math.round(input * h / 100);
+				$scope.splash.editor.ch.y = (value > maxH) ? maxH : value;
+				$("#slider-vertical-footer").slider( "option", "value", h - value );
+			});
+
+			// define svg
+			$svg = $('#svg-editor > svg');
+
+			/*var $editorTpl = $('#editor .template');
 
 			$('.collapse').live('show', function() {
 				var $link = $(this).parent().find('a');
@@ -21,132 +74,258 @@ define(['controllers/controllers'], function(controllers){
 				// hide preview tpl
 				var imgTplClass = '.img-' + this.id;
 				$(imgTplClass, $editorTpl).hide();
+			});*/
+
+			/* init jPicker (background) */
+
+			// callback
+			var callbackJPicker = function(color, context) {
+				var all = color.val('all');
+				if( all.hex == 'ffffff' ){
+					$('#logo-footer-iphone-color', $svg).hide();
+					$('#logo-footer-iphone-white', $svg).show();
+					$scope.splash.white = true;
+				} else {
+					$('#logo-footer-iphone-color', $svg).show();
+					$('#logo-footer-iphone-white', $svg).hide();
+					$scope.splash.white = false;
+				}
+				$('rect', $svg)[0].setAttribute('fill', '#' + all.hex);
+			};
+			// input color picker
+			$('#input-bg-color').jPicker({
+				window : {
+					effects :  { type: 'fade' },
+					position : {
+						x : ($(window).width() - $('.jPicker').width()) / 2,
+						y : 177
+					}
+				},
+				images : {
+					clientPath : 'assets/css/jpicker/images/'
+				}
+			}, callbackJPicker, callbackJPicker);
+
+			/* init slider (reposition) */
+
+			// client logo
+			$("#slider-vertical-header").slider({
+				orientation: "vertical",
+				min: 0,
+				max: 0,
+				value: 0
+			});
+			// ch logo
+			$("#slider-vertical-footer").slider({
+				orientation: "vertical",
+				min: 0,
+				max: h,
+				value: (h - chDimension.y),
+				slide: function( event, ui ) {
+					var value = h - ui.value;
+					var percent = Math.round(value/h * 100);
+					var y = (value > maxH) ? maxH : value;
+					console.log('ch logo', percent, value, y);
+					$scope.$apply(function(scope){
+						scope.splash.editor.ch.p = percent;
+						scope.splash.editor.ch.y = y;
+					});
+				}
 			});
 
+			/* init spinner (input number) */
+
 			$timeout(function(){
-				$(".slider-vertical").slider({
-					orientation: "vertical",
-					min: 0,
-					max: 100,
-					value: 60,
-					slide: function(event, ui) {
-						$("#amount").val(ui.value);
+				$("#input-reposition-header").spinner({
+					min:0, max: 100,
+					spin: function( event, ui ) {
+						$scope.$apply(function(scope){
+							scope.splash.editor.logo.p = ui.value;
+						});
 					}
 				});
-				$("#amount").val($(".slider-vertical").slider("value"));
+				$("#input-reposition-footer").spinner({
+					min:0, max: 100,
+					spin: function( event, ui ) {
+						$scope.$apply(function(scope){
+							scope.splash.editor.ch.p = ui.value;
+						});
+					}
+				});
 			}, 1000);
 
-			/*
-			 * original iphone4  
-			 *  dimension : 640 X 920
-			 *  client logo : 447 X 220
-			 *  CH logo : 608 X 306
-			 *
-			 * original iphone5  
-			 *  dimension : 640 X 1096
-			 *  client logo : 447 X 220
-			 *  CH logo : 608 X 306
-			 *
-			 * original ipad  
-			 *  dimension : 1536 X 2048
-			 *  client logo : 1102 X 512
-			 *  CH logo : 608 X 306
-			*/
-			$scope.isDownloadDisabled = true;
-			$scope.splash = {
-				white : true,
-				editor: {
-					logo : {
-						w:null,
-						h:null,
-						p:null, // percent
-						x:null,
-						y:null
-					},
-					ch : {
-						p:null, // percent
-						x:null,
-						y:null
-					}
-				},
-				dimensions: {
-					iphone4: {
-						width  : 640,
-						height : 920
-					},
-					iphone5: {
-						width  : 640,
-						height : 1096
-					},
-					ipad: {
-						width  : 1536,
-						height : 2048
-					}
-					/*
-					ipad: {
-						width  : 768,
-						height : 1024,
-						ratio  : 2
-					}
-					*/
-				},
-				logo: {
-					iphone4: {
-						width  : 447,
-						height : 220,
-						x:97,
-						y:120
-					},
-					iphone5: {
-						width  : 447,
-						height : 220,
-						x:97,
-						y:164
-					},
-					ipad: {
-						width  : 1009,
-						height : 354,
-						x:264,
-						y:335
-					}
-					/*
-					ipad: {
-						width  : 551,
-						height : 256,
-						x:108.5,
-						y:128,
-						ratio  : 2
-					}
-					*/
-				},
-				ch: {
-					iphone4: {
-						width  : 307,
-						height : 153,
-						x : 167,
-						y : 608
-					},
-					iphone5: {
-						width  : 307,
-						height : 153,
-						x : 167,
-						y : 745
-					},
-					ipad: {
-						width  : 608,
-						height : 306,
-						x : 464,
-						y : 1383
-					}
-					/*
-					ipad: {
-						x : 116,
-						y : 345.75,
-						ratio  : 4
-					}
-					*/
+			/* init image reader (background) */
+
+			imageReader.init({
+				buttonClass   : 'btn-success',
+				inputFileEl   : '#input-bg',
+				inputFileText : 'Select an image',
+				section       : 'splash',
+				compile       : function(buttonEl, changeEl, blob, image){
+					// change text label input file
+					var labelEl = $(buttonEl).parent().siblings('label')[0];
+					labelEl.innerHTML = labelEl.innerHTML.replace(/upload/i, 'Edit');
+
+					console.log('changeEl', changeEl);
+
+					$.blockUI({
+						message: '<i class="icon-spinner icon-spin icon-large"></i> Please wait...',
+						css: {
+							border: '1px solid #007dbc'
+						}
+					});
+					// upload to resize
+					imageReader.uploadFile({
+						file: blob,
+						name: 'splash',
+						size: {
+							iphone: logoDimension,
+							ipad: $scope.splash.logo.ipad
+						},
+						multi: true
+					}, function(response){
+						console.log(response);
+						var $parent = $(changeEl).parent();
+						/* change image src */
+						// ipad
+						var ipadEl = $('#logo-ipad-editor-splash', $parent)[0];
+						ipadEl.setAttribute('xlink:href', response.ipad);
+						// iphone
+						changeEl.setAttribute('xlink:href', response.iphone);
+						changeEl.setAttribute('width','{{splash.editor.logo.w}}');
+						changeEl.setAttribute('height','{{splash.editor.logo.h}}');
+						changeEl.setAttribute('x','{{splash.editor.logo.x}}');
+						changeEl.setAttribute('y','{{splash.editor.logo.y}}');
+						// remove old image logo
+						$('image', $parent).eq(0).remove();
+						// then prepend new compiled image logo
+						$parent.append($compile(changeEl)($scope));
+						// applying scope
+						$scope.$apply(function(scope){
+							scope.splash.editor.logo.w = logoDimension.width;
+							scope.splash.editor.logo.h = logoDimension.height;
+							scope.splash.editor.logo.x = logoDimension.x;
+							scope.splash.editor.logo.y = logoDimension.y;
+							// slider
+							var h = $scope.splash.dimensions[splashType].height;
+							var maxH = h - chDimension.height;
+							// get calc percent
+							$scope.splash.editor.logo.p = Math.round(logoDimension.y/h*100);
+							// watchers, update y logo horizontal
+							$scope.$watch('splash.editor.logo.p', function(input){
+								var value = Math.round(input * h / 100);
+								$scope.splash.editor.logo.y = (value > maxH) ? maxH : value;
+								$("#slider-vertical-header").slider( "option", "value", h - value );
+							});
+							/* slider */
+							$("#slider-vertical-header").slider({
+								orientation: "vertical",
+								min: 0,
+								max: h,
+								value: (h - logoDimension.y),
+								slide: function( event, ui ) {
+									var value = h - ui.value;
+									var percent = Math.round(value/h * 100);
+									var y = (value > maxH) ? maxH : value;
+									console.log('client logo', value, y);
+									$scope.$apply(function(scope){
+										scope.splash.editor.logo.y = y;
+										scope.splash.editor.logo.p = percent;
+									});
+								}
+							});
+						});
+						$.unblockUI();
+					});
 				}
-			};
+			});
+
+
+			/* init image reader (logo) */
+
+			imageReader.init({
+				buttonClass   : 'btn-success',
+				inputFileEl   : '#input-logo',
+				inputFileText : 'Select an image',
+				section       : 'splash',
+				compile       : function(buttonEl, changeEl, blob, image){
+					// change text label input file
+					var labelEl = $(buttonEl).parent().siblings('label')[0];
+					labelEl.innerHTML = labelEl.innerHTML.replace(/upload/i, 'Edit');
+
+					console.log('changeEl', changeEl);
+
+					$.blockUI({
+						message: '<i class="icon-spinner icon-spin icon-large"></i> Please wait...',
+						css: {
+							border: '1px solid #007dbc'
+						}
+					});
+					// upload to resize
+					imageReader.uploadFile({
+						file: blob,
+						name: 'splash',
+						size: {
+							iphone: logoDimension,
+							ipad: $scope.splash.logo.ipad
+						},
+						multi: true
+					}, function(response){
+						console.log(response);
+						var $parent = $(changeEl).parent();
+						/* change image src */
+						// ipad
+						var ipadEl = $('#logo-ipad-editor-splash', $parent)[0];
+						ipadEl.setAttribute('xlink:href', response.ipad);
+						// iphone
+						changeEl.setAttribute('xlink:href', response.iphone);
+						changeEl.setAttribute('width','{{splash.editor.logo.w}}');
+						changeEl.setAttribute('height','{{splash.editor.logo.h}}');
+						changeEl.setAttribute('x','{{splash.editor.logo.x}}');
+						changeEl.setAttribute('y','{{splash.editor.logo.y}}');
+						// remove old image logo
+						$('image', $parent).eq(0).remove();
+						// then prepend new compiled image logo
+						$parent.append($compile(changeEl)($scope));
+						// applying scope
+						$scope.$apply(function(scope){
+							scope.splash.editor.logo.w = logoDimension.width;
+							scope.splash.editor.logo.h = logoDimension.height;
+							scope.splash.editor.logo.x = logoDimension.x;
+							scope.splash.editor.logo.y = logoDimension.y;
+							// slider
+							var h = $scope.splash.dimensions[splashType].height;
+							var maxH = h - chDimension.height;
+							// get calc percent
+							$scope.splash.editor.logo.p = Math.round(logoDimension.y/h*100);
+							// watchers, update y logo horizontal
+							$scope.$watch('splash.editor.logo.p', function(input){
+								var value = Math.round(input * h / 100);
+								$scope.splash.editor.logo.y = (value > maxH) ? maxH : value;
+								$("#slider-vertical-header").slider( "option", "value", h - value );
+							});
+							/* slider */
+							$("#slider-vertical-header").slider({
+								orientation: "vertical",
+								min: 0,
+								max: h,
+								value: (h - logoDimension.y),
+								slide: function( event, ui ) {
+									var value = h - ui.value;
+									var percent = Math.round(value/h * 100);
+									var y = (value > maxH) ? maxH : value;
+									console.log('client logo', value, y);
+									$scope.$apply(function(scope){
+										scope.splash.editor.logo.y = y;
+										scope.splash.editor.logo.p = percent;
+									});
+								}
+							});
+						});
+						$.unblockUI();
+					});
+				}
+			});
 
 			var self = this;
 
