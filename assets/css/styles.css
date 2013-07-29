@@ -460,7 +460,7 @@ footer p.credit {
 }
 
 .ui-slider-vertical .ui-slider-handle {
-	left: 0;
+	left: -1px;
 	margin-bottom: 0;
 	margin-left: 0;
 }
@@ -469,7 +469,7 @@ footer p.credit {
 	cursor: default;
 	height: 20px;
 	position: absolute;
-	width: 12px;
+	width: 1em;
 	z-index: 2;
 }
 

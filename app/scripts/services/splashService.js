@@ -1,5 +1,21 @@
 define(['services/services'], function(services){
 	services
+		/*
+		 * original iphone4  
+		 *  dimension : 640 X 920
+		 *  client logo : 447 X 220
+		 *  CH logo : 608 X 306
+		 *
+		 * original iphone5  
+		 *  dimension : 640 X 1096
+		 *  client logo : 447 X 220
+		 *  CH logo : 608 X 306
+		 *
+		 * original ipad  
+		 *  dimension : 1536 X 2048
+		 *  client logo : 1102 X 512
+		 *  CH logo : 608 X 306
+		*/
 		.factory('SplashConfig', function(){
 			return {
 				white : true,
@@ -70,7 +86,8 @@ define(['services/services'], function(services){
 						x : 464,
 						y : 1383
 					}
-				}
+				},
+				isDownloadDisabled: true
 			};
 		});
 	});

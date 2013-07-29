@@ -181,8 +181,8 @@ $app->post('/upload', function() use ($app, $upload_dir, $upload_url) {
 	$app->response()->header('Content-Type', 'application/json');
 
 	$name   = $_REQUEST['name'];
-	$width  = $_REQUEST['width'];
-	$height = $_REQUEST['height'];
+	$width  = isset($_REQUEST['width']) ? $_REQUEST['width'] : null ;
+	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null ;
 	$sizes  = isset($_REQUEST['size']) ? $_REQUEST['size'] : false ;
 	$isCrop = isset($_REQUEST['crop']) ? $_REQUEST['crop'] : false ;
 
