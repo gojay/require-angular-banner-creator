@@ -38,8 +38,7 @@ class ComposerAutoloaderInitcecf333bbfcfa88b276b52603601f900
 
         $loader->register(true);
 
-        require $vendorDir . '/vrana/notorm/NotORM.php';
-        // require $vendorDir . '/vrana/notorm/NotORM.php';
+        require $vendorDir . '/vrana/_notorm/NotORM.php';
 
         return $loader;
     }
