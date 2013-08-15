@@ -347,6 +347,7 @@ footer p.credit {
     left: auto;
     right: 0;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .handler {

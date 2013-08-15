@@ -68,6 +68,7 @@ require([
 	'controllers/homeController',
 	'controllers/bannerController',
 	'controllers/conversationController',
+	'controllers/editConversationController',
 	'controllers/mobileController',
 	// plugins & helpers
 	'blockUI',
@@ -127,9 +128,28 @@ function(angular, app, domReady){
 						current:  'Facebook Conversation Template',
 						active :  'Template 1'
 					},
-					template    : '<conversation-creator></conversation-creator>',
+					template    : '<conversation-creator ng-model="conversation"></conversation-creator>',
 					controller  : 'ConversationController',
 					resolve: {
+						delay: function($q, $timeout) {
+							var delay = $q.defer();
+							$timeout(delay.resolve, 1000);
+							return delay.promise;
+						}
+					}
+				})
+				.when('/facebook/conversation/:conversationId', {
+					title : '| Conversation',
+					breadcrumb : {
+						current:  'Facebook Conversation Template',
+						active :  'Template 1'
+					},
+					template    : '<conversation-creator ng-model="conversation"></conversation-creator>',
+					controller  : 'EditConversationController',
+					resolve: {
+						conversation: function(Conversation){
+							return Conversation();
+						},
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
 							$timeout(delay.resolve, 1000);

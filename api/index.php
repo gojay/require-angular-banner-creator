@@ -57,31 +57,169 @@ $app->get('/template/conversation', function() use($app, $template_dir){
 	// $app->response()->header('Content-Type', 'application/json');
 	echo '<pre/>';
 	echo print_r(array(
-		data_uri($template_dir . '/conversation/tpl-1.png', 'image/png'),
-		data_uri($template_dir . '/conversation/tpl-2.png', 'image/png'),
-		data_uri($template_dir . '/conversation/tpl-3.png', 'image/png'),
-		data_uri($template_dir . '/conversation/tpl-4.png', 'image/png'),
-		data_uri($template_dir . '/conversation/tpl-5.png', 'image/png'),
-		data_uri($template_dir . '/conversation/tpl-6.png', 'image/png')
+		1 => array(
+			data_uri($template_dir . '/conversation/tpl-1-landscape.png', 'image/png'),
+			data_uri($template_dir . '/conversation/tpl-1-portrait.png', 'image/png')
+		),
+		2 => array(
+			data_uri($template_dir . '/conversation/tpl-2-landscape.png', 'image/png'),
+			data_uri($template_dir . '/conversation/tpl-2-portrait.png', 'image/png')
+		),
+		3 => array(
+			data_uri($template_dir . '/conversation/tpl-3-landscape.png', 'image/png'),
+			data_uri($template_dir . '/conversation/tpl-3-portrait.png', 'image/png')
+		),
+		4 => array(
+			data_uri($template_dir . '/conversation/tpl-4-landscape.png', 'image/png'),
+			data_uri($template_dir . '/conversation/tpl-4-portrait.png', 'image/png')
+		),
+		5 => array(
+			data_uri($template_dir . '/conversation/tpl-5-landscape.png', 'image/png'),
+			data_uri($template_dir . '/conversation/tpl-5-portrait.png', 'image/png')
+		),
+		6 => array(
+			data_uri($template_dir . '/conversation/tpl-6-landscape.png', 'image/png'),
+			data_uri($template_dir . '/conversation/tpl-6-portrait.png', 'image/png')
+		)
 	), 1);
 });
 
 $dummy = array(
 	1 => array(
 		'name' => 'dummy-1',
-		'img' => 'http://dummy/image-1.png'
+		'data' => array(
+			'logo' => array(
+				'hide' => false,
+				'placeholder' => true,
+				'position' => array(
+					'x' => 18,
+					'y' => 78
+				),
+				'image' => 'assets/img/dummy/165x45.png'
+			),
+			'spot1' => array(
+				'hide'=> false,
+				'placeholder'=> true,
+				'clip'=> 'square',
+				'position'=> array(
+					'x' => 65,
+					'y' => 266
+				),
+				'image'=> 'assets/img/dummy/70x70.png'
+			),
+			'spot2' => array(
+				'hide'=> false,
+				'placeholder'=> true,
+				'clip'=> 'square',
+				'position'=> array(
+					'x' => 266,
+					'y' => 266
+				),
+				'image'=> 'assets/img/dummy/70x70.png'
+			),
+			'align'=> array(
+				'x'=> 'none',
+				'y'=> 'none'
+			),
+			'images' => array(
+				'empty'    => true,
+				'count'    => 0,
+				'finished' => 0
+			),
+			'selected' => 0
+		)
 	),
 	2 => array(
 		'name' => 'dummy-2',
-		'img' => 'http://dummy/image-2.png'
+		'data' => array(
+			'logo' => array(
+				'hide' => false,
+				'placeholder' => true,
+				'position' => array(
+					'x' => 109,
+					'y' => 86
+				),
+				'image' => 'assets/img/dummy/165x45.png'
+			),
+			'spot1' => array(
+				'hide'=> false,
+				'placeholder'=> true,
+				'clip'=> 'circle',
+				'position'=> array(
+					'x' => 30,
+					'y' => 209
+				),
+				'image'=> 'assets/img/dummy/70x70.png'
+			),
+			'spot2' => array(
+				'hide'=> false,
+				'placeholder'=> true,
+				'clip'=> 'circle',
+				'position'=> array(
+					'x' => 293,
+					'y' => 209
+				),
+				'image'=> 'assets/img/dummy/70x70.png'
+			),
+			'align'=> array(
+				'x'=> 'x1',
+				'y'=> 'x2'
+			),
+			'images' => array(
+				'empty'    => true,
+				'count'    => 0,
+				'finished' => 0
+			),
+			'selected' => 2
+		)
 	),
 	3 => array(
 		'name' => 'dummy-1',
-		'img' => 'http://dummy/image-3.png'
+		'data' => array(
+			'logo' => array(
+				'hide' => false,
+				'placeholder' => true,
+				'position' => array(
+					'x' => 18,
+					'y' => 78
+				),
+				'image' => 'assets/img/dummy/165x45.png'
+			),
+			'spot1' => array(
+				'hide'=> false,
+				'placeholder'=> true,
+				'clip'=> 'square',
+				'position'=> array(
+					'x' => 65,
+					'y' => 266
+				),
+				'image'=> 'assets/img/dummy/70x70.png'
+			),
+			'spot2' => array(
+				'hide'=> false,
+				'placeholder'=> true,
+				'clip'=> 'square',
+				'position'=> array(
+					'x' => 266,
+					'y' => 266
+				),
+				'image'=> 'assets/img/dummy/70x70.png'
+			),
+			'align'=> array(
+				'x'=> 'none',
+				'y'=> 'none'
+			),
+			'images' => array(
+				'empty'    => true,
+				'count'    => 0,
+				'finished' => 0
+			),
+			'selected' => 3
+		)
 	),
 );
 
-$app->get('/banner', function() use ($app, $dummy){
+$app->get('/conversation', function() use ($app, $dummy){
 	$app->response()->header("Content-Type", "application/json");
 	try {
 		echo json_encode($dummy);
@@ -90,10 +228,10 @@ $app->get('/banner', function() use ($app, $dummy){
 		$app->halt(500, $e->getMessage());
 	}
 });
-$app->get('/banner/:banner_id', function($banner_id) use ($app, $dummy){
+$app->get('/conversation/:bannerId', function($bannerId) use ($app, $dummy){
 	$app->response()->header("Content-Type", "application/json");
 	try {
-		$data = $dummy[$banner_id];
+		$data = $dummy[$bannerId];
 		echo json_encode($data);
 	}
 	catch(Exception $e){
@@ -101,7 +239,7 @@ $app->get('/banner/:banner_id', function($banner_id) use ($app, $dummy){
 	}
 });
 
-$app->post('/banner', function() use ($app){
+$app->post('/conversation', function() use ($app){
 	$app->response()->header("Content-Type", "application/json");
 	$body = $app->request()->getBody();
 	$json = json_decode($body);
@@ -110,7 +248,7 @@ $app->post('/banner', function() use ($app){
 	echo json_encode($data);
 });
 
-$app->put('/banner/:banner_id', function($banner_id) use ($app){
+$app->put('/conversation/:bannerId', function($bannerId) use ($app){
 	$app->response()->header("Content-Type", "application/json");
 	$body = $app->request()->getBody();
 	$data = json_decode($body);
@@ -118,7 +256,7 @@ $app->put('/banner/:banner_id', function($banner_id) use ($app){
 	echo json_encode($data);
 });
 
-$app->delete('/banner/:banner_id', function($banner_id) use ($app){
+$app->delete('/conversation/:bannerId', function($bannerId) use ($app){
 	$app->response()->header("Content-Type", "application/json");
 	$body = $app->request()->getBody();
 	$data = json_decode($body);
@@ -138,10 +276,10 @@ function do_upload($upload_dir, $fileImg, $ext, $name, $width, $height, $isCrop)
 	$imagehand->file_new_name_body = $name;
 	$imagehand->file_overwrite     = true;
 	$imagehand->image_resize       = true;
-	if( $isCrop ) {
-		$imagehand->image_ratio_crop = true;
-		$imagehand->image_ratio_fill = true;	
-	}
+	// if( $isCrop ) {
+	// 	$imagehand->image_ratio_crop = true;
+	// 	$imagehand->image_ratio_fill = true;	
+	// }
 	$imagehand->image_x            = $width;
 	$imagehand->image_y            = $height;
 	$imagehand->image_convert      = $ext;
@@ -200,7 +338,8 @@ $app->post('/upload', function() use ($app, $upload_dir, $upload_url) {
 			move_uploaded_file($fileImg, $target);
 			// create response
 			$response = array(
-				'image' => $name
+				'image' => $name,
+				'url'   => $upload_url . '/' . $name
 			);
 		} else {
 			// upload splash screen
@@ -213,6 +352,7 @@ $app->post('/upload', function() use ($app, $upload_dir, $upload_url) {
 				$image = do_upload($upload_dir, $fileImg, $ext, $name, $width, $height, $isCrop);
 				// create response
 				$response = array(
+					'crop' => $isCrop,
 					'image'   => $image->file_dst_name,
 					'url'     => $upload_url . '/' . $image->file_dst_name,
 					'dataURI' => data_uri($image->file_dst_pathname, $fileType)

@@ -1,11 +1,13 @@
 <?php
 // Config NotORM 
-$dsn      = "mysql:dbname=db_phonecat;host=localhost";
+$dsn      = "mysql:dbname=ch;host=localhost";
 $username = "root";
-$password = "";
+$password = "root";
 $pdo = new PDO($dsn, $username, $password);
 $db  = new NotORM($pdo, new NotORM_Structure_Convention(
     $primary = "%s_id", // $table_id
     $foreign = "%s_id", // $table_id
-    $table   = "%ss" 	// {$table}s
+    $table   = "%ss", 	// {$table}s
+    $prefix  = "ch_" // wp_$table
+
 ));

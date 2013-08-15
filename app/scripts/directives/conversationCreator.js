@@ -4,10 +4,13 @@ define([
 	'jquery',
 	'jqueryui'
 ], function(directives){
-	directives.directive('conversationCreator', ['$compile', '$timeout', 'ConversationTpl', 'ConversationConfig', 'imageReader',
-		function($compile, $timeout, ConversationTpl, ConversationConfig, imageReader){
+	directives.directive('conversationCreator', ['$compile', '$timeout', 'ConversationTpl', 'ConversationConfig', 'ConversationService', 'imageReader',
+		function($compile, $timeout, ConversationTpl, ConversationConfig, ConversationService, imageReader){
 			// Runs during compile
 			return {
+				scope : {
+					conversation : '=ngModel'
+				},
 				restrict: 'EAC', // E = Element, A = Attribute, C = Class, M = Comment
 				templateUrl: 'app/views/components/conversation-creator.html',
 				// replace: true,
@@ -15,8 +18,7 @@ define([
 
 					var self = this;
 
-					var ID       = null,
-						index    = 1,
+					var index    = 1,
 						sizes    = 0,
 						requests = [];
 
@@ -27,14 +29,17 @@ define([
 					self.btnBg      = $('#btn-upload-backgrounds');
 					self.sectionBg  = $('#drop-backgrounds');
 					// define templates
-					self.templates  = ConversationTpl;
+					// self.templates  = ConversationTpl.templates;
+					self.templates  = ConversationTpl.templates2;
 					// define dimensions
-					self.dimensions = ConversationConfig.dimensions;
+					self.dimensions = ConversationTpl.dimensions;
 					// define jsZip
 					self.zip = new JSZip();
 
 					// model
-					$scope.conversation = ConversationConfig.data;
+					$scope.conversation.ID = new Date().getTime();
+					$scope.isDownloadDisabled = true;
+					$scope.template = self.templates[$scope.conversation.selected];
 
 					/* scope watchers */
 
@@ -167,14 +172,26 @@ define([
 					};
 
 					// generate
+					// $('#editor a.nav-sidebar').addClass('btn-primary').click();
 
-					$scope.generate = function(){
+					$scope.generate = function(isContent){
+						if( isContent ){
+							// open sidebar
+							$('#editor a.nav-sidebar').addClass('btn-primary').click();
+							$('.tabbable a[href="#2"]').click();
+						}
+						$timeout(function(){
+							self.doGenerate();
+						}, 600);
+					};
+
+					self.doGenerate = function(){
 						console.log('generate');
 						// set wait
 						$('ul.img-list > li').addClass('wait');
 						$('ul.svg-list > li').addClass('wait');
 						// set ID (unique name), timestamp
-						ID = new Date().getTime();
+						// ID = new Date().getTime();
 
 						console.info('start deferred multiple files...');
 
@@ -186,11 +203,11 @@ define([
 								var link   = DOMURL.createObjectURL(self.zip.generate({type:"blob"}));
 								// set anchor link
 								var aZip = document.getElementById('downloadZip');
-								aZip.download = 'conversation-'+ID+'.zip';
+								aZip.download = 'conversation-'+ $scope.conversation.ID +'.zip';
 								aZip.href     = link;
 								// applying isGenerateDisabled to false
 								$scope.$apply(function(scope){
-									scope.conversation.isDownloadDisabled = false;
+									scope.isDownloadDisabled = false;
 								});
 								// update completed progress
 								$('.progress').removeClass('progress-striped active').addClass('progress-success');
@@ -198,6 +215,35 @@ define([
 							});
 						}, 1000);
 					};
+
+					// $scope.createSSTemplate = function(){
+					// 	var $svg = $('svg#svg-conversation');
+					// 	self.generateImage($svg[0], true).done(function(imgDataURI){
+					// 		// $('#panel-right .tpl-screenshot').html('<img src="'+ imgDataURI +'" />');
+					// 		var blob = self.dataURItoBlob(imgDataURI);
+					// 		console.log(blob);
+					// 		self.uploadFile({
+					// 			file  : blob,
+					// 			name  : $scope.conversation.ID + '-conversation-tpl',
+					// 			width : 'original',
+					// 			height: 'original',
+					// 			crop  : false
+					// 		}).then(function(response){
+					// 			console.log(response);
+					// 			$scope.conversation.preview = response.url;
+					// 			$('#panel-right .tpl-screenshot').html('<img src="'+ response.url +'" />');
+					// 		});
+					// 	});
+					// };
+					// $scope.save = function(){
+
+					// 	var conversation = new ConversationService($scope.conversation);
+					// 	console.log('conversation', $scope.conversation);
+
+					// 	conversation.$save(function(response){
+					// 		console.log('response', response);
+					// 	});
+					// };
 
 					// handle single file (template image)
 					self.handleSingleFile = function(file, name, callback){
@@ -224,10 +270,10 @@ define([
 								var dimension = self.dimensions[type];
 								self.uploadFile({
 									file  : blob,
-									name  : name,
+									name  : $scope.conversation.ID + '-' + name,
 									width : dimension.w,
 									height: dimension.h,
-									crop  : true
+									crop  : false
 								}).then(function(response){
 									console.log(response);
 									$('#editor .template').unblock();
@@ -257,9 +303,25 @@ define([
 								$('.drop', self.sectionBg).unblock();
 								// open sidebar
 								$('#editor a.nav-sidebar').addClass('btn-primary').click();
+								$('.tabbable a[href="#2"]').click();
 							}, 1000);
 						});
 					};
+					self.getImageDirection = function(imgUri){
+						var image = new Image(); 
+						image.src = imgUri;
+						var ratio = parseInt(image.width)/parseInt(image.height);
+						console.log('ratio', ratio);
+						var direction;
+						if ( ratio == 1 ) { 
+							direction = 'fit';
+						} else if( ratio > 1 ) {
+							direction = 'landscape';
+						} else {
+							direction = 'portrait';
+						}
+						return direction;
+					}
 					self.taskList = function(files, _index){
 						var defer = $.Deferred();
 						// get file
@@ -271,26 +333,46 @@ define([
 						fileReader.onload = (function(blob){
 							return function(e){
 								console.log(index, blob);
-								// get an image
-								var image = e.target.result;
-								// add queues
-								sizes += blob.size;
-								requests.push({
-									image:image,
-									blob:blob,
-									size:sizes,
-									index:index
-								});
 
-								// add to list
-								self.addImgList({id:index, imguri:image});
-								self.addSVGList({id:index, imguri:image});
+								var image = new Image();
+								image.src = e.target.result;
+								image.onload = function(){
+									var img = this.src;
+									var ratio = parseInt(this.width)/parseInt(this.height);
+									console.log('ratio', ratio);
+									var direction;
+									if ( ratio == 1 ) { 
+										direction = 'fit';
+									} else if( ratio > 1 ) {
+										direction = 'landscape';
+									} else {
+										direction = 'portrait';
+									}
+									// add queues
+									sizes += blob.size;
+									requests.push({
+										image: img,
+										blob: blob,
+										size: sizes,
+										index: index,
+										direction:direction
+									});
+									// params
+									var data = {
+										id: index, 
+										imguri: img,
+										direction: direction
+									};
+									// add to list
+									self.addImgList(data);
+									self.addSVGList(data);
 
-								index++;
-								// resolve
-								var next = _index + 1;
-								var res  = files.length == next ? requests : next ;
-								defer.resolve(res);
+									index++;
+									// resolve
+									var next = _index + 1;
+									var res  = files.length == next ? requests : next ;
+									defer.resolve(res);
+								};
 							};
 						})(file);
 						// read as data uri
@@ -321,7 +403,7 @@ define([
 					};
 					// add to list
 					self.addImgList = function(data){
-						var $li  = '<li id="li-img-'+ data.id +'" class="span3">'+
+						var $li  = '<li id="li-img-'+ data.id +'" class="span3 text-center">'+
 										'<div class="wait"><i class="icon-spinner icon-spin icon-large"></i> Waiting...</div>'+
 										'<div class="upload"><i class="icon-spinner icon-spin icon-4x"></i> <span>Uploading..</span></div>'+
 										'<div class="generate"><i class="icon-spinner icon-spin icon-4x"></i> <span>Generating..</span></div>'+
@@ -335,7 +417,17 @@ define([
 
 						var $thumb = $('<div class="thumbnail border-none text-center"></div>').append($svg);
 
-						var $li = $('<li id="li-svg-'+data.id+'" class="span6">');
+						var className = 'span6 text-center';
+						switch(data.direction){
+							case 'landscape':
+								className = 'span12 prefix text-center';
+								break;
+							case 'portrait':
+								className = 'span5 text-center';
+								break;
+						}
+
+						var $li = $('<li id="li-svg-'+data.id+'" class="'+ className +'">');
 						$li.append('<div class="wait"><i class="icon-spinner icon-spin icon-large"></i> Waiting...</div>')
 							.append('<div class="upload"><i class="icon-spinner icon-spin icon-4x"></i> <span>Uploading..</span></div>')
 							.append('<div class="generate"><i class="icon-spinner icon-spin icon-4x"></i> <span>Generating..</span></div>')
@@ -344,6 +436,20 @@ define([
 
 						$('#panel-right ul.svg-list').append($li);
 					};
+					$scope.syncPosition = function(el, direction){
+						var val;
+						var tplDirection = ConversationTpl.directions[direction];
+						if(direction == 'landscape'){
+							var x = tplDirection.w;
+							var p = parseInt($scope.conversation[el].position.x / 403 * 100);
+							val = p / 100 * x;
+						} else if(direction == 'portrait') {
+							var y = tplDirection.h;
+							var p = parseInt($scope.conversation[el].position.y / 403 * 100);
+							val = p / 100 * y;
+						}
+						return val;
+					}
 					// compile SVG 
 					self.getSVGCompiled = function(data){
 						var $svg = $('svg#svg-conversation').clone();
@@ -354,31 +460,114 @@ define([
 						var spot1 = $('#spot1', $svg);
 						var spot2 = $('#spot2', $svg);
 
+						// get direction (fit/landscape/portrait)
+						var direction = ConversationTpl.directions[data.direction];
+						console.log('direction', direction)
+						// set SVG dimesion by direction 
+						$svg.attr({
+							width: direction.w,
+							height: direction.h
+						});
+
+						// poistions
+						var tplDirection = ConversationTpl.directions[data.direction];
+						console.log('tplDirection', tplDirection)
+						// default (fit)
+						var positions = {};
+						switch(data.direction){
+							case 'landscape':
+								// var x = tplDirection.w;
+								// var lp = parseInt($scope.conversation.logo.position.x / 403 * 100);
+								// positions.logo.x = lp / 100 * x;
+								// var s1p = parseInt($scope.conversation.spot1.position.x / 403 * 100);
+								// positions.spot1.x = s1p / 100 * x;
+								// var s2p = parseInt($scope.conversation.spot2.position.x / 403 * 100);
+								// positions.spot2.x = s2p / 100 * x;
+								positions = {
+									logo: {
+										x: "{{syncPosition('logo', 'landscape')}}",
+										y: '{{conversation.logo.position.y}}'
+									},
+									spot1: {
+										x: "{{syncPosition('spot1', 'landscape')}}",
+										y: '{{conversation.spot1.position.y}}'
+									},
+									spot2: {
+										x: "{{syncPosition('spot2', 'landscape')}}",
+										y: '{{conversation.spot2.position.y}}'
+									}
+								};
+								break;
+							case 'portrait':
+								// var y = tplDirection.h;
+								// var lp = parseInt($scope.conversation.logo.position.y / 403 * 100);
+								// positions.logo.y = lp / 100 * y;
+								// var s1p = parseInt($scope.conversation.spot1.position.y / 403 * 100);
+								// positions.spot1.y = s1p / 100 * y;
+								// var s2p = parseInt($scope.conversation.spot2.position.y / 403 * 100);
+								// positions.spot2.y = s2p / 100 * y;
+								positions = {
+									logo: {
+										x: '{{conversation.logo.position.x}}',
+										y: "{{syncPosition('logo', 'portrait')}}"
+									},
+									spot1: {
+										x: '{{conversation.spot1.position.x}}',
+										y: "{{syncPosition('spot1', 'portrait')}}"
+									},
+									spot2: {
+										x: '{{conversation.spot2.position.x}}',
+										y: "{{syncPosition('spot2', 'portrait')}}"
+									}
+								};
+								break;
+							default:
+								positions = {
+									logo: {
+										x: '{{conversation.logo.position.x}}',
+										y: '{{conversation.logo.position.y}}'
+									},
+									spot1: {
+										x: '{{conversation.spot1.position.x}}',
+										y: '{{conversation.spot1.position.y}}'
+									},
+									spot2: {
+										x: '{{conversation.spot2.position.x}}',
+										y: '{{conversation.spot2.position.y}}'
+									}
+								};
+								break;
+						}
+
+						console.log('positions', positions);
+
 						// background
 						$('image.image', bg).attr('xlink:href', data.imguri).css('display', 'block');
-						$('image.tpl', bg).attr('xlink:href', '{{conversation.template}}');
+						// $('image.tpl', bg).attr('xlink:href', '{{template}}');
+						// $('image.tpl', bg).attr('xlink:href', tpl);
+						$('image.tpl', bg).attr('xlink:href', '{{template.'+ data.direction +'}}');
 						// logo
 						logo.removeAttr('cursor')
 							.attr({
-								id:'logo-'+ data.id,
-								x:'{{conversation.logo.position.x}}',
-								y:'{{conversation.logo.position.y}}'
+								id: 'logo-'+ data.id,
+								x: positions.logo.x,
+								y: positions.logo.y
 							})
 							.find('image').attr('xlink:href', '{{conversation.logo.image}}');
 						// spot 1 / element 1
 						spot1.removeAttr('cursor')
 							.attr({
 								id:'spot1-'+ data.id,
-								x:'{{conversation.spot1.position.x}}',
-								y:'{{conversation.spot1.position.y}}'
+								x: positions.spot1.x,
+								y: positions.spot1.y
 							})
 							.find('image').attr('xlink:href', '{{conversation.spot1.image}}');
 						// spot 2 / element 2
 						spot2.removeAttr('cursor')
 							.attr({
 								id:'spot2-'+ data.id,
-								x:'{{conversation.spot2.position.x}}',
-								y:'{{conversation.spot2.position.y}}'
+								x: positions.spot2.x,
+								y: positions.spot2.y
 							})
 							.find('image').attr('xlink:href', '{{conversation.spot2.image}}');
 
@@ -405,13 +594,16 @@ define([
 								// change upload view
 								$liImg.switchClass('wait', 'upload', 0);
 								$liSVG.switchClass('wait', 'upload', 0);
+
+								var direction = ConversationTpl.directions[request.direction];
+
 								// upload to resize
 								return self.uploadFile({
 									file  : request.blob,
-									name  : 'conversation-bg-' + index,
-									width : self.dimensions.bg.w,
-									height: self.dimensions.bg.h,
-									crop  : true
+									name  : $scope.conversation.ID + '-conversation-bg-' + index,
+									width : direction.w,
+									height: direction.h,
+									crop  : false
 								}).pipe(function(response){
 									console.log('response', index, response);
 									console.log($('#bg > image.image', $svg)[0]);
@@ -473,7 +665,7 @@ define([
 					};
 
 					// SVG generate image
-					self.generateImage = function(svg, el){
+					self.generateImage = function(svg, isImage){
 						var deferred = $.Deferred();
 
 						console.log('generating image..');
@@ -495,13 +687,37 @@ define([
 							var imgDataURI = canvas.toDataURL('image/jpg');
 							// send response
 							setTimeout(function() {
-								var img = imgDataURI.replace(/^data:image\/(png|jpg);base64,/, "");
-								deferred.resolve(img);
+								if( isImage || isImage !== undefined )
+									deferred.resolve(imgDataURI);
+								else {
+									var imgURI = imgDataURI.replace(/^data:image\/(png|jpg);base64,/, "");
+									deferred.resolve(imgURI);
+								}
 							}, 2000);
 						};
 						img.src = "data:image/svg+xml;base64," + btoa(svg_xml);
 
 						return deferred.promise();
+					};
+
+					/**
+					 * convert data URI to Blob
+					 */
+					self.dataURItoBlob = function(dataURI) {
+						var byteString;
+						if (dataURI.split(',')[0].indexOf('base64') >= 0)
+							byteString = atob(dataURI.split(',')[1]);
+						else
+							byteString = unescape(dataURI.split(',')[1]);
+						var array = [];
+						for (var i = 0; i < byteString.length; i++) {
+							array.push(byteString.charCodeAt(i));
+						}
+
+						var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+						return new Blob([new Uint8Array(array)], {
+							type: mimeString
+						});
 					};
 				},
 				link: function($scope, iElm, iAttrs, controller) {
@@ -518,7 +734,7 @@ define([
 						var template = controller.templates[index];
 						// applying template
 						$scope.$apply(function(scope){
-							scope.conversation.template = template;
+							scope.template = template;
 						});
 						// change breadcumb active title
 						var title = $link.data('title');
@@ -590,7 +806,7 @@ define([
 					// handling button add backgrounds
 					controller.btnBg.click(function() {
 						$(this).next().bind('change', function(evt){
-							var tpl = $scope.conversation.template;
+							var tpl = $scope.template;
 							$dropAreaBG.block({
 								overlayCSS: {
 									backgroundColor: '#fff',
@@ -637,7 +853,7 @@ define([
 							console.log('drop file', files);
 
 							// get template
-							var tpl = $scope.conversation.template;
+							var tpl = $scope.template;
 
 							controller.handleDeferredMultipleFiles(files);
 						})
