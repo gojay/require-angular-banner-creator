@@ -4,8 +4,8 @@ define([
 	'jquery',
 	'jqueryui'
 ], function(directives){
-	directives.directive('conversationCreator', ['$compile', '$timeout', 'ConversationTpl', 'ConversationConfig', 'ConversationService', 'imageReader',
-		function($compile, $timeout, ConversationTpl, ConversationConfig, ConversationService, imageReader){
+	directives.directive('conversationCreator', ['$compile', '$timeout', 'ConversationTpl', 'ConversationConfig', 'imageReader',
+		function($compile, $timeout, ConversationTpl, ConversationConfig, imageReader){
 			// Runs during compile
 			return {
 				scope : {
@@ -29,8 +29,7 @@ define([
 					self.btnBg      = $('#btn-upload-backgrounds');
 					self.sectionBg  = $('#drop-backgrounds');
 					// define templates
-					// self.templates  = ConversationTpl.templates;
-					self.templates  = ConversationTpl.templates2;
+					self.templates  = ConversationTpl.templates;
 					// define dimensions
 					self.dimensions = ConversationTpl.dimensions;
 					// define jsZip
@@ -216,35 +215,6 @@ define([
 						}, 1000);
 					};
 
-					// $scope.createSSTemplate = function(){
-					// 	var $svg = $('svg#svg-conversation');
-					// 	self.generateImage($svg[0], true).done(function(imgDataURI){
-					// 		// $('#panel-right .tpl-screenshot').html('<img src="'+ imgDataURI +'" />');
-					// 		var blob = self.dataURItoBlob(imgDataURI);
-					// 		console.log(blob);
-					// 		self.uploadFile({
-					// 			file  : blob,
-					// 			name  : $scope.conversation.ID + '-conversation-tpl',
-					// 			width : 'original',
-					// 			height: 'original',
-					// 			crop  : false
-					// 		}).then(function(response){
-					// 			console.log(response);
-					// 			$scope.conversation.preview = response.url;
-					// 			$('#panel-right .tpl-screenshot').html('<img src="'+ response.url +'" />');
-					// 		});
-					// 	});
-					// };
-					// $scope.save = function(){
-
-					// 	var conversation = new ConversationService($scope.conversation);
-					// 	console.log('conversation', $scope.conversation);
-
-					// 	conversation.$save(function(response){
-					// 		console.log('response', response);
-					// 	});
-					// };
-
 					// handle single file (template image)
 					self.handleSingleFile = function(file, name, callback){
 						// validation file image selected
@@ -314,7 +284,7 @@ define([
 						console.log('ratio', ratio);
 						var direction;
 						if ( ratio == 1 ) { 
-							direction = 'fit';
+							direction = 'square';
 						} else if( ratio > 1 ) {
 							direction = 'landscape';
 						} else {
@@ -342,7 +312,7 @@ define([
 									console.log('ratio', ratio);
 									var direction;
 									if ( ratio == 1 ) { 
-										direction = 'fit';
+										direction = 'square';
 									} else if( ratio > 1 ) {
 										direction = 'landscape';
 									} else {
@@ -460,7 +430,7 @@ define([
 						var spot1 = $('#spot1', $svg);
 						var spot2 = $('#spot2', $svg);
 
-						// get direction (fit/landscape/portrait)
+						// get direction (square/landscape/portrait)
 						var direction = ConversationTpl.directions[data.direction];
 						console.log('direction', direction)
 						// set SVG dimesion by direction 
@@ -472,7 +442,7 @@ define([
 						// poistions
 						var tplDirection = ConversationTpl.directions[data.direction];
 						console.log('tplDirection', tplDirection)
-						// default (fit)
+						// default (square)
 						var positions = {};
 						switch(data.direction){
 							case 'landscape':

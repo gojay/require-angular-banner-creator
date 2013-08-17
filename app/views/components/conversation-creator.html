@@ -15,7 +15,6 @@
 				</div>
 				<div class="span4 text-center">
 					<div class="btn-group">
-					  	<!-- <a class="btn" ng-click="createSSTemplate()">Get Template</a> -->
 					  	<a href class="btn btn-primary" ng-disabled="conversation.images.empty" ng-click="generate(false)"><i class="icon-cog"></i> Generate</a>
 					  	<a href id="downloadZip" class="btn btn-success" ng-disabled="isDownloadDisabled"><i class="icon-download-alt"></i> Download Zip</a>
 					</div>
@@ -25,7 +24,6 @@
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#1" data-toggle="tab">Selected</a></li>
 					<li><a href="#2" data-toggle="tab">Generated</a></li>
-					<!-- <li><a href="#3" data-toggle="tab">Screenshot</a></li> -->
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="1">
@@ -33,34 +31,6 @@
 					</div>
 					<div class="tab-pane" id="2">
 						<ul class="thumbnails svg-list"></ul>
-					</div>
-					<div class="tab-pane" id="3">
-						<form class="form-horizontal" ng-submit="save()">
-							<fieldset>
-								<legend>Controls Bootstrap supports</legend>
-								<div class="control-group">
-									<label class="control-label" for="input01">Title</label>
-									<div class="controls">
-										<input type="text" class="input-xlarge" id="input01" ng-model="conversation.title">
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label" for="textarea">Textarea</label>
-									<div class="controls">
-										<textarea class="input-xlarge" id="textarea" rows="3" ng-model="conversation.description"></textarea>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label" for="optionsCheckbox">Preview</label>
-									<div class="controls tpl-screenshot"></div>
-								</div>
-								<div class="form-actions">
-									<input type="hidden" ng-model="conversation.preview">
-									<button type="submit" class="btn btn-primary">Save</button>
-									<button class="btn">Cancel</button>
-								</div>
-							</fieldset>
-						</form>
 					</div>
 				</div>
 			</div>
@@ -158,7 +128,7 @@
 						<g id="bg">
 							<rect fill="black" fill-opacity="0.7" height="100%" width="100%"/>
 							<image class="image" xlink:href="" width="100%" height="100%" style="display:none"/>					
-							<image class="tpl" xlink:href="{{template.fit}}" width="100%" height="100%"/>
+							<image class="tpl" xlink:href="{{template.square}}" width="100%" height="100%"/>
 						</g>
 						<svg id="logo" class="g_logo" x="{{conversation.logo.position.x}}" y="{{conversation.logo.position.y}}" cursor="move">
 							<rect class="placeholder" fill="white" width="175" height="55" x="0" y="0"/>
