@@ -168,10 +168,10 @@ CREATE TABLE IF NOT EXISTS `creators` (
 --
 
 INSERT INTO `creators` (`creator_id`, `title`, `type`, `image`, `description`, `autosave`) VALUES
-(1375825729198, 'HTML5 blue', 'conversation', 'http://dev.angularjs/_learn_/require-angular-banner-creator/images/upload/1375825729198/conversation_tpl.jpg', 'Cover HTML5 template 1', 0),
-(1375826115731, 'HTML5 white', 'conversation', 'http://dev.angularjs/_learn_/require-angular-banner-creator/images/upload/1375826115731/conversation_tpl.jpg', 'Cover HTML5 template 2', 0),
-(1375826998599, 'HTML5 blue 2', 'conversation', 'http://dev.angularjs/_learn_/require-angular-banner-creator/images/upload/1375826998599/conversation_tpl.jpg', 'Cover HTML5 blue template 3', 0),
-(1375827178614, 'HTML5 white 2', 'conversation', 'http://dev.angularjs/_learn_/require-angular-banner-creator/images/upload/1375827178614/conversation_tpl.jpg', 'Cover HTML5 white template 4', 0);
+(1375825729198, 'HTML5 blue', 'conversation', 'http://dev.angularjs/_learn_/require-angular-banner-creator-master/images/upload/1375825729198/conversation_tpl.jpg', 'Cover HTML5 template 1', 0),
+(1375826115731, 'HTML5 white', 'conversation', 'http://dev.angularjs/_learn_/require-angular-banner-creator-master/images/upload/1375826115731/conversation_tpl.jpg', 'Cover HTML5 template 2', 0),
+(1375826998599, 'HTML5 blue 2', 'conversation', 'http://dev.angularjs/_learn_/require-angular-banner-creator-master/images/upload/1375826998599/conversation_tpl.jpg', 'Cover HTML5 blue template 3', 0),
+(1375827178614, 'HTML5 white 2', 'conversation', 'http://dev.angularjs/_learn_/require-angular-banner-creator-master/images/upload/1375827178614/conversation_tpl.jpg', 'Cover HTML5 white template 4', 0);
 
 -- --------------------------------------------------------
 

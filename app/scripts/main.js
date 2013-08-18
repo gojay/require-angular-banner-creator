@@ -112,6 +112,7 @@ function(angular, app, domReady){
 						current:  'Facebook Banner Template',
 						active :  'Template 1'
 					},
+					static      : true,
 					// templateUrl : 'app/views/banner.html',
 					template   : '<h3>Under construction</h3>',
 					controller : 'BannerController',
@@ -181,6 +182,7 @@ function(angular, app, domReady){
 						current:  'Mobile SplashScreen & Background',
 						active :  'Splash Screen'
 					},
+					static      : true,
 					templateUrl : 'app/views/mobile.html',
 					controller  : 'MobileController',
 					resolve: {

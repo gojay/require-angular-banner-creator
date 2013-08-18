@@ -206,7 +206,7 @@ define([
 					 * Generate Template
 					 * POST & PUT
 					 */
-					$scope.generate = function(){
+					$scope.generate = function( isContent ){
 						var timeout = 0;
 						if( isContent ){
 							// open right panel
@@ -722,6 +722,13 @@ define([
 				},
 				link: function($scope, iElm, iAttrs, controller) {
 
+					$('a.handler-left', controller.navbarPanel).removeAttr('disabled');
+					$('a.handler-right', controller.navbarPanel).removeAttr('disabled');
+
+					// if u want to disable one of the panels
+					// $('a.handler-left', controller.navbarPanel).attr('disabled', 'disabled'); // disabled
+					// $('a.handler-left', controller.navbarPanel).hide(); // or hidden
+
 					/* handling collapse */
 
 					var $editorTpl = $('#editor .template');
@@ -747,9 +754,7 @@ define([
 					// make clicked, set template selected
 					$timeout(function() {
 						var link = parseInt($scope.conversation.selected) + 1;
-						if( link > 1 ){
-							$('a[href="#tpl-'+ link +'"]').click();
-						}
+						$('a[href="#tpl-'+ link +'"]').click();
 						$rootScope.pageService.loaded = true;
 					}, 1000);
 
@@ -778,10 +783,6 @@ define([
 					var $panelRight = '<div ng-include src="\'app/views/conversation-panel-right.html\'"></div>';
 					// bind panel right (rootScope), compile inject scope
 					$rootScope.panel.right.template = $compile($panelRight)($scope);
-
-					// if u want to disable one of the panels
-					// $('a.handler-left', controller.navbarPanel).attr('disabled', 'disabled'); // disabled
-					// $('a.handler-left', controller.navbarPanel).hide(); // or hidden
 
 					// panel handler
 					var targetPanel;

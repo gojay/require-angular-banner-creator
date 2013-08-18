@@ -85,7 +85,7 @@ function convert_image_uri($value)
 {
 	if(array_key_exists('image', $value)){
 		// check valid URL
-		if(preg_match('!http://[^?#]+\.(?:jpe?g|png|gif)!Ui', BASE_URL . '/' . $value['image']))
+		if(preg_match('!http://[^?#]+\.(?:jpe?g|png|gif)!Ui', ABS_URL . '/' . $value['image']))
 			$value['image'] = create_data_uri($value['image']);
 	}
 	return $value;

@@ -10,7 +10,7 @@
 			<div class="span5 text-right">
 				<div class="btn-group">
 				  	<a href class="btn" ng-click="createNew()" ng-disabled="isNew"><i class="icon-plus"></i> Create New</a>
-				  	<a href class="btn btn-primary" ng-disabled="conversation.queue.empty" ng-click="generate()"><i class="icon-cog"></i> Generate</a>
+				  	<a href class="btn btn-primary" ng-disabled="conversation.queue.empty" ng-click="generate(false)"><i class="icon-cog"></i> Generate</a>
 				  	<a href id="downloadZip" class="btn btn-success" ng-disabled="isDownloadDisabled"><i class="icon-download-alt"></i> Download Zip</a>
 				</div>
 			</div>

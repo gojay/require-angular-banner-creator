@@ -127,7 +127,7 @@ $app->get('/conversation', function() use ($app, $db){
 				'autosave'	  => (boolean) $creator['autosave']
 			);
 		}
-		// sleep(3);
+		sleep(2);
 		echo json_encode($data);
 	}
 	catch(Exception $e){
@@ -152,11 +152,11 @@ $app->get('/conversation/:conversationId', function($conversationId) use ($app, 
 					$data[$meta['meta_key']] = ($value === false) ? $meta['meta_value'] : convert_image_uri($value) ;
 				}
 			}
-			// sleep(3);
+			sleep(2);
 			echo json_encode($data);
 		}
 		else {
-			// sleep(3);
+			sleep(2);
 			throw new NotFoundException("Conversation not found", 1);
 		}
 	}
@@ -167,7 +167,7 @@ $app->get('/conversation/:conversationId', function($conversationId) use ($app, 
 		$app->halt(500, $e->getMessage());
 	}
 });
-$app->post('/conversation', function() use ($app, $db){
+$app->post('/conversation', function() use ($app, $db, $conversation_columns){
 	$app->response()->header("Content-Type", "application/json");
 	try{
 		$body = $app->request()->getBody();
@@ -200,7 +200,7 @@ $app->post('/conversation', function() use ($app, $db){
 		$app->halt(500, $e->getMessage());
 	}
 });
-$app->put('/conversation/:conversationId', function($conversationId) use ($app){
+$app->put('/conversation/:conversationId', function($conversationId) use ($app, $db, $conversation_columns){
 	$app->response()->header("Content-Type", "application/json");
 	$body = $app->request()->getBody();
 	$object = json_decode($body);
@@ -211,7 +211,7 @@ $app->put('/conversation/:conversationId', function($conversationId) use ($app){
 	// send response
 	echo json_encode($data);
 });
-$app->delete('/conversation/:conversationId', function($conversationId) use ($app){
+$app->delete('/conversation/:conversationId', function($conversationId) use ($app, $db){
 	$app->response()->header("Content-Type", "application/json");
 	$body = $app->request()->getBody();
 	$data = json_decode($body);
