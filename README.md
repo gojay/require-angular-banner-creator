@@ -15,12 +15,10 @@ How to Use
 1. Clone this repository ( _Recomended_ ), then switch to branch **v.2.1resource**
 
  ```
- // clone repo, or pull this repo (if have already clone this old repo)
+ // clone, or pull this repo (if have already clone this old repo)
 git clone git@github.com:gojay/require-angular-banner-creator.git
-
-// switch to branch v.2.1_resource
-git checkout v.2.1_resource
-
+ // switch to branch v.2.1_resource
+git checkout v.2.1_resource 
  ```
 
 2. Change your absolute URL at config.php
