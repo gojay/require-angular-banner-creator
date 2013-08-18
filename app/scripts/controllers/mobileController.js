@@ -10,7 +10,6 @@ define([
 			var ID = new Date().getTime();
 			var self = this;
 			self.zip = new JSZip();
-			self.svgEditor = '#svg-editor';
 
 			/* collapse listener */
 
@@ -23,29 +22,22 @@ define([
 				});
 
 			$scope.splash = SplashConfig;
-			$scope.generateDisabled = false;
 
 			/* scope listener */
 
-			$scope._convert = function(evt){
-				console.log(evt);
-				var el = evt.currentTarget;
-				el.innerHTML = '<i class="icon-refresh icon-spin"></i> ' + el.innerText;
-				$scope.generateDisabled = true;
-			}
-
 			$scope.convert = function(evt){
 				// show loading popup
-				$(self.svgEditor).block({
-					overlayCSS: {
-						backgroundColor: '#fff',
-						opacity: 0.8
+				$.blockUI({
+					message: $('#popup-loading-img'),
+					overlayCSS:{
+						opacity : '0.8'
 					},
-					message: '<i class="icon-spinner icon-spin icon-4x"></i> <br/> <span>Preparing<span>',
 					css: {
-						border: 'none',
-						background: 'none',
-						color: '#3685C6'
+						background : 'transparent',
+						border     : 'none',
+						top        : ($(window).height() - 350) / 2 + 'px',
+						left       : ($(window).width() - 375) / 2 + 'px',
+						width      : '350px'
 					}
 				});
 				// get SVG element
@@ -80,7 +72,7 @@ define([
 							.html('')
 							.append(tplImages);
 					// open popup
-					$timeout(function() {
+					setTimeout(function() {
 						$.unblockUI({
 							onUnblock: function() {
 								$generate.modal('show');
@@ -93,30 +85,11 @@ define([
 
 			$scope.build = function(evt){
 				console.log('build', evt);
-				// start
-				var el = evt.currentTarget;
-				el.innerHTML = '<i class="icon-refresh icon-spin"></i> Generating images';
-				$scope.generateDisabled = true;
-				// show loading
-				$(self.svgEditor).block({
-					overlayCSS: {
-						backgroundColor: '#fff',
-						opacity: 0.8
-					},
-					message: '<i class="icon-spinner icon-spin icon-4x"></i> <br/> <span>Preparing splash screen..<span>',
-					css: {
-						border: 'none',
-						background: 'none',
-						color: '#3685C6'
-					}
-				});
-
 				// get y-axis
 				var cl_p = $scope.splash.editor.logo.p;
 				var ch_p = $scope.splash.editor.ch.p;
 
 				console.info('calculating...');
-				$('span', self.svgEditor).text('Calculating the splash screens...');
 
 				var requests = [];
 				angular.forEach($scope.splash.dimensions, function(e,i){
@@ -139,20 +112,10 @@ define([
 						}
 					});
 					if(requests.length == 3){
-						$timeout(function(){
-
+						setTimeout(function(){
 							console.info('start building...');
-							$('span', self.svgEditor).text('Starting build the splash screens...');
-
 							self.deferredBuildMultiSVG(requests).done(function(response){
-
-								console.log('finished building');
-								$('span', self.svgEditor).text('Finished generate the splash screens');
-
-								$timeout(function(){
-									$('span', self.svgEditor).text('Adding the splash screens into ZIP');
-								}, 500);
-
+								console.log('finish building');
 								// generated zip 
 								var DOMURL = window.URL || window.mozURL;
 								var link   = DOMURL.createObjectURL(self.zip.generate({type:"blob"}));
@@ -160,19 +123,12 @@ define([
 								var aZip = document.getElementById('downloadZip');
 								aZip.download = "splash-"+ ID +".zip";
 								aZip.href     = link;
-
-								// Done
-								$timeout(function(){
-									$(self.svgEditor).unblock();
-									$('#generateImage').text('Generate Image');
-									// applying isGenerateDisabled to false
-									$scope.$apply(function(scope){
-										scope.generateDisabled = false;
-										scope.splash.isDownloadDisabled = false;
-									});
-								}, 2000);
+								// applying isGenerateDisabled to false
+								$scope.$apply(function(scope){
+									scope.splash.isDownloadDisabled = false;
+								});
 							});
-						}, 3000);
+						}, 2000);
 					}
 				});
 			};
@@ -185,12 +141,9 @@ define([
 					var type = request.ID;
 					console.info(type + ' index : ' + index);
 					return promise.pipe(function(){
-
 						console.info('creating SVG ' + type);
-						$('span', self.svgEditor).text('Creating SVG ' + type);
-
 						var svg = self.createSVG(request);
-						return self.generateImage(svg, type).done(function(imgDataURI){
+						return self.generateImage(svg).done(function(imgDataURI){
 							// add to zip
 							self.zip.file('splash_'+type+'.jpg', imgDataURI, {base64: true});
 							// send completed
@@ -244,17 +197,10 @@ define([
 				return $svg[0];
 			};
 
-			var ucwords = function(str) {
-			    return (str + '').replace(/^([a-z])|\s+([a-z])/g, function ($1) {
-			        return $1.toUpperCase();
-			    });
-			}
-
-			this.generateImage = function( svg, type ){
+			this.generateImage = function( svg ){
 				var deferred = $.Deferred();
 
 				console.log('generating image..');
-				$('span', self.svgEditor).text('Generating splash screen ' + ucwords(type));
 
 				var svg_xml = (new XMLSerializer()).serializeToString(svg);
 				// create canvas
@@ -272,8 +218,8 @@ define([
 					// convert to image png
 					var imgDataURI = canvas.toDataURL('image/jpeg');
 					// send response
-					$timeout(function() {
-						var img = imgDataURI.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+					setTimeout(function() {
+						var img = imgDataURI.replace(/^data:image\/(png|jpg);base64,/, "");
 						deferred.resolve(img);
 					}, 2000);
 				};

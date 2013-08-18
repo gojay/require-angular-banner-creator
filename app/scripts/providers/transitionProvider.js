@@ -73,12 +73,18 @@ define(['providers/providers'], function(providers){
 				change: function(){
 					var self  = this;
 					var $page = this.getElement();
+
 					// http://api.jquery.com/delay/
 					// http://api.jquery.com/queue/
 					$page.addClass(classOut).delay(1000).queue(function(next) {
 
 						$(this).removeClass(classOut);
 						$(this).addClass(classIn);
+
+						// clear angular view
+						$('.ng-view').html('');
+						// centering page services
+						self.centerPageMessage();
 
 						setTimeout(function() {
 							if( self.isPerspective() ){
@@ -89,6 +95,19 @@ define(['providers/providers'], function(providers){
 
 						next();
 					});
+				},
+				/* centerize page loader & message */
+				centerPageMessage: function(){
+					var w = $('#wrap-content > .container').width(),
+						h = $('#wrap-content').height();
+					var $pl = $('#page-loader'),
+						$pm = $('#page-message');
+					var lleft = (w - $pl.width()) / 2,
+						mleft = (w - $pm.width()) / 2;
+					var ltop = (h - $pl.height()) / 2,
+						mtop = (h - $pm.height()) / 2;
+					$pl.css({'left':lleft + 'px', 'top':ltop + 'px'});
+					$pm.css({'left':mleft + 'px', 'top':mtop + 'px'});
 				}
 			};
 		};

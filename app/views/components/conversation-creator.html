@@ -1,44 +1,7 @@
-<div id="conversation">
-	<div id="canvas"></div>
-	
-	<input type="checkbox" name="handler-right" class="handler" id="handler-right" onclick="null" />
-	<input type="checkbox" name="handler-left" class="handler" id="handler-left" onclick="null" />
-
-	<div id="panel-right" style="margin-top: 58px;">
-	    <div class="row-fluid">
-			<div class="span12 well">
-				<div class="span8 queue">
-					<div class="span10 progress progress-striped active" style="margin-bottom: 0;">
-						<div class="bar"><span></span></div>
-					</div>
-					<span class="span2" style="margin-top: 5px;">{{conversation.images.finished}} / {{conversation.images.count}}</span>
-				</div>
-				<div class="span4 text-center">
-					<div class="btn-group">
-					  	<a href class="btn btn-primary" ng-disabled="conversation.images.empty" ng-click="generate(false)"><i class="icon-cog"></i> Generate</a>
-					  	<a href id="downloadZip" class="btn btn-success" ng-disabled="isDownloadDisabled"><i class="icon-download-alt"></i> Download Zip</a>
-					</div>
-				</div>
-			</div>
-			<div class="span12 prefix tabbable" style="padding: 15px 10px;">
-				<ul class="nav nav-tabs">
-					<li class="active"><a href="#1" data-toggle="tab">Selected</a></li>
-					<li><a href="#2" data-toggle="tab">Generated</a></li>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane active" id="1">
-				    	<ul class="thumbnails img-list" style="padding:20px"></ul>
-					</div>
-					<div class="tab-pane" id="2">
-						<ul class="thumbnails svg-list"></ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<div id="conversation" style="overflow:hidden;">
 
 	<div id="content" class="span12 prefix conversation">
-		<!--Sidebar-->
+		<!-- Sidebar templates -->
 		<aside id="sidebar" class="span6">
 			<h3>Choose Templates</h3>
 			<div class="accordion" id="accordion">
@@ -116,10 +79,13 @@
 			 	</div>
 			 </div>
 		</aside>
+		<!--/Sidebar-->
+
+		<!--Editor-->
 		<section id="editor" class="span6">
-			<div class="slider">
+			<!-- <div class="slider">
 		    	<a href class="nav-sidebar btn" data-sidebar="handler-right"></a>
-		    </div>
+		    </div> -->
 			<div class="wrap-editor">		          
 				<div class="template img-polaroid">
 					<svg id="svg-conversation" width="403" height="403" version="1.1"
@@ -173,10 +139,10 @@
 					<div class="drop-loading"><i class="icon-spinner icon-spin icon-4x"></i></div>
 				</div>
 				<div class="margin-top">
-					<a href class="btn btn-block btn-success" ng-disabled="conversation.images.empty" ng-click="generate(true)">Generate Image</a>
+					<a href class="btn btn-block btn-success" ng-disabled="conversation.queue.empty" ng-click="generate()">Generate Image</a>
 				</div>
 			</div>
 		</section>
+		<!--/Editor-->
 	</div>
 </div>
-

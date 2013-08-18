@@ -1,6 +1,5 @@
 define(['services/services'], function(services){
 	services
-		// templates
 		.factory('ConversationTpl', function(){
 			return {
 				directions : {
@@ -116,5 +115,55 @@ define(['services/services'], function(services){
 				},
 				selected : 0
 			};
-		});
+		})
+		.factory('ConversationService', ['$resource',
+			function($resource){
+				return $resource('api/conversation/:id', {}, {
+					update : {
+						method: 'PUT'
+					},
+					remove: {
+						method: 'DELETE'
+					}
+				});
+			}
+		])
+		.factory('RecentConversations', ['ConversationService', '$q', '$rootScope',
+			function(ConversationService, $q, $rootScope){
+				return function(){
+					var deferred = $q.defer();
+					ConversationService.query(function(data){
+						deferred.resolve(data);
+					}, function(err){
+						$rootScope.pageService = {
+							start  : false,
+							reject : true,
+							status : err.status,
+							message: err.data
+						};
+						deferred.reject('Unable to fetch conversations' + err);
+					});
+					return deferred.promise;
+				};
+			}
+		])
+		.factory('DetailConversation', ['ConversationService', '$route', '$q', '$rootScope',
+			function(ConversationService, $route, $q, $rootScope){
+				return function(){
+					var deferred = $q.defer();
+					ConversationService.get({id : $route.current.params.conversationId}, function(data){
+						deferred.resolve(data);
+					}, function(err){
+						$rootScope.pageService = {
+							start  : false,
+							reject : true,
+							status : err.status,
+							message: err.data
+						};
+						deferred.reject('Unable to fetch conversation '  + $route.current.params.conversationId + err);
+					});
+					return deferred.promise;
+				};
+			}
+		]);
 });

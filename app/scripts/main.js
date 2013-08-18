@@ -83,20 +83,21 @@ require([
 function(angular, app, domReady){
 	'use strict';
 
-	app.config(['$routeProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
-		function($routeProvider, debugProvider, transitionProvider, imageReaderProvider){
+	app.config(['$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
+		function($routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider){
 			// enable/disable debuging
 			debugProvider.setDebug(true);
 			// transition config  
 			transitionProvider.setStartTransition('expandIn');
-			transitionProvider.setPageTransition('tumble');
-			transitionProvider.setPage('html');
+			transitionProvider.setPageTransition('slide');
+			transitionProvider.setPage('#wrap-content > .container');
 			// router
 			$routeProvider
 				.when('/', {
 					title : '| Home',
 					templateUrl : 'app/views/home.html',
 					controller  : 'HomeController',
+					static      : true,
 					resolve: {
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
@@ -112,8 +113,8 @@ function(angular, app, domReady){
 						active :  'Template 1'
 					},
 					// templateUrl : 'app/views/banner.html',
-					template    : '<h3>Under construction</h3>',
-					controller  : 'BannerController',
+					template   : '<h3>Under construction</h3>',
+					controller : 'BannerController',
 					resolve: {
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
@@ -128,9 +129,16 @@ function(angular, app, domReady){
 						current:  'Facebook Conversation Template',
 						active :  'Template 1'
 					},
-					template    : '<conversation-creator ng-model="conversation"></conversation-creator>',
-					controller  : 'ConversationController',
+					template   : '<conversation-creator ng-model="conversation" conversations="conversations"></conversation-creator>',
+					controller : 'ConversationController',
 					resolve: {
+						conversations: function($rootScope, RecentConversations){
+							$rootScope.pageService.message = 'Preparing recent conversations..';
+							return RecentConversations().then(function(conversations){
+								$rootScope.pageService.start = false;
+								return conversations;
+							});
+						},
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
 							$timeout(delay.resolve, 1000);
@@ -144,11 +152,21 @@ function(angular, app, domReady){
 						current:  'Facebook Conversation Template',
 						active :  'Template 1'
 					},
-					template    : '<conversation-creator ng-model="conversation"></conversation-creator>',
+					template    : '<conversation-creator ng-model="conversation" conversations="conversations"></conversation-creator>',
 					controller  : 'EditConversationController',
 					resolve: {
-						conversation: function(Conversation){
-							return Conversation();
+						conversations: function($rootScope, $route, RecentConversations, DetailConversation){
+							$rootScope.pageService.message = 'Requesting conversation id '+ $route.current.params.conversationId +'..';
+							return DetailConversation().then(function(conversation){
+								$rootScope.pageService.message = 'Preparing recent conversations..';
+								return RecentConversations().then(function(conversations){
+									$rootScope.pageService.start = false;
+									return {
+										recents : conversations,
+										detail  : conversation
+									};
+								});
+							});
 						},
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
@@ -176,20 +194,46 @@ function(angular, app, domReady){
 					}
 				})
 				.otherwise({ redirectTo:'/' });
+
+			// Hashbang Mode
+   			$locationProvider
+   				.html5Mode(false)
+  				.hashPrefix('!');
 		}
 	])
 	.run(function($rootScope, transition) {
+		$rootScope.panel = {
+			right: {
+				model: null,
+				template: null
+			},
+			left: {
+				model: null,
+				template: null
+			}
+		};
 		// change transition when start route 
 		$rootScope.$on('$routeChangeStart', function(scope, next, current) {
-			console.log('Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
+			// console.log('Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
 			$rootScope.showBreadcrumb = false;
-			transition.change();
+			// transition
+			if(current === undefined) transition.start();
+			else transition.change();
+			$rootScope.pageService = {
+				loaded: false,
+				start : true,
+				reject: false,
+				status: null,
+				message: ''
+			};
 		});
-		// inject page_title form current route
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
+			// inject page_title form current route
 			$rootScope.pageTitle = current.$$route.title;
 			$rootScope.showBreadcrumb = (current.$$route.breadcrumb === undefined) ? false : true ;
 			$rootScope.breadcrumb = current.$$route.breadcrumb;
+			// set start pageService false, if page static, or doesn't needed services
+			if(current.$$route.static !== undefined) $rootScope.pageService.start = false;
 		});
 	});
 	domReady(function() {

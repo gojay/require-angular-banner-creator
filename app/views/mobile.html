@@ -53,10 +53,10 @@
 					</div>
 					<div class="row-fluid">
 						<div class="span10 offset1 margin-top-bottom">
-							<a href id="generateImage" class="btn btn-block btn-success" ng-click="build($event)" ng-disabled="generateDisabled">Generate Image</a>
+							<a href class="btn btn-block btn-success">Generate Image</a>
 							<a href id="downloadZip" class="btn btn-success btn-block"  
-								ng-hide="splash.isDownloadDisabled"
-								ng-disabled="splash.isDownloadDisabled">
+								ng-show="isDownloadDisabled"
+								ng-disabled="isDownloadDisabled">
 								<i class="icon-download-alt"></i> Download Zip
 							</a>
 						</div>

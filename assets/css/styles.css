@@ -1,6 +1,16 @@
+html, body{
+    width:100%; 
+	height: 100%;
+}
+
 body { 
 	color: #333;
-	font-size: 13px
+	font-size: 13px;
+	overflow: hidden;
+}
+
+a:hover {
+	text-decoration: none;
 }
 
 /* Helper */
@@ -59,17 +69,160 @@ body {
 	border-radius: 0;
 }
 
-/* Defines */
+/* Sidebar Panel */
 
-#wrapper {
-	position: relative;
-	width: 100%;;
-	height: 100%;
+.panel-handler {
+    display: none;
+}
+
+#panel-right, #panel-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 92%;
+    z-index: 1;
+    overflow: auto;
+    opacity: 0;
+    -webkit-transition: opacity 0s .5s;
+}
+#panel-right {
+    left: auto;
+    right: 0;
+}
+
+#panel-right.open-panel,
+#panel-left.open-panel {
+    opacity: 1 !important;
+    -webkit-transition: opacity 0s 0s;
+    -moz-transition: opacity 0s 0s;
+}
+/* index on top, to make scrollable/overflow */
+.panel-focused {
+    z-index: 3 !important;
+}
+
+#wrapper.open-wrapper-right {
+    -webkit-transform: translate3D(-92%, 0, 0);
+    -moz-transform: translate3D(-92%, 0, 0);
+}
+#wrapper.open-wrapper-left {
+    -webkit-transform: translate3D(92%, 0, 0);
+    -moz-transform: translate3D(92%, 0, 0);
+}
+#wrapper.open-wrapper-right #content-container,
+#wrapper.open-wrapper-left #content-container{
     overflow: hidden;
 }
 
+#wrapper {
+	position: relative;
+	z-index: 2;
+    height: 100%;
+    box-shadow: 0 0 3px #000;
+	background: #f5f5f5;
+
+    -webkit-transform: translate3D(0, 0, 0);
+    -moz-transform: translate3D(0, 0, 0);
+    -webkit-transition: -webkit-transform .5s ease-in-out;
+    -moz-transition: -moz-transform .5s ease-in-out;
+}
+#wrapper #content-container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+}
+
+.form-toggle {
+	position: absolute;
+	top: -40px;
+	left: 50%;
+}
+.panel-padding {
+	padding: 0 20px;
+}
+
+/* Sticky Footer Bootstrap */
+
+#wrap-content {
+	overflow: auto;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	/* Negative indent footer by it's height */
+	margin: 0 auto -60px;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+	#footer {
+		margin-left: -20px;
+	  	margin-right: -20px;
+	  	padding-left: 20px;
+	  	padding-right: 20px;
+	}
+}
+
+/* Set the fixed height of the footer here */
+#push,
+footer {
+	height: 60px;
+}
+
+/* Page Loader */
+
+#page-loader, #page-message {
+	width: 300px;
+	position: absolute;
+	top: 40%;
+	left: 38%;
+	text-align: center;
+	display: none;
+}
+#page-loader img {
+	margin: 0 auto;
+}
+#page-loader .message {
+	margin: 10px 0;
+}
+#page-message > .alert {
+	border: 1px solid #c09853;
+}
+
+/* Styles */
+
 .logo {
 	padding: 15px 20px;
+}
+.navbar .logo {
+	margin: 0;
+	padding: 0;
+}
+.navbar .logo .brand {
+	margin-left: 10px;
+	padding: 0;
+}
+.navbar .logo img {
+	max-height: 60px;
+}
+.navbar .navbar-container > a {
+	display: block; 
+	padding: 15px 10px; 
+	color: #3685C6; 
+	cursor: pointer;
+}
+.navbar .navbar-container > a:hover {
+	text-decoration: none;
+}
+.navbar .navbar-container > a[disabled="disabled"] {
+	color: #ccc; 
+	pointer-events: none;
+   	cursor: default;
 }
 
 header nav {
@@ -113,9 +266,6 @@ header nav {
 		padding: 15px 0;
 		border-bottom: 1px solid #CCC;
 	}
-	/*#editor .col ul li:last-child {
-		border-bottom: 0;
-	}*/
 
 	#editor .col label
 	{
@@ -154,6 +304,11 @@ header nav {
 			top: 42px;
 			left: 136px;
 		}
+
+/*.tpl-preview {
+	width: 403px;
+	height: 403px;
+}*/
 
 /* drop backgrounds */
 
@@ -308,14 +463,13 @@ footer p.credit {
 	padding: 20px 0;
 }
 
-/* Panel Widget */
+/* Panel Widget
 
 #content {
 	position: relative;
 	z-index: 2;
     background: #ffffff;
     height: 100%;
-    /*box-shadow: 0 0 3px #ccc;*/
     -webkit-transform: translate3D(0, 0, 0);
     -moz-transform: translate3D(0, 0, 0);
     -webkit-transition: -webkit-transform .5s ease-in-out;
@@ -328,11 +482,7 @@ footer p.credit {
 	left: 0;
 	bottom: 0;
 	z-index: 1;
-	width: 90%;
-	/*background: #333;
-	*/
-	/*overflow: auto;
-	*/
+	width: 92%;
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 	filter: alpha(opacity=0);
 	opacity: 0;
@@ -364,11 +514,11 @@ footer p.credit {
 }
 
 .handler#handler-right:checked ~ #content {
-    -webkit-transform: translate3D(-90%, 0, 0);
-	-moz-transform: translate3D(-90%, 0, 0);
-	-o-transform: translate3D(-90%, 0, 0);
-	-ms-transform: translate3D(-90%, 0, 0);
-	transform: translate3D(-90%, 0, 0);
+    -webkit-transform: translate3D(-92%, 0, 0);
+	-moz-transform: translate3D(-92%, 0, 0);
+	-o-transform: translate3D(-92%, 0, 0);
+	-ms-transform: translate3D(-92%, 0, 0);
+	transform: translate3D(-92%, 0, 0);
 }
 
 .handler#handler-right:checked ~ #content {
@@ -385,11 +535,11 @@ footer p.credit {
 }
 
 .handler#handler-left:checked ~ #content {
-    -webkit-transform: translate3D(90%, 0, 0);
-	-moz-transform: translate3D(90%, 0, 0);
-	-o-transform: translate3D(90%, 0, 0);
-	-ms-transform: translate3D(90%, 0, 0);
-	transform: translate3D(90%, 0, 0);
+    -webkit-transform: translate3D(92%, 0, 0);
+	-moz-transform: translate3D(92%, 0, 0);
+	-o-transform: translate3D(92%, 0, 0);
+	-ms-transform: translate3D(92%, 0, 0);
+	transform: translate3D(92%, 0, 0);
 }
 
 .handler#handler-left:checked ~ #content {
@@ -410,8 +560,6 @@ footer p.credit {
 }
 
 .slider a {
-	/*color: #777;
-	text-shadow: 0 1px 0 #FFF;*/
 	border: 1px solid;
 	border-right: none;
 	border-top-left-radius: 10px;
@@ -433,6 +581,7 @@ footer p.credit {
 .slider a:hover {
 	text-decoration: none;
 }
+*/
 
 /* jQuery ui */
 
@@ -559,9 +708,9 @@ h3 {
 
 .breadcrumb {
 	padding: 15px 20px;
-	margin-bottom: 0;
+	margin-top: 20px; margin-bottom: 0; 
 	background-color: #FFF;
-	border-top: 1px solid #EEE;
+	border-top: none;
 	border-bottom: 1px solid #EEE;
 	}
 
@@ -621,3 +770,26 @@ h3 {
 		margin-top: -2px;
 		margin-right: 5px;
 	}
+
+.thumbnails.cols2 li:nth-child(2n+1),
+.thumbnails.cols3 li:nth-child(3n+1),
+.thumbnails.cols3 li:nth-child(4n+1),
+.thumbnails.cols3 li:nth-child(6n+1){
+	margin-left: 0;
+}
+.thumbnails li > a:hover {
+	text-decoration: none;
+}
+.thumbnails li > a:hover > .thumbnail {
+	border-color: #3685C6; 
+}
+.thumbnails li h3 {
+	padding: 0;
+	margin-bottom: 8px; 
+}
+.thumbnails .selected {
+	background: #eee;
+	-webkit-box-shadow: 0 8px 6px -6px #3685C6;
+	   -moz-box-shadow: 0 8px 6px -6px #3685C6;
+	        box-shadow: 0 8px 6px -6px #3685C6;
+}

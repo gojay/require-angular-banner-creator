@@ -1,0 +1,71 @@
+<div id="conversation-panel-right">
+    <div class="row-fluid">
+		<div class="span12 well" style="padding: 13px;">
+			<div class="span7 queue">
+				<div class="span10 progress progress-striped active" style="margin-bottom: 0;">
+					<div class="bar"><span></span></div>
+				</div>
+				<span class="span2" style="margin-top: 5px;">{{conversation.queue.finished}} / {{conversation.queue.count}}</span>
+			</div>
+			<div class="span5 text-right">
+				<div class="btn-group">
+				  	<a href class="btn" ng-click="createNew()" ng-disabled="isNew"><i class="icon-plus"></i> Create New</a>
+				  	<a href class="btn btn-primary" ng-disabled="conversation.queue.empty" ng-click="generate()"><i class="icon-cog"></i> Generate</a>
+				  	<a href id="downloadZip" class="btn btn-success" ng-disabled="isDownloadDisabled"><i class="icon-download-alt"></i> Download Zip</a>
+				</div>
+			</div>
+		</div>
+		<div class="span12 prefix tabbable" style="padding: 15px 10px;">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#tab-image" data-toggle="tab">Selected</a></li>
+				<li><a href="#tab-svg" data-toggle="tab">Generated</a></li>
+				<li><a href="#tab-save" data-toggle="tab">Save Template</a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="tab-image">
+			    	<ul class="thumbnails img-list" style="padding:20px"></ul>
+				</div>
+				<div class="tab-pane" id="tab-svg">
+					<ul class="thumbnails svg-list"></ul>
+				</div>
+				<div class="tab-pane" id="tab-save">
+					<form id="save-conversation" class="form-horizontal" ng-submit="save()">
+						<div class="control-group">
+							<label class="control-label" for="input01">Title</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="input01" ng-model="conversation.title" required>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="textarea">Textarea</label>
+							<div class="controls">
+								<textarea class="input-xlarge" id="textarea" rows="3" ng-model="conversation.description"></textarea>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="optionsCheckbox">Template</label>
+							<div class="controls tpl-preview">
+								<img ng-src="{{conversation.preview}}" style="height:200px">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="optionsCheckbox">Autosave</label>
+							<div class="controls">
+								<label class="radio inline">
+									<input type="radio" ng-model="conversation.autosave" value=true ng-boolean-radio /> Yes
+								</label>
+								<label class="radio inline">
+									<input type="radio" ng-model="conversation.autosave" value=false ng-boolean-radio /> No
+								</label>
+							</div>
+						</div>
+						<div class="form-actions">
+							<input type="hidden" ng-model="conversation.preview">
+							<button type="submit" class="btn btn-primary">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
