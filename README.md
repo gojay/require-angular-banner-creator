@@ -53,3 +53,16 @@ git checkout master
 // then refresh your project again
 
 ```
+
+Some Configuration / Fix the Errors
+------------
+
+Go to folder api/vendor/vrana/. if folder **notorm** doesn't exists, create folder notorm. Copy all files/folder in _notorm, then paste in folder **notorm**
+
+Test **API** this application, go to http://[YOUR_APPLICATION]/api. If you see the **Slim 404**, the application is ready to run.
+
+if an occured PHP error, check your php version (> 5.3.2) for supporting PHP namespace. If still errors, follow the steps below : 
+
+- Delete folder vendor
+- Delete composer.lock and composer.phar
+- Read file at api/readme.md and follow the steps

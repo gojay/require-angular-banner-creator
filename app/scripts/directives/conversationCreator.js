@@ -754,7 +754,8 @@ define([
 					// make clicked, set template selected
 					$timeout(function() {
 						var link = parseInt($scope.conversation.selected) + 1;
-						$('a[href="#tpl-'+ link +'"]').click();
+						var template = $('nav > ul > li.active').text();
+						if( template !== 'Template 1') $('a[href="#tpl-'+ link +'"]').click();
 						$rootScope.pageService.loaded = true;
 					}, 1000);
 
