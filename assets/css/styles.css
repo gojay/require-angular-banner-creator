@@ -15,12 +15,23 @@ a:hover {
 
 /* Helper */
 
+.inline {
+	display: inline;
+}
+
 .prefix {
 	margin-left: 0 !important;
 }
 
 .show {
 	display: block !important;
+}
+
+.invisible {
+	visibility: hidden;
+}
+.visible {
+	visibility: visible;
 }
 
 .text-center {
@@ -42,6 +53,9 @@ a:hover {
 
 .margin-top {
 	margin-top: 20px;
+}
+.margin-top-zero {
+	margin-top: 0 !important;
 }
 
 .margin-top-bottom {
@@ -361,6 +375,19 @@ header nav {
 }
 #drop-backgrounds > .drop.loading ~ .drop-loading {
 	display: block;
+}
+
+#crop-wrapper {
+	width:100%; 
+	position: fixed; 
+	bottom:0;
+	z-index: 1020;
+	padding: 10px 0;
+	background-color: rgba(0,0,0,0.2); 
+	text-align: center;
+}
+#crop-wrapper button {
+	margin: 0 5px;
 }
 
 /* monitoring generate image */
@@ -792,4 +819,9 @@ h3 {
 	-webkit-box-shadow: 0 8px 6px -6px #3685C6;
 	   -moz-box-shadow: 0 8px 6px -6px #3685C6;
 	        box-shadow: 0 8px 6px -6px #3685C6;
+}
+
+.modal-large {
+   width:940px;
+   margin-left:-470px;
 }

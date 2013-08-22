@@ -1,8 +1,27 @@
 define(['services/services'], function(services){
 	services
-		.factory('BannerConfig', function(){
+		.factory('BannerImages', function(){
 			return {
-				text: {
+				bg : [
+					'images/dummy/810x381.jpg',
+					'images/dummy/810x339.jpg',
+					'images/dummy/770x315.jpg',
+				],
+				logo : [
+					'images/dummy/122x80.png',
+					'images/dummy/226x56.png'
+				],
+				prize : {
+					one   : ['images/dummy/340x183.png', 'images/dummy/208x109.png'],
+					two   : ['images/dummy/203x130.png', 'images/dummy/170x68.png'],
+					three : ['images/dummy/250x250.png', 'images/dummy/137x68.png']
+				}
+			};
+		})
+		.factory('BannerConfig', ['BannerImages', function(BannerImages){
+			return {
+				data: {
+					ID: null,
 					title : {
 						text    : 'Company Name, Company Contest, Contest',
 						limit   : 50,
@@ -13,29 +32,44 @@ define(['services/services'], function(services){
 						limit   : 225,
 						counter : 255
 					},
+					background : {
+						uploaded : false,
+						image : BannerImages.bg[0]
+					},
 					logo : {
 						hide: false,
 						w : 0,
-						h : 0
+						h : 0,
+						uploaded : false,
+						image : BannerImages.logo[0]
 					},
-					price : {
+					prize : {
 						title: 'This Month\'s Prizes',
 						one: {
 							text   : 'Enter prize 1 description',
 							limit  : 75,
-							counter: 75
+							counter: 75,
+							uploaded : false,
+							image : null
 						},
 						two: {
 							text    : 'Enter prize 2 description',
 							limit   : 75,
-							counter : 75
+							counter : 75,
+							uploaded : false,
+							image : null
 						},
 						three: {
 							text    : 'Enter prize 3 description',
 							limit   : 75,
-							counter : 75
+							counter : 75,
+							uploaded : false,
+							image : null
 						}
-					}
+					},
+					preview : null,
+					autosave : true,
+					selected : 0
 				},
 				dimensions : {
 					'tpl-0' : {
@@ -81,7 +115,7 @@ define(['services/services'], function(services){
 							width:810,
 							height:381
 						},
-						price : {
+						prize : {
 							width:340,
 							height:183
 						}
@@ -107,7 +141,7 @@ define(['services/services'], function(services){
 							width:810,
 							height:339
 						},
-						price : {
+						prize : {
 							width:203,
 							height:130
 						}
@@ -133,7 +167,7 @@ define(['services/services'], function(services){
 							width:770,
 							height:315
 						},
-						price : {
+						prize : {
 							width:250,
 							height:250
 						}
@@ -159,7 +193,7 @@ define(['services/services'], function(services){
 							width:810,
 							height:339
 						},
-						price : {
+						prize : {
 							width:208,
 							height:109
 						}
@@ -185,7 +219,7 @@ define(['services/services'], function(services){
 							width:810,
 							height:339
 						},
-						price : {
+						prize : {
 							width:170,
 							height:68
 						}
@@ -211,14 +245,14 @@ define(['services/services'], function(services){
 							width:810,
 							height:339
 						},
-						price : {
+						prize : {
 							width:137,
 							height:68
 						}
 					}
 				}
 			};
-		})
+		}])
 		.factory('BannerService', ['$resource',
 			function($resource){
 				return $resource('api/banner/:id', {}, {

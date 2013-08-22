@@ -36,26 +36,42 @@ function serializeRecursive($array, $not_in_key = null)
 
 function mapping_object_to_array( $columns, $object, $serialized = false )
 {
-	global $columns;
-
 	// convert objrct to array
 	$array = objectToArray($object);
 	// array manipulation
 	$creators       = array_intersect_key($array, array_flip($columns));
 	$creator_meta   = array_diff_key($array, array_flip($columns));
 
+	$base = 'images/upload/' . $creators['ID'] ;	
 	foreach ($creator_meta as $key => $value) {
-		if( is_array($value) && array_key_exists('uploaded', $value) ){
-			$im = UPLOAD_URL . '/' . $creators['ID'] . '/' . $key . '.png';
-			$imPath = BASE_PATH . '/' . $im;
-			if( $creator_meta[$key]['uploaded'] && file_exists($imPath) ){
-				$creator_meta[$key]['image'] = $im;
+		// meta prize
+		if( $key == 'prize' ){
+			$g1 = glob( BASE_PATH . '/' . $base . '/prize_1.*');
+			$g2 = glob( BASE_PATH . '/' . $base . '/prize_2.*');
+			$g3 = glob( BASE_PATH . '/' . $base . '/prize_3.*');
+			if( $creator_meta[$key]['one']['uploaded'] && $g1 ){
+				$imginfo = pathinfo($g1[0]);
+				$creator_meta[$key]['one']['image'] = $base . '/' . $imginfo['basename'];
+			}
+			if( $creator_meta[$key]['two']['uploaded'] && $g2 ){
+				$imginfo = pathinfo($g2[0]);
+				$creator_meta[$key]['two']['image'] = $base . '/' . $imginfo['basename'];
+			}
+			if( $creator_meta[$key]['three']['uploaded'] && $g3 ){
+				$imginfo = pathinfo($g3[0]);
+				$creator_meta[$key]['three']['image'] = $base . '/' . $imginfo['basename'];
+			}
+		} else if( is_array($value) && array_key_exists('uploaded', $value) ){
+			$g = glob( BASE_PATH . '/' . $base . '/' . $key . '.*');
+			if( $creator_meta[$key]['uploaded'] && $g ){
+				$imginfo = pathinfo($g[0]);
+				$creator_meta[$key]['image'] = $base . '/' . $imginfo['basename'];
 			}
 		}
 	}
 
 	// serialize creator meta
-	if($creator_meta){
+	if($serialized){
 		$creator_meta = serializeRecursive($creator_meta);
 	}
 	

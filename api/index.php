@@ -18,13 +18,18 @@ $app = new Slim\Slim();
 
 $app->get('/test', function() use($app){
 	$app->response()->header('Content-Type', 'application/json');
-	$imageURL = ABS_URL . "/images/upload/1375698601740/logo.png";
-	$image = BASE_PATH . "/images/upload/1375698601740/logo.png";
+	$imageURL = ABS_URL . "/images/upload/1375827178614/logo.png";
+	$image = BASE_PATH . "/images/upload/1375827178614/logo.png";
 	$ext = pathinfo($image, PATHINFO_EXTENSION);
 	$mime = "image/$ext";
+	$g = glob( BASE_PATH . "/images/upload/1377166547843/logo.*");
 	echo json_encode(array(
 		'match' => preg_match('!http://[^?#]+\.(?:jpe?g|png|gif)!Ui', $imageURL),
-		'data_uri' => create_data_uri('images/upload/1375698601740/logo.png')
+		// 'data_uri' => create_data_uri('images/upload/1375827178614/logo.png'),
+		'glob' => array(
+			'exists' => $g ? $g[0] : false,
+			'info' => $g ? pathinfo($g[0]) : null
+		)
 	));
 });
 
@@ -72,10 +77,46 @@ $app->get('/config', function() use($app, $db_config){
 	));
 });
 
-/* ================================ Conversation ================================ */
+// define columns
+$columns = array('ID', 'title', 'description', 'preview', 'autosave');
 
-// define conversation columns
-$conversation_columns = array('ID', 'title', 'description', 'preview', 'autosave');
+/* ================================ Banner ================================ */
+
+$app->post('/banner', function() use ($app, $db, $columns){
+	$app->response()->header("Content-Type", "application/json");
+	try{
+		$body = $app->request()->getBody();
+		$object = json_decode($body);
+		// mapping object to array
+		$arr = mapping_object_to_array($columns, $object);
+		// insert creator
+		// $creator = $db->creators()->insert(array(
+		// 	'creator_id'  => $arr['creators']['ID'],
+		// 	'title'       => $arr['creators']['title'],
+		// 	'type'        => 'conversation',
+		// 	'image'       => $arr['creators']['preview'],
+		// 	'description' => $arr['creators']['description'],
+		// 	'autosave'    => $arr['creators']['autosave']
+		// ));
+		// insert creator meta
+		// if( $arr['creator_meta'] )
+		// {
+		// 	foreach ($arr['creator_meta'] as $key => $value) {
+		// 		$creator->creator_meta()->insert(array(
+		// 			// 'creator_id' => $creator['creator_id'],
+		// 			'meta_key'   => $key,
+		// 			'meta_value' => $value
+		// 		));
+		// 	}
+		// }
+		// send response
+		echo json_encode($arr);
+	} catch(Exception $e) {
+		$app->halt(500, $e->getMessage());
+	}
+});
+
+/* ================================ Conversation ================================ */
 
 $templates = array(
 	array(
@@ -149,7 +190,9 @@ $app->get('/conversation/:conversationId', function($conversationId) use ($app, 
 			if($creator->creator_meta()){
 				foreach ($creator->creator_meta() as $meta){
 					$value = @unserialize($meta['meta_value']);
-					$data[$meta['meta_key']] = ($value === false) ? $meta['meta_value'] : convert_image_uri($value) ;
+					$data[$meta['meta_key']] = ($value === false) ? 
+												preg_match('/\d/', $meta['meta_value']) ? (int) $meta['meta_value'] : $meta['meta_value'] :
+												convert_image_uri($value) ;
 				}
 			}
 			sleep(2);
@@ -167,13 +210,13 @@ $app->get('/conversation/:conversationId', function($conversationId) use ($app, 
 		$app->halt(500, $e->getMessage());
 	}
 });
-$app->post('/conversation', function() use ($app, $db, $conversation_columns){
+$app->post('/conversation', function() use ($app, $db, $columns){
 	$app->response()->header("Content-Type", "application/json");
 	try{
 		$body = $app->request()->getBody();
 		$object = json_decode($body);
 		// mapping object to array
-		$arr = mapping_object_to_array($conversation_columns, $object, true);
+		$arr = mapping_object_to_array($columns, $object, true);
 		// insert creator
 		$creator = $db->creators()->insert(array(
 			'creator_id'  => $arr['creators']['ID'],
@@ -200,16 +243,30 @@ $app->post('/conversation', function() use ($app, $db, $conversation_columns){
 		$app->halt(500, $e->getMessage());
 	}
 });
-$app->put('/conversation/:conversationId', function($conversationId) use ($app, $db, $conversation_columns){
+$app->put('/conversation/:conversationId', function($conversationId) use ($app, $db, $columns){
 	$app->response()->header("Content-Type", "application/json");
-	$body = $app->request()->getBody();
-	$object = json_decode($body);
-	// mapping object to array
-	$data = mapping_object_to_array($conversation_columns, $object);
-	$data['ID']   = $conversationId;
-	$data['type'] = 'put';
-	// send response
-	echo json_encode($data);
+	try {
+		$body = $app->request()->getBody();
+		$object = json_decode($body);
+		// mapping object to array
+		$arr = mapping_object_to_array($columns, $object, true);
+
+		$creators = $db->creators[$conversationId];
+		foreach ($arr['creators'] as $key => $value) {
+			if($key == 'ID') continue;
+			if($key == 'preview') $key = 'image';
+			$creators[$key] = $value;
+		}
+		// update meta
+		foreach ($arr['creator_meta'] as $key => $value) {
+			$creators->creator_meta()->where(array('meta_key' => $key))->update(array('meta_value' => $value));
+		}
+		// send response
+		echo json_encode(true);
+		
+	} catch (Exception $e) {
+		$app->halt(500, $e->getMessage());
+	}
 });
 $app->delete('/conversation/:conversationId', function($conversationId) use ($app, $db){
 	$app->response()->header("Content-Type", "application/json");

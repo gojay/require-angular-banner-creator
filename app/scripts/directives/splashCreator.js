@@ -51,9 +51,6 @@ define([
 				},
 				link: function($scope, iElm, iAttrs, controller){
 
-					$('a.handler-left').attr('disabled', 'disabled'); // disabled
-					$('a.handler-right').attr('disabled', 'disabled'); // disabled
-
 					// define svg
 					var $svgEditor = $('#svg-editor'),
 					    $svg = $('svg', $svgEditor);

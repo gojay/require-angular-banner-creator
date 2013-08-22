@@ -35,8 +35,8 @@
 			      	<div class="accordion-inner">
 						<div class="control-group">
 							<div class="controls" style="margin-left: 0;">
-								<input type="checkbox" id="hide" ng-click="hideLogo($event)" /> 
-								<label for="hide">Hide Logo</label>
+								<input type="checkbox" id="hide" class="margin-top-zero" ng-click="hideLogo($event)" /> 
+								<label class="inline" for="hide">Hide Logo</label>
 							</div>
 						</div>
 						<div class="control-group">
@@ -54,8 +54,8 @@
 						</div>
 						<div class="control-group">
 							<div class="controls" style="margin-left: 0;">
-								<input type="checkbox" id="placeholder" ng-click="addWhitePlaceholder($event)" /> 
-								<label for="placeholder">Add Placeholder</label>
+								<input type="checkbox" id="placeholder" class="margin-top-zero" ng-click="addWhitePlaceholder($event)" /> 
+								<label class="inline" for="placeholder">Add Placeholder</label>
 							</div>
 						</div>
 			      	</div>
@@ -115,28 +115,28 @@
 						<div class="control-group" ng-hide="isNoPrize">
 							<label>Prize Header</label>
 							<div class="controls" style="margin-left: 0;">
-								<input type="text" class="input-large" ng-model="banner.price.title" />
+								<input type="text" class="input-large" ng-model="banner.prize.title" />
 							</div>
 						</div>
 						<div class="control-group" ng-show="tplShowPrice >= 1">
 							<label>Prize 1</label>
 							<div class="controls" style="margin-left: 0;">
-								<textarea class="input-large" ng-model="banner.price.one.text" placeholder="Enter Prize description here.." rows="4"></textarea>
-								<p class="help-block text-right">Limit : {{banner.price.one.counter}}/{{banner.price.one.limit}}</p>
+								<textarea class="input-large" ng-model="banner.prize.one.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+								<p class="help-block text-right">Limit : {{banner.prize.one.counter}}/{{banner.prize.one.limit}}</p>
 							</div>
 						</div>
 						<div class="control-group" ng-show="tplShowPrice >= 2">
 							<label>Prize 2</label>
 							<div class="controls" style="margin-left: 0;">
-								<textarea class="input-large" ng-model="banner.price.two.text" placeholder="Enter Prize description here.." rows="4"></textarea>
-								<p class="help-block text-right">Limit : {{banner.price.two.counter}}/{{banner.price.two.limit}}</p>
+								<textarea class="input-large" ng-model="banner.prize.two.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+								<p class="help-block text-right">Limit : {{banner.prize.two.counter}}/{{banner.prize.two.limit}}</p>
 							</div>
 						</div>
 						<div class="control-group" ng-show="tplShowPrice >= 3">
 							<label>Prize 3</label>
 							<div class="controls" style="margin-left: 0;">
-								<textarea class="input-large" ng-model="banner.price.three.text" placeholder="Enter Prize description here.." rows="4"></textarea>
-								<p class="help-block text-right">Limit : {{banner.price.three.counter}}/{{banner.price.three.limit}}</p>
+								<textarea class="input-large" ng-model="banner.prize.three.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+								<p class="help-block text-right">Limit : {{banner.prize.three.counter}}/{{banner.prize.three.limit}}</p>
 							</div>
 						</div>
 			      	</div>
@@ -145,15 +145,6 @@
 		</div>
 	</fieldset>
 </form>
-<!-- <button class="btn btn-primary btn-block" type="button" ng-click="foreignToSVGXML($event)">
-	Foreign To SVGXML
-</button>
-<button class="btn btn-primary btn-block" type="button" ng-click="test($event)">
-	Test
-</button> -->
-<button class="btn btn-primary btn-block" type="button" ng-click="convert($event)">
+<button class="btn btn-success btn-block" type="button" ng-click="convert($event)">
 	<i class="icon-picture"></i> Generate Image
-</button>
-<button class="btn btn-primary btn-block" type="button" ng-click="inspect($event)">
-	Inspect
 </button>

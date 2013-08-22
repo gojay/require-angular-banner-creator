@@ -13,6 +13,7 @@ require.config({
 		// core
 		angular      : 'vendor/angular/angular.min',
 		angularResource : 'vendor/angular/angular-resource.min',
+		angularCookies  : 'vendor/angular/angular-cookies.min',
 		jquery       : 'vendor/jquery/jquery.min',
 		bootstrap    : 'vendor/bootstrap/bootstrap.min',
 		// jQuery UI & Plugins
@@ -43,7 +44,8 @@ require.config({
 			deps: ['jquery'],
 			exports: 'angular'
 		},
-		angularResource : ['angular']
+		angularResource : ['angular'],
+		angularCookies : ['angular']
 	}
 });
 
@@ -110,11 +112,11 @@ function(angular, app, domReady){
 					title : '| Banner',
 					breadcrumb : {
 						current:  'Facebook Banner Template',
-						active :  'Template 1'
+						active :  'Template Empty Prize'
 					},
 					static      : true,
-					// templateUrl : 'app/views/banner.html',
-					template   : '<h3>Under construction</h3>',
+					templateUrl : 'app/views/banner.html',
+					// template   : '<h3>Under construction</h3>',
 					controller : 'BannerController',
 					resolve: {
 						delay: function($q, $timeout) {

@@ -55,6 +55,8 @@ define([
 
 					/* model */
 
+					self.oldConversation = angular.copy($scope.conversation);
+
 					console.log('recents', $scope.conversations);
 
 					$scope.isNew = false;
@@ -96,6 +98,25 @@ define([
 					$scope.$watch('conversation.spot2.clip', function(clip){
 						self.setClip(clip, 'spot2');
 					});
+
+					var selected = ['logo', 'spot1', 'spot2', 'selected'];
+					self.mergeSelected = function( type ){
+						var obj = (type == 'old') ? self.oldConversation : $scope.conversation ;
+						var mObj = {};
+						$.each(selected, function(key, val) {
+							if(obj.hasOwnProperty(val)){
+								mObj[val] = obj[val];
+							}
+						});
+						return mObj;
+					};
+					self.isEdited = function(){
+						var objOld = self.mergeSelected('old');
+						var objNew = self.mergeSelected('new');
+						var r = !angular.equals(objOld, objNew);
+						return r;
+					};
+					
 
 					/* scope listener */
 
@@ -191,13 +212,16 @@ define([
 					$scope.syncPosition = function(el, direction){
 						var val, tplDirection = ConversationTpl.directions[direction];
 						if(direction == 'landscape'){
-							var x = tplDirection.w;
-							var p = parseInt($scope.conversation[el].position.x / 403 * 100);
-							val = p / 100 * x;
+							// var x = tplDirection.w;
+							// var p = parseInt($scope.conversation[el].position.x / 403 * 100);
+							var diff = tplDirection.w - 403;
+							val = parseInt(diff / 100 * $scope.conversation[el].position.x);
 						} else if(direction == 'portrait') {
-							var y = tplDirection.h;
-							var p = parseInt($scope.conversation[el].position.y / 403 * 100);
-							val = p / 100 * y;
+							// var y = tplDirection.h;
+							// var p = parseInt($scope.conversation[el].position.y / 403 * 100);
+							// val = p / 100 * y;
+							var diff = tplDirection.h - 403;
+							val = parseInt(diff / 100 * $scope.conversation[el].position.y);
 						}
 						return val;
 					}
@@ -268,8 +292,16 @@ define([
 							});
 						}
 					};
+
+					// get selected conversations index
+					// get list id panel left on thumbnail selected
+					self.getSelectedConversationsIndex = function(){
+						var lID = $('#conversation-panel-left .thumbnail.selected').parents('li').attr('id');
+						if(!lID) return null;
+						return lID.match(/\d/)[0];
+					};
 					/* 
-					 * Generate preview template before save (form[])
+					 * Generate preview template before save (form)
 					 */
 					self.generatePreviewTpl = function( callback ){
 						var $svg = $('svg#svg-conversation');
@@ -284,8 +316,14 @@ define([
 								crop  : false
 							}).then(function(response){
 								console.log(response);
+								// get selected conversations index
+								var index = self.getSelectedConversationsIndex();
 								$scope.$apply(function(scope){
-									scope.conversation.preview = response.url;
+									$timeout(function(){
+										var img = response.url + '#' + new Date().getTime();
+										scope.conversation.preview = img;
+										scope.conversations[index].preview = img;
+									}, 1000);
 								});
 								console.log($scope.conversation);
 								if(callback) callback();
@@ -331,7 +369,7 @@ define([
 							});
 						}
 						$.when(currentFile).done(function(res) {
-							console.log("Finished add to list", res);
+							// console.log("Finished add to list", res);
 							$scope.$apply(function(scope){
 								scope.conversation.queue.empty = false;
 								scope.conversation.queue.count = res.length;
@@ -722,12 +760,8 @@ define([
 				},
 				link: function($scope, iElm, iAttrs, controller) {
 
-					$('a.handler-left', controller.navbarPanel).removeAttr('disabled');
-					$('a.handler-right', controller.navbarPanel).removeAttr('disabled');
-
-					// if u want to disable one of the panels
-					// $('a.handler-left', controller.navbarPanel).attr('disabled', 'disabled'); // disabled
-					// $('a.handler-left', controller.navbarPanel).hide(); // or hidden
+					$('a.handler-left').switchClass('invisible', 'visible', 0);
+					$('a.handler-right').switchClass('invisible', 'visible', 0);
 
 					/* handling collapse */
 
@@ -754,8 +788,7 @@ define([
 					// make clicked, set template selected
 					$timeout(function() {
 						var link = parseInt($scope.conversation.selected) + 1;
-						var template = $('nav > ul > li.active').text();
-						if( template !== 'Template 1') $('a[href="#tpl-'+ link +'"]').click();
+						$('a[href="#tpl-'+ link +'"]').click();
 						$rootScope.pageService.loaded = true;
 					}, 1000);
 
@@ -772,10 +805,10 @@ define([
 							orderReserve : true,
 							cols : 'cols3'
 						};
-					// otherwise, add model selected for edit view
-					} else {
-						$rootScope.panel.left.model.selected = $scope.conversation.ID;
 					}
+					// add model selected for edit view
+					$rootScope.panel.left.model.selected = $scope.conversation.ID;
+
 					// get conversation panel left
 					var $panelLeft = '<div ng-include src="\'app/views/conversation-panel-left.html\'"></div>';
 					// bind panel left (rootScope), compile inject scope
@@ -859,32 +892,55 @@ define([
 						$location.path('/facebook/conversation');
 					};
 					// save template
-					$scope.save = function(){
+					$scope.saveSubmit = function(){
 						var elPreview   = $('#save-conversation'); // form
 						var blockUI     = controller.blockUI;
 						var saveMsg     = 'Saving..';
 
-						blockUI.message = '<i class="icon-spinner icon-spin icon-2x"></i> <br/> <span>Generating template..</span>';
-						elPreview.block(blockUI);
-						controller.generatePreviewTpl(function(){
-							$('.blockMsg span', elPreview).text(saveMsg);
-							controller.save(function(redirected){
-								if( redirected ){
-									// redirect message
-									$('.blockMsg > span', elPreview).text('Please wait, you will be redirecting to this conversation...');
-									// close panel
-									$('a.handler-'+targetPanel, controller.navbarPanel).click();
-									$timeout(function(){
-										// hide loading popup
-										elPreview.unblock();
-										// redirect to edit conversation
-										$location.path('/facebook/conversation/' + $scope.conversation.ID);
-									}, 3000);
-								} else {
+						if( $scope.conversation.preview === null || controller.isNew || controller.isEdited() ){
+							console.info('generate template then save POST');
+							blockUI.message = '<i class="icon-spinner icon-spin icon-2x"></i> <br/> <span>Generating template..</span>';
+							elPreview.block(blockUI);
+							// generate preview tpl / screenshot
+							controller.generatePreviewTpl(function(){
+								$('.blockMsg span', elPreview).text(saveMsg);
+								doSave( elPreview, function(){
+									// reset old conversation
+									controller.oldConversation = angular.copy($scope.conversation);
+									// applying selected conversations
+									var index = controller.getSelectedConversationsIndex();
+									var c = $scope.conversations[index];
+									c.title       = controller.oldConversation.title;
+									c.description = controller.oldConversation.description;
+								});
+							});
+						} else {
+							console.info('save PUT');
+							blockUI.message = '<i class="icon-spinner icon-spin icon-2x"></i> <br/> <span>Saving..</span>';
+							elPreview.block(blockUI);
+							doSave( elPreview );
+						}
+					};
+					// do save
+					var doSave = function( elPreview, callback ){
+						controller.save(function(redirected){
+							if( redirected ){
+								// redirect message
+								$('.blockMsg > span', elPreview).text('Please wait, you will be redirecting to this conversation...');
+								// close panel
+								$('a.handler-'+targetPanel, controller.navbarPanel).click();
+								$timeout(function(){
 									// hide loading popup
 									elPreview.unblock();
-								}
-							});
+									// redirect to edit conversation
+									$location.path('/facebook/conversation/' + $scope.conversation.ID);
+									if(callback) callback();
+								}, 3000);
+							} else {
+								// hide loading popup
+								elPreview.unblock();
+								if(callback) callback();
+							}
 						});
 					};
 
