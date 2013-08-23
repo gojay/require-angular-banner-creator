@@ -2,14 +2,21 @@ define([
 	'controllers/controllers',
 	'services/bannerService'
 ], function(controllers){
-	controllers.controller('BannerController', ['$scope', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService',
-		function($scope, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService){
+	controllers.controller('BannerController', ['$scope', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService', 'banners',
+		function($scope, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService, banners){
 			
 			// banner dimensions
 			var dimensions = BannerConfig.dimensions;
-			// banner model text
+
+			// model recent banners 
+			$scope.banners = banners;
+
+			console.log('tpl', $scope.banners.templates)
+
+			// banner model 
 			$scope.banner  = BannerConfig.data;
 			$scope.banner.ID = new Date().getTime();
+			$scope.allowDownloadable = BannerConfig.allowDownloadable;
 
 			/* tabbable */
 			// set tab selected
@@ -21,22 +28,30 @@ define([
 				var type     = parseInt($(e.target).data('type')) - 1;
 				var prize    = $(e.target).data('price').match(/\d/)[0];
 				var en       = ['one', 'two', 'three'][prize - 1];
+
+				console.log(type)
+
 				// applying banner images
 				$scope.$apply(function(scope){
 					scope.banner.selected = selected;
 					// apply bg image
 					if( selected <= 1 ) {
 						scope.banner.background.image = BannerImages.bg[0];
+						scope.banner.background.type  = '1';
 					} else if( selected == 3 ) {
 						scope.banner.background.image = BannerImages.bg[2];
+						scope.banner.background.type  = '3';
 					} else {
 						scope.banner.background.image = BannerImages.bg[1];
+						scope.banner.background.type  = '2';
 					}
-					// logo n prize image
-					scope.banner.logo.image        = BannerImages.logo[type];
-					scope.banner.prize.one.image   = BannerImages.prize[en][type];
-					scope.banner.prize.two.image   = BannerImages.prize[en][type];
-					scope.banner.prize.three.image = BannerImages.prize[en][type];
+					// logo n prize image (has prize only)
+					if( selected != 0 ){
+						scope.banner.logo.image        = BannerImages.logo[type];
+						scope.banner.prize.one.image   = BannerImages.prize[en][type];
+						scope.banner.prize.two.image   = BannerImages.prize[en][type];
+						scope.banner.prize.three.image = BannerImages.prize[en][type];
+					}
 				});
 				// set text breadcrumb
 			  	var text = e.target.innerHTML;
@@ -95,6 +110,25 @@ define([
 				});
 			});
 
+			$scope.setBG = function(type, evt){
+				var $el     = $(evt.target),
+					$parent = $el.parent();
+				$('.btn', $parent).each(function(){ $(this).removeClass('active') });
+				$el.addClass('active');
+				
+				var tplType = $scope.banner.background.type;
+				console.log('tplType', tplType)
+				if(type == 'upload') {
+					$scope.banner.background.image  = BannerImages.bg[tplType];
+					$scope.banner.background.enable = true;
+				} else {
+					$scope.banner.background.image  = $scope.banners.templates[tplType][type];
+					$scope.banner.background.enable = false;
+				}
+
+				$scope.banner.background.set = type;
+			};
+
 			$scope.doSetting = function($event){
 				var $btnTemplate     = $($event.currentTarget);
 				var $btnCancel       = $btnTemplate.next();
@@ -150,6 +184,10 @@ define([
 						}
 					});
 					$('.blockOverlay').attr('title','Click to cancel').click($.unblockUI);
+
+					setTimeout(function(){
+						$('#Background .bg-' + $scope.banner.background.set).click();
+					}, 1000);
 					return;
 				}
 				// return to the templates
@@ -165,10 +203,15 @@ define([
 					});
 					return;
 				}
+
+				setTimeout(function(){
+					$('#Background .bg-' + $scope.banner.background.set).click();
+				}, 1000);
+
 				bannerSetting(settings, false);
 			};
 
-			$scope.overwiriteTplYes = function(evt){
+			$scope.overwiriteTplYes = function(co){
 				$('#popup-overwrite').trigger('overwrite');
 			};
 			$scope.overwiriteTplNo = function(evt){
@@ -807,7 +850,7 @@ define([
 					canvas.width  = img.width;
 					canvas.height = img.height;
 					ctx.drawImage(img, 0, 0);
-					var imgDataURI = canvas.toDataURL('image/jpeg');
+					var imgDataURI = canvas.toDataURL('image/jpg');
 					callback(img, imgDataURI);
 				};
 				img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent( svg_xml )));
@@ -837,7 +880,8 @@ define([
 			 * converting SVG's then add into Zip
 			 * and also upload the screenshot (SVG LIKE)
 			 */
-			$scope.convert = function(evt){
+			$scope.generate = function( isSaved ){
+				// open loading popup
 				$.blockUI({
 					message: $('#popup-loading-img'),
 					overlayCSS:{
@@ -852,115 +896,189 @@ define([
 					}
 				});
 
+				var $progress = $('#popup-loading-img > .generate-progress');
+
 				// define SVG
 				$('#svg-editor > svg').each(function(){ $(this).show(); });
 				var svg_like  = $('#svg-editor > svg').eq(0)[0];
 				var svg_enter = $('#svg-editor > svg').eq(1)[0];
 
 				// define jsZip
-				var zip = new JSZip();
+				var ZIP = new JSZip();
 
+				$progress.text('Generating banner like...');
 				// convert image svg like, then upload the screenshot
 				svgToImage(svg_like, function(imgLike, imgDataURILike){
-					// add banner img to zip
-					var imgURI = imgDataURILike.replace(/^data:image\/(png|jpg);base64,/, "");
-					zip.file('banner_like.jpg', imgURI, {base64: true});
-					// create download anchor
-					var downloadLinkLike       = document.createElement('a');
-					downloadLinkLike.title     = 'Download Banner Like';
-					downloadLinkLike.href      = imgDataURILike;
-					downloadLinkLike.target    = '_blank';
-					downloadLinkLike.className = 'btn btn-success';
-					downloadLinkLike.innerHTML = '<i class="icon-download-alt"></i> Download Banner Like';
-					downloadLinkLike.download  = 'banner-like.jpg';
-					// create canvas banner enter
-					svgToImage(svg_enter, function(imgEnter, imgDataURIEnter){
-						// add banner img to zip
-						var imgURI = imgDataURIEnter.replace(/^data:image\/(png|jpg);base64,/, "");
-						zip.file('banner_enter.jpg', imgURI, {base64: true});
-						// create download anchor
-						var downloadLinkEnter       = document.createElement('a');
-						downloadLinkEnter.title     = 'Download Banner Enter';
-						downloadLinkEnter.href      = imgDataURIEnter;
-						downloadLinkEnter.target    = '_blank';
-						downloadLinkEnter.className = 'btn btn-success';
-						downloadLinkEnter.innerHTML = '<i class="icon-download-alt"></i> Download Banner Enter';
-						downloadLinkEnter.download  = 'banner-enter.jpg';
-						// set image class
-						imgLike.className  = 'span12';
-						imgEnter.className = 'span12';
-						// define generate element
-						var $generate = $('#popup-result-generate-image-modal');
-						var $generateBody = $generate.find('.modal-body');
-						// create template banner list
-						var tplImages = '<li class="span6 banner-like">' +
-											'<div class="thumbnail">' + imgLike.outerHTML +
-												'<div class="caption">' +
-													'<h3>Banner Like</h3>' +
-													'<p>This is banner like description</p>'+
-													'<p>'+ downloadLinkLike.outerHTML +'</p>' +
-												'</div>' +
-											'</div>' +
-										'</li>'+
-										'<li class="span6 banner-like">' +
-											'<div class="thumbnail">' + imgEnter.outerHTML +
-												'<div class="caption">' +
-													'<h3>Banner Enter</h3>' +
-													'<p>This is banner enter description</p>'+
-													'<p>'+ downloadLinkEnter.outerHTML +'</p>' +
-												'</div>' +
-											'</div>' +
-										'</li>';
-						// append banner images
-						$('#preview > ul', $generateBody)
-							.html('')
-							.append(tplImages);
-						// generate zip link
-						var DOMURL = window.URL || window.mozURL;
-						var downloadlink = DOMURL.createObjectURL(zip.generate({type:"blob"}));
-						// get zipe selement n set attribute
-						var zipEl      = $generate.find('.download-zip')[0];
-						zipEl.download = 'banner-'+$scope.banner.ID+'.zip';
-						zipEl.href     = downloadlink;
 
-						console.info('finished adding the images into zip');
+					/* upload banner like */
 
-						/* Upload banner screenshot (banner like) */
+					// convert data URI to blob (banner like as screenshot/preview)
+					var blobLike = dataURItoBlob(imgDataURILike);
 
-						// convert data URI to blob (banner like as screenshot/preview)
-						var blob = dataURItoBlob(imgDataURILike);
+					console.log('blob banner like', blobLike);
+					console.info('start uploading banner like screenshot..');
+				
+					$progress.text('Uploading banner like...');
 
-						console.log('blob banner screenshot', blob);
-						console.info('start uploading banner screenshot..');
+					// do upload banner like
+					uploadFile({
+						file  : blobLike,
+						name  : 'banner-like',
+						width : 'original',
+						height: 'original',
+						crop  : false
+					}).success(function(response){
+						var imgPreview = response.url;
+						
+						$progress.text('Generating banner enter...');
 
-						uploadFile({
-							file  : blob,
-							name  : 'banner-tpl',
-							width : 'original',
-							height: 'original',
-							crop  : false
-						}).success(function(response){
-							console.log('response banner screenshot', response);
-							// apply banner preview (banner like)
-							$scope.$apply(function(scope){
-								scope.banner.preview = response.url;
-							});
-							// open popup
-							setTimeout(function() {
-								$.unblockUI({
-									onUnblock: function() {
-										// show generated popup without backdrop (bootstrap)
-										$generate.modal({
-											backdrop: false,
-											show: true
-										});
-									}
+						// create canvas banner enter
+						svgToImage(svg_enter, function(imgEnter, imgDataURIEnter){
+							
+							/* upload banner enter */
+
+							// convert data URI to blob
+							var blobEnter = dataURItoBlob(imgDataURIEnter);
+
+							console.log('blob banner enter', blobEnter);
+							console.info('start uploading banner enter screenshot..');
+
+							$progress.text('Uploading banner enter...');
+
+							// do upload banner enter
+							uploadFile({
+								file  : blobEnter,
+								name  : 'banner-enter',
+								width : 'original',
+								height: 'original',
+								crop  : false
+							}).success(function(response){
+								console.log('response banner enter', response);
+								
+								// applying scope
+								$scope.$apply(function(scope){ 
+									scope.allowDownloadable = true;       // enable download
+									scope.banner.preview    = imgPreview; // set banner like as image preview
 								});
-							}, 1000);
-						});
+							
+								$progress.text('Adding banner images into ZIP...');
 
+								/* add banner images to zip */
+
+								// get base64 data URI
+								var imgURILike  = imgDataURILike.replace(/^data:image\/(png|jpg);base64,/, "");
+								var imgURIEnter = imgDataURIEnter.replace(/^data:image\/(png|jpg);base64,/, "");
+								// create folder n add image files into folder
+								var imgFolder = ZIP.folder('banner-'+$scope.banner.ID);
+								imgFolder.file('banner_like.jpg', imgURILike, {base64: true});
+								imgFolder.file('banner_enter.jpg', imgURIEnter, {base64: true});
+
+								// generate template modal n show
+								// generate ZIP file
+								var generateCallback = showModalNgenerateZIP({
+									el : {
+										like  : imgLike,
+										enter : imgEnter
+									},
+									uri : {
+										like  : imgDataURILike,
+										enter : imgURIEnter
+									}
+								}, function(){
+									// close loading popup
+									setTimeout(function() {
+										$progress.text('');
+										$.unblockUI({
+											onUnblock: function() {
+												// show generated popup without backdrop (bootstrap)
+												$generate.modal({
+													backdrop: false,
+													show: true
+												});
+											}
+										});
+									}, 1000);
+								});
+
+								if( isSaved ){
+									console.info('do Save');
+									doSave( generateCallback );
+								} else {
+									console.info('generate only');
+									generateCallback();
+								}
+								
+							});
+						});
+						
 					});
+					
 				});
+			};
+
+			var showModalNgenerateZIP = function( data, callback ){
+				// create download anchor
+				var downloadLinkLike       = document.createElement('a');
+				downloadLinkLike.title     = 'Download Banner Like';
+				downloadLinkLike.href      = data.uri.like;
+				downloadLinkLike.target    = '_blank';
+				downloadLinkLike.className = 'btn btn-success';
+				downloadLinkLike.innerHTML = '<i class="icon-download-alt"></i> Download Banner Like';
+				downloadLinkLike.download  = 'banner-like-'+ $scope.banner.ID +'.jpg';
+				// create download anchor
+				var downloadLinkEnter       = document.createElement('a');
+				downloadLinkEnter.title     = 'Download Banner Enter';
+				downloadLinkEnter.href      = data.uri.enter;
+				downloadLinkEnter.target    = '_blank';
+				downloadLinkEnter.className = 'btn btn-success';
+				downloadLinkEnter.innerHTML = '<i class="icon-download-alt"></i> Download Banner Enter';
+				downloadLinkEnter.download  = 'banner-enter-'+ $scope.banner.ID +'.jpg';
+
+				// set image class
+				var el = data.el;
+				el.like.className  = 'span12';
+				el.enter.className = 'span12';
+				// define generate element
+				var $generate     = $('#popup-result-generate-image-modal');
+				var $generateBody = $generate.find('.modal-body');
+				// create template banner list
+				var tplImages = '<li class="span6 banner-like">' +
+									'<div class="thumbnail">' + el.like.outerHTML +
+										'<div class="caption">' +
+											'<h3>Banner Like</h3>' +
+											'<p>This is banner like description</p>'+
+											'<p>'+ downloadLinkLike.outerHTML +'</p>' +
+										'</div>' +
+									'</div>' +
+								'</li>'+
+								'<li class="span6 banner-like">' +
+									'<div class="thumbnail">' + el.enter.outerHTML +
+										'<div class="caption">' +
+											'<h3>Banner Enter</h3>' +
+											'<p>This is banner enter description</p>'+
+											'<p>'+ downloadLinkEnter.outerHTML +'</p>' +
+										'</div>' +
+									'</div>' +
+								'</li>';
+				// append banner images
+				$('#preview > ul', $generateBody)
+					.html('')
+					.append(tplImages);
+				// generate zip link
+				var DOMURL = window.URL || window.mozURL;
+				var downloadlink = DOMURL.createObjectURL(ZIP.generate({type:"blob"}));
+
+				// var content = ZIP.generate();
+
+				// get zipe selement n set attribute
+				var zipEl      = $generate.find('.download-zip')[0];
+				zipEl.download = 'banner-'+ $scope.banner.ID +'.zip';
+				// zipEl.href     = "data:application/zip;base64," + content;
+				zipEl.href     = downloadlink;
+
+				console.info('finished adding the images into zip');
+
+				if( callback ) callback();
 			};
 
 			var uploadFile = function(data){
@@ -995,7 +1113,7 @@ define([
 				var banner = new BannerService($scope.banner);
 				banner.$save(function(response){
 					console.log('Save response', response);
-					if(callback) callback(true);
+					if(callback) callback();
 				});
 				// if( self.isNew ){
 				// 	banner.$save(function(response){

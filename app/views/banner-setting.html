@@ -1,7 +1,7 @@
-<form class="form-horizontal">
+<form class="form-horizontal margin-bottom-zero">
 	<fieldset>
 		<div class="accordion" id="accordion2">
-			<div class="accordion-group">
+			<div class="accordion-group" style=" border-top: 1px solid #E5E5E5; ">
 				<div class="accordion-heading">
 			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Background">
 			        	Background
@@ -10,6 +10,17 @@
 			    <div id="Background" class="accordion-body collapse in">
 			      	<div class="accordion-inner">
 			        	<div class="control-group">
+							<label class="control-label" style="margin-left:0; text-align:left;">Set Background</label>
+							<div class="controls" style="margin-left:0;">
+							    <div class="btn-group">
+								    <button class="btn bg-upload active" ng-click="setBG('upload', $event)">Upload</button>
+								    <button class="btn bg-feris" ng-click="setBG('feris', $event)">Feris</button>
+								    <button class="btn bg-grass" ng-click="setBG('grass', $event)">Grass</button>
+								    <button class="btn bg-younf" ng-click="setBG('young', $event)">Young</button>
+							    </div>
+							</div>
+						</div>
+			        	<div class="control-group" ng-show="banner.background.enable">
 							<label class="control-label" style="margin-left:0; text-align:left;">Upload Background</label>
 							<div class="controls" style="margin-left:0;">
 								<input type="file" id="input-background" class="hide" />
@@ -90,7 +101,7 @@
 			      	</div>
 			    </div>
 			</div>
-			<div class="accordion-group">
+			<div class="accordion-group" style=" border-bottom: 1px solid #E5E5E5; ">
 				<div class="accordion-heading">
 			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Text">
 			        	Text
@@ -145,6 +156,17 @@
 		</div>
 	</fieldset>
 </form>
-<button class="btn btn-success btn-block" type="button" ng-click="convert($event)">
-	<i class="icon-picture"></i> Generate Image
+<div class="align-center margin-bottom">
+	<div class="btn-group btn-block">
+	  	<button class="btn btn-success" ng-click="generate(false)" style="width:90%">Generate Image</button>
+	  	<button class="btn btn-success dropdown-toggle" data-toggle="dropdown" style="width:10%">
+	   	 	<span class="caret"></span>
+	  	</button>
+	    <ul class="dropdown-menu btn-block">
+	      	<li><a href ng-click="generate(true)">Generate Image & Save</a></li>
+	    </ul>
+	</div>
+</div>
+<button class="btn btn-success btn-block" type="button" data-toggle="modal" data-target="#popup-result-generate-image-modal" ng-disabled="!allowDownloadable">
+	<i class="icon-download"></i> Download
 </button>

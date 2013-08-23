@@ -1,7 +1,7 @@
 <div id="popup-overwrite" style="display: none; width: 649px; height: 479px; position: relative; background: url('assets/img/ragecomic-focused.png') no-repeat; background-position: -1px -1px; font-size: 19px; line-height: 35px;"> 
-	<div class="message" style="position: absolute;right: 7%;top: 37px; width: 352px;height: 120px;">
+	<div class="message" style="position: absolute;right: 7%;top: 60px; width: 352px;">
 	    <p style="font-weight: bold; margin: 10px 10px 0;">Do you want to overwrite it ?</p> 
-	    <p class="text-center" style="padding: 0 10px;position: absolute;top: 107px;right: 119px;">
+	    <p class="text-center" style="padding: 0 10px;position: absolute;top: 54px;right: 119px;">
 		    <button class="btn-link" ng-click="overwiriteTplYes($event)">Yes</button>
 		    <button class="btn-link" ng-click="overwiriteTplNo($event)">No</button>
 	    </p>
@@ -64,4 +64,8 @@
 		<a href class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
 	</div>
 </div>
-<img id="popup-loading-img" class="hide" src="assets/img/loading-problem.png" width="375" height="350" />
+
+<div id="popup-loading-img" class="hide">
+	<img src="assets/img/loading-problem.png" width="375" height="350" />
+	<h3 class="generate-progress" style="color:#f5f5f5; border-bottom: none;"></h3>
+</div>

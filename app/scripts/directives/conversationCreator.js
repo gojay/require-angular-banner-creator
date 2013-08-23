@@ -36,7 +36,8 @@ define([
 					// define dimensions
 					self.dimensions = ConversationTpl.dimensions;
 					// define jsZip
-					self.zip = new JSZip();
+					self.ZIP = new JSZip();
+					self.ZIPFolder = self.ZIP.folder('conversation-'+$scope.conversation.ID);
 					// style blockUI
 					self.blockUI = {
 						overlayCSS: {
@@ -256,7 +257,7 @@ define([
 								console.log(response);
 								// generated zip 
 								var DOMURL = window.URL || window.mozURL;
-								var link   = DOMURL.createObjectURL(self.zip.generate({type:"blob"}));
+								var link   = DOMURL.createObjectURL(self.ZIP.generate({type:"blob"}));
 								// set anchor link
 								var aZip = document.getElementById('downloadZip');
 								aZip.download = 'conversation-'+ $scope.conversation.ID +'.zip';
@@ -655,7 +656,7 @@ define([
 									// generate image
 									return self.generateImage($svg[0]).done(function(imgDataURI){
 										// add to zip
-										self.zip.file('image_'+index+'.jpg', imgDataURI, {base64: true});
+										self.ZIPFolder.file('conversation_'+index+'.jpg', imgDataURI, {base64: true});
 										// applying finished images
 										$scope.$apply(function(scope){
 											scope.conversation.queue.finished = index;

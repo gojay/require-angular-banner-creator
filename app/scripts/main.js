@@ -114,11 +114,20 @@ function(angular, app, domReady){
 						current:  'Facebook Banner Template',
 						active :  'Template Empty Prize'
 					},
-					static      : true,
+					// static      : true,
 					templateUrl : 'app/views/banner.html',
-					// template   : '<h3>Under construction</h3>',
 					controller : 'BannerController',
 					resolve: {
+						banners: function($rootScope, BannerTemplates){
+							$rootScope.pageService.message = 'Preparing recent banners..';
+							return BannerTemplates().then(function(templates){
+								$rootScope.pageService.start = false;
+								return {
+									templates : templates,
+									recents   : null
+								};
+							});
+						},
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
 							$timeout(delay.resolve, 1000);

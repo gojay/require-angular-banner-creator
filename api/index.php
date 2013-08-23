@@ -82,6 +82,54 @@ $columns = array('ID', 'title', 'description', 'preview', 'autosave');
 
 /* ================================ Banner ================================ */
 
+$templates = array(
+	'1' => array(
+		'grass' => data_uri(BASE_PATH . '/images/banner/1-Prize-Background-Grass.jpg', 'image/jpg'),
+		'feris' => data_uri(BASE_PATH . '/images/banner/1-Prize-Background-Feris.jpg', 'image/jpg'),
+		'young' => data_uri(BASE_PATH . '/images/banner/1-Prize-Background-Young.jpg', 'image/jpg')
+	),
+	'2' => array(
+		'grass' => data_uri(BASE_PATH . '/images/banner/General-Background-Grass.jpg', 'image/jpg'),
+		'feris' => data_uri(BASE_PATH . '/images/banner/General-Background-Feris.jpg', 'image/jpg'),
+		'young' => data_uri(BASE_PATH . '/images/banner/General-Background-Young.jpg', 'image/jpg')
+	),
+	'3' => array(
+		'grass' => data_uri(BASE_PATH . '/images/banner/3-Prizes-Background-Grass.jpg', 'image/jpg'),
+		'feris' => data_uri(BASE_PATH . '/images/banner/3-Prizes-Background-Feris.jpg', 'image/jpg'),
+		'young' => data_uri(BASE_PATH . '/images/banner/3-Prizes-Background-Young.jpg', 'image/jpg')
+	)
+);
+
+$app->get('/banner', function() use ($app, $db, $templates){
+	$app->response()->header("Content-Type", "application/json");
+	try {
+		$creators = $db->creators()
+		    		->select("*")
+				    ->order("creator_id DESC")
+				    ->limit(10);
+		$data = array();
+		foreach ($creators as $creator) {
+		   $data[] = array(
+				'ID'          => $creator['creator_id'],
+				'title'       => $creator['title'],
+				'preview'	  => $creator['image'],
+				'description' => html_entity_decode($creator['description'], ENT_COMPAT, 'UTF-8'),
+				'autosave'	  => (boolean) $creator['autosave']
+			);
+		}
+		sleep(2);
+		echo json_encode($data);
+	}
+	catch(Exception $e){
+		$app->halt(500, $e->getMessage());
+	}
+});
+
+$app->get('/banner/template', function() use($app, $templates){
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode($templates);
+});
+
 $app->post('/banner', function() use ($app, $db, $columns){
 	$app->response()->header("Content-Type", "application/json");
 	try{

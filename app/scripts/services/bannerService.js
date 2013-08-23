@@ -20,6 +20,7 @@ define(['services/services'], function(services){
 		})
 		.factory('BannerConfig', ['BannerImages', function(BannerImages){
 			return {
+				allowDownloadable : false,
 				data: {
 					ID: null,
 					title : {
@@ -33,6 +34,9 @@ define(['services/services'], function(services){
 						counter : 255
 					},
 					background : {
+						enable : true,
+						type   : 1,
+						set    : 'feris',
 						uploaded : false,
 						image : BannerImages.bg[0]
 					},
@@ -265,26 +269,57 @@ define(['services/services'], function(services){
 				});
 			}
 		])
-		.factory('MultiBannerLoader', ['BannerService', '$q',
-			function(BannerService, $q){
+		.factory('BannerTemplates', ['BannerService', '$q', '$rootScope',
+			function(BannerService, $q, $rootScope){
+				return function(){
+					var deferred = $q.defer();
+					BannerService.get({id : 'template'}, function(data){
+						deferred.resolve(data);
+					}, function(err){
+						$rootScope.pageService = {
+							start  : false,
+							reject : true,
+							status : err.status,
+							message: err.data
+						};
+						deferred.reject('Unable to fetch banner templates ' + err);
+					});
+					return deferred.promise;
+				};
+			}
+		])
+		.factory('RecentBanners', ['BannerService', '$q', '$rootScope',
+			function(BannerService, $q, $rootScope){
 				return function(){
 					var deferred = $q.defer();
 					BannerService.query(function(data){
 						deferred.resolve(data);
 					}, function(err){
+						$rootScope.pageService = {
+							start  : false,
+							reject : true,
+							status : err.status,
+							message: err.data
+						};
 						deferred.reject('Unable to fetch banners' + err);
 					});
 					return deferred.promise;
 				};
 			}
 		])
-		.factory('BannerLoader', ['BannerService', '$route', '$q',
-			function(BannerService, $route, $q){
+		.factory('DetailBanner', ['BannerService', '$route', '$q', '$rootScope',
+			function(BannerService, $route, $q, $rootScope){
 				return function(){
 					var deferred = $q.defer();
 					BannerService.get({id : $route.current.params.bannerId}, function(data){
 						deferred.resolve(data);
 					}, function(err){
+						$rootScope.pageService = {
+							start  : false,
+							reject : true,
+							status : err.status,
+							message: err.data
+						};
 						deferred.reject('Unable to fetch banner '  + $route.current.params.bannerId + err);
 					});
 					return deferred.promise;

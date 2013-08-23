@@ -825,3 +825,15 @@ h3 {
    width:940px;
    margin-left:-470px;
 }
+
+
+.tabbable ul > li > a {
+	padding: 15px 20px;
+	font: normal 18px/20px arial;
+}
+.tabbable ul > li > a {
+	color: #221F1F;
+}.tabbable ul > li.active > a {
+	/*font-weight: bold;*/
+	color: #0088cc;
+}
