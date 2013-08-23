@@ -33,37 +33,6 @@ $app->get('/test', function() use($app){
 	));
 });
 
-$app->get('/template/conversation', function() use($app){
-	// $app->response()->header('Content-Type', 'application/json');
-	echo '<pre/>';
-	echo print_r(array(
-		1 => array(
-			data_uri(BASE_PATH . '/images/conversation/tpl-1-landscape.png', 'image/png'),
-			data_uri(BASE_PATH . '/images/conversation/tpl-1-portrait.png', 'image/png')
-		),
-		2 => array(
-			data_uri(BASE_PATH . '/images/conversation/tpl-2-landscape.png', 'image/png'),
-			data_uri(BASE_PATH . '/images/conversation/tpl-2-portrait.png', 'image/png')
-		),
-		3 => array(
-			data_uri(BASE_PATH . '/images/conversation/tpl-3-landscape.png', 'image/png'),
-			data_uri(BASE_PATH . '/images/conversation/tpl-3-portrait.png', 'image/png')
-		),
-		4 => array(
-			data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
-		),
-		5 => array(
-			data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
-		),
-		6 => array(
-			data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
-		)
-	), 1);
-});
-
 /* ================================ Config ================================ */
 
 $app->get('/config', function() use($app, $db_config){
@@ -77,12 +46,12 @@ $app->get('/config', function() use($app, $db_config){
 	));
 });
 
-// define columns
-$columns = array('ID', 'title', 'description', 'preview', 'autosave');
+// define creator columns
+$creator_columns = array('ID', 'title', 'description', 'preview', 'autosave');
 
 /* ================================ Banner ================================ */
 
-$templates = array(
+$banner_templates = array(
 	'1' => array(
 		'grass' => data_uri(BASE_PATH . '/images/banner/1-Prize-Background-Grass.jpg', 'image/jpg'),
 		'feris' => data_uri(BASE_PATH . '/images/banner/1-Prize-Background-Feris.jpg', 'image/jpg'),
@@ -100,11 +69,18 @@ $templates = array(
 	)
 );
 
-$app->get('/banner', function() use ($app, $db, $templates){
+$app->get('/banner/template', function() use($app, $banner_templates){
+	$app->response()->header('Content-Type', 'application/json');
+	// sleep(2);
+	echo json_encode($banner_templates);
+});
+
+$app->get('/banner', function() use ($app, $db){
 	$app->response()->header("Content-Type", "application/json");
 	try {
 		$creators = $db->creators()
 		    		->select("*")
+		    		->where('type', 'banner')
 				    ->order("creator_id DESC")
 				    ->limit(10);
 		$data = array();
@@ -117,7 +93,7 @@ $app->get('/banner', function() use ($app, $db, $templates){
 				'autosave'	  => (boolean) $creator['autosave']
 			);
 		}
-		sleep(2);
+		// sleep(2);
 		echo json_encode($data);
 	}
 	catch(Exception $e){
@@ -125,40 +101,86 @@ $app->get('/banner', function() use ($app, $db, $templates){
 	}
 });
 
-$app->get('/banner/template', function() use($app, $templates){
-	$app->response()->header('Content-Type', 'application/json');
-	echo json_encode($templates);
+$app->get('/banner/:bannerId', function($bannerId) use ($app, $db){
+	$app->response()->header("Content-Type", "application/json");
+	try {
+		$creator = $db->creators[$bannerId];
+		if($creator && $creator['type'] == 'banner'){
+			$data = array(
+				'ID'          => $creator['creator_id'],
+				'title'       => $creator['title'],
+				'preview'	  => $creator['image'],
+				'description' => html_entity_decode($creator['description'], ENT_COMPAT, 'UTF-8'),
+				'autosave'	  => (boolean) $creator['autosave']
+			);
+			if($creator->creator_meta()){
+				foreach ($creator->creator_meta() as $meta){
+					$value = @unserialize($meta['meta_value']);
+					$data[$meta['meta_key']] = ($value === false) ? 
+												preg_match('/\d/', $meta['meta_value']) ? (int) $meta['meta_value'] : $meta['meta_value'] :
+												convert_image_uri($value) ;
+					// create data uri images prize
+					if( $meta['meta_key'] == 'prize' ){
+						if( $value['one']['uploaded'] ){
+							$data['prize']['one']['image'] = create_data_uri($value['one']['image']);
+						}
+						if( $value['two']['uploaded'] ){
+							$data['prize']['two']['image'] = create_data_uri($value['two']['image']);
+						}
+						if( $value['three']['uploaded'] ){
+							$data['prize']['three']['image'] = create_data_uri($value['three']['image']);
+						}
+					} 
+				}
+			}
+			// sleep(2);
+			echo json_encode($data);
+		}
+		else {
+			// sleep(2);
+			throw new NotFoundException("Conversation not found", 1);
+		}
+	}
+	catch(NotFoundException $e){
+		$app->halt(404, $e->getMessage());
+	}
+	catch(Exception $e) {
+		$app->halt(500, $e->getMessage());
+	}
 });
 
-$app->post('/banner', function() use ($app, $db, $columns){
+$app->post('/banner', function() use ($app, $db, $creator_columns){
 	$app->response()->header("Content-Type", "application/json");
 	try{
 		$body = $app->request()->getBody();
 		$object = json_decode($body);
+
+		// $object->title = $object->title->text;
+		// $object->description = $object->title->text;
+
 		// mapping object to array
-		$arr = mapping_object_to_array($columns, $object);
+		$arr = mapping_object_to_array($creator_columns, $object, true);
 		// insert creator
-		// $creator = $db->creators()->insert(array(
-		// 	'creator_id'  => $arr['creators']['ID'],
-		// 	'title'       => $arr['creators']['title'],
-		// 	'type'        => 'conversation',
-		// 	'image'       => $arr['creators']['preview'],
-		// 	'description' => $arr['creators']['description'],
-		// 	'autosave'    => $arr['creators']['autosave']
-		// ));
+		$creator = $db->creators()->insert(array(
+			'creator_id'  => $arr['creators']['ID'],
+			'title'       => $arr['creators']['title'],
+			'description' => $arr['creators']['description'],
+			'type'        => 'banner',
+			'image'       => $arr['creators']['preview'],
+			'autosave'    => $arr['creators']['autosave']
+		));
 		// insert creator meta
-		// if( $arr['creator_meta'] )
-		// {
-		// 	foreach ($arr['creator_meta'] as $key => $value) {
-		// 		$creator->creator_meta()->insert(array(
-		// 			// 'creator_id' => $creator['creator_id'],
-		// 			'meta_key'   => $key,
-		// 			'meta_value' => $value
-		// 		));
-		// 	}
-		// }
+		if( $arr['creator_meta'] )
+		{
+			foreach ($arr['creator_meta'] as $key => $value) {
+				$creator->creator_meta()->insert(array(
+					'meta_key'   => $key,
+					'meta_value' => $value
+				));
+			}
+		}
 		// send response
-		echo json_encode($arr);
+		echo json_encode(true);
 	} catch(Exception $e) {
 		$app->halt(500, $e->getMessage());
 	}
@@ -166,44 +188,50 @@ $app->post('/banner', function() use ($app, $db, $columns){
 
 /* ================================ Conversation ================================ */
 
-$templates = array(
-	array(
+$conversation_templates = array(
+	'1' => array(
 		'square' => data_uri(BASE_PATH . '/images/conversation/tpl-1.png', 'image/png'),
 		'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-1-landscape.png', 'image/png'),
 		'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-1-portrait.png', 'image/png')
 	),
-	array(
+	'2' => array(
 		'square' => data_uri(BASE_PATH . '/images/conversation/tpl-2.png', 'image/png'),
 		'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-2-landscape.png', 'image/png'),
 		'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-2-portrait.png', 'image/png')
 	),
-	array(
+	'3' => array(
 		'square' => data_uri(BASE_PATH . '/images/conversation/tpl-3.png', 'image/png'),
 		'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-3-landscape.png', 'image/png'),
 		'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-3-portrait.png', 'image/png')
 	),
-	array(
+	'4' => array(
 		'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4.png', 'image/png'),
 		'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
 		'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
 	),
-	array(
+	'5' => array(
 		'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5.png', 'image/png'),
 		'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
 		'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
 	),
-	array(
+	'6' => array(
 		'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6.png', 'image/png'),
 		'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
 		'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
 	)
 );
 
+$app->get('/conversation/template', function() use($app, $conversation_templates){
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode($conversation_templates);
+});
+
 $app->get('/conversation', function() use ($app, $db){
 	$app->response()->header("Content-Type", "application/json");
 	try {
 		$creators = $db->creators()
 		    		->select("*")
+		    		->where('type', 'conversation')
 				    ->order("creator_id DESC")
 				    ->limit(10);
 		$data = array();
@@ -227,7 +255,7 @@ $app->get('/conversation/:conversationId', function($conversationId) use ($app, 
 	$app->response()->header("Content-Type", "application/json");
 	try {
 		$creator = $db->creators[$conversationId];
-		if($creator){
+		if($creator && $creator['type'] == 'conversation'){
 			$data = array(
 				'ID'          => $creator['creator_id'],
 				'title'       => $creator['title'],
@@ -258,13 +286,13 @@ $app->get('/conversation/:conversationId', function($conversationId) use ($app, 
 		$app->halt(500, $e->getMessage());
 	}
 });
-$app->post('/conversation', function() use ($app, $db, $columns){
+$app->post('/conversation', function() use ($app, $db, $creator_columns){
 	$app->response()->header("Content-Type", "application/json");
 	try{
 		$body = $app->request()->getBody();
 		$object = json_decode($body);
 		// mapping object to array
-		$arr = mapping_object_to_array($columns, $object, true);
+		$arr = mapping_object_to_array($creator_columns, $object, true);
 		// insert creator
 		$creator = $db->creators()->insert(array(
 			'creator_id'  => $arr['creators']['ID'],
@@ -279,7 +307,6 @@ $app->post('/conversation', function() use ($app, $db, $columns){
 		{
 			foreach ($arr['creator_meta'] as $key => $value) {
 				$creator->creator_meta()->insert(array(
-					// 'creator_id' => $creator['creator_id'],
 					'meta_key'   => $key,
 					'meta_value' => $value
 				));
@@ -291,13 +318,13 @@ $app->post('/conversation', function() use ($app, $db, $columns){
 		$app->halt(500, $e->getMessage());
 	}
 });
-$app->put('/conversation/:conversationId', function($conversationId) use ($app, $db, $columns){
+$app->put('/conversation/:conversationId', function($conversationId) use ($app, $db, $creator_columns){
 	$app->response()->header("Content-Type", "application/json");
 	try {
 		$body = $app->request()->getBody();
 		$object = json_decode($body);
 		// mapping object to array
-		$arr = mapping_object_to_array($columns, $object, true);
+		$arr = mapping_object_to_array($creator_columns, $object, true);
 
 		$creators = $db->creators[$conversationId];
 		foreach ($arr['creators'] as $key => $value) {

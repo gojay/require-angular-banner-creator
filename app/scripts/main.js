@@ -62,6 +62,7 @@ require([
 	'filters/comaToNewLine',
 	'filters/newLineToBr',
 	'filters/newLineToDblBr',
+	'filters/ifFilter',
 	// directives
 	'directives/bannerCreator',
 	'directives/conversationCreator',
@@ -109,23 +110,62 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/facebook/banner', {
-					title : '| Banner',
+					title : '| Facebook Banner',
 					breadcrumb : {
 						current:  'Facebook Banner Template',
+						currentLink : '',
 						active :  'Template Empty Prize'
 					},
 					// static      : true,
 					templateUrl : 'app/views/banner.html',
 					controller : 'BannerController',
 					resolve: {
-						banners: function($rootScope, BannerTemplates){
-							$rootScope.pageService.message = 'Preparing recent banners..';
+						banners: function($rootScope, BannerTemplates, RecentBanners){
+							$rootScope.pageService.message = 'Preparing banner templates..';
 							return BannerTemplates().then(function(templates){
-								$rootScope.pageService.start = false;
-								return {
-									templates : templates,
-									recents   : null
-								};
+								$rootScope.pageService.message = 'Preparing recent banners..';
+								return RecentBanners().then(function(recents){
+									$rootScope.pageService.start = false;
+									return {
+										templates : templates,
+										recents   : recents,
+										banner    : null
+									};
+								});
+							});
+						},
+						delay: function($q, $timeout) {
+							var delay = $q.defer();
+							$timeout(delay.resolve, 1000);
+							return delay.promise;
+						}
+					}
+				})
+				.when('/facebook/banner/:bannerId', {
+					title : '| Facebook Banner',
+					breadcrumb : {
+						current:  'Facebook Banner Template',
+						currentLink : '#!/facebook/banner',
+						active :  'Template Empty Prize'
+					},
+					templateUrl : 'app/views/banner.html',
+					controller  : 'BannerController',
+					resolve: {
+						banners: function($rootScope, $route, BannerTemplates, RecentBanners, DetailBanner){
+							$rootScope.pageService.message = 'Preparing banner templates..';
+							return BannerTemplates().then(function(templates){
+								$rootScope.pageService.message = 'Preparing recent banners..';
+								return RecentBanners().then(function(recents){
+									$rootScope.pageService.message = 'Requesting banner id '+ $route.current.params.bannerId +'..';
+									return DetailBanner().then(function(banner){
+										$rootScope.pageService.start = false;
+										return {
+											templates : templates,
+											recents   : recents,
+											banner    : banner
+										};
+									});
+								});
 							});
 						},
 						delay: function($q, $timeout) {
@@ -136,9 +176,10 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/facebook/conversation', {
-					title : '| Conversation',
+					title : '| Facebook Conversation',
 					breadcrumb : {
 						current:  'Facebook Conversation Template',
+						currentLink : '',
 						active :  'Template 1'
 					},
 					template   : '<conversation-creator ng-model="conversation" conversations="conversations"></conversation-creator>',
@@ -159,9 +200,10 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/facebook/conversation/:conversationId', {
-					title : '| Conversation',
+					title : '| Facebook Conversation',
 					breadcrumb : {
 						current:  'Facebook Conversation Template',
+						currentLink : '#!/facebook/conversation',
 						active :  'Template 1'
 					},
 					template    : '<conversation-creator ng-model="conversation" conversations="conversations"></conversation-creator>',
@@ -188,7 +230,7 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/mobile', {
-					title : '| Mobile',
+					title : '| Mobile SplashScreen',
 					breadcrumb : {
 						current:  'Mobile SplashScreen & Background',
 						active :  'Splash Screen'

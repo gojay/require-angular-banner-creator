@@ -16,12 +16,14 @@
 								    <button class="btn bg-upload active" ng-click="setBG('upload', $event)">Upload</button>
 								    <button class="btn bg-feris" ng-click="setBG('feris', $event)">Feris</button>
 								    <button class="btn bg-grass" ng-click="setBG('grass', $event)">Grass</button>
-								    <button class="btn bg-younf" ng-click="setBG('young', $event)">Young</button>
+								    <button class="btn bg-young" ng-click="setBG('young', $event)">Young</button>
 							    </div>
 							</div>
 						</div>
 			        	<div class="control-group" ng-show="banner.background.enable">
-							<label class="control-label" style="margin-left:0; text-align:left;">Upload Background</label>
+							<label class="control-label" style="margin-left:0; text-align:left;">
+								{{banner.background.uploaded | iif : "Edit" : "Upload"}} Background
+							</label>
 							<div class="controls" style="margin-left:0;">
 								<input type="file" id="input-background" class="hide" />
 							</div>
@@ -51,7 +53,9 @@
 							</div>
 						</div>
 						<div class="control-group">
-							<label class="control-label" style="width: 100px; text-align:left;">Upload Logo</label>
+							<label class="control-label" style="width: 100px; text-align:left;">
+								{{banner.logo.uploaded | iif : "Edit" : "Upload"}} Logo
+							</label>
 							<div class="controls" style="margin-left: 100px;">
 								<input type="file" id="input-logo" class="hide" />
 							</div>
@@ -81,19 +85,25 @@
 			    <div id="Prizes" class="accordion-body collapse">
 			      	<div class="accordion-inner">
 						<div class="control-group" ng-show="tplShowPrice >= 1">
-							<label class="control-label" style="width: 100px; text-align:left;">Upload Prize 1</label>
+							<label class="control-label" style="width: 100px; text-align:left;">
+								{{banner.prize.one.uploaded | iif : "Edit" : "Upload"}} Prize 1
+							</label>
 							<div class="controls" style="margin-left: 100px;">
 								<input type="file" id="input-price-1" class="hide" />
 							</div>
 						</div>
 						<div class="control-group" ng-show="tplShowPrice >= 2">
-							<label class="control-label" style="width: 100px; text-align:left;">Upload Prize 2</label>
+							<label class="control-label" style="width: 100px; text-align:left;">
+								{{banner.prize.two.uploaded | iif : "Edit" : "Upload"}} Prize 2
+							</label>
 							<div class="controls" style="margin-left: 100px;">
 								<input type="file" id="input-price-2" class="hide" />
 							</div>
 						</div>
 						<div class="control-group" ng-show="tplShowPrice >= 3">
-							<label class="control-label" style="width: 100px; text-align:left;">Upload Prize 3</label>
+							<label class="control-label" style="width: 100px; text-align:left;">
+								{{banner.prize.three.uploaded | iif : "Edit" : "Upload"}} Prize 3
+							</label>
 							<div class="controls" style="margin-left: 100px;">
 								<input type="file" id="input-price-3" class="hide" />
 							</div>
@@ -112,15 +122,15 @@
 						<div class="control-group">
 							<label>Title <a href class="pull-right" data-toggle="tooltip" data-placement="left" title="Add a new line by comma"><i class="icon-question-sign" style="margin-left:10px"></i></a></label>
 							<div class="controls" style="margin-left: 0;">
-								<input type="text" class="input-large" ng-model="banner.title.text">
-								<p class="help-block text-right">Limit : {{banner.title.counter}}/{{banner.title.limit}}</p>
+								<input type="text" class="input-large" ng-model="banner.mtitle.text">
+								<p class="help-block text-right">Limit : {{banner.mtitle.counter}}/{{banner.mtitle.limit}}</p>
 							</div>
 						</div>
 						<div class="control-group">
 							<label>Description</label>
 							<div class="controls" style="margin-left: 0;">
-								<textarea class="input-large" ng-model="banner.description.text" placeholder="Enter content description here.." rows="8"></textarea>
-								<p class="help-block text-right">Limit : {{banner.description.counter}}/{{banner.description.limit}}</p>
+								<textarea class="input-large" ng-model="banner.mdescription.text" placeholder="Enter content description here.." rows="8"></textarea>
+								<p class="help-block text-right">Limit : {{banner.mdescription.counter}}/{{banner.mdescription.limit}}</p>
 							</div>
 						</div>
 						<div class="control-group" ng-hide="isNoPrize">

@@ -54,7 +54,7 @@ define([
 
 					self.isNew = false;
 
-					/* model */
+					/* ================ model ================ */
 
 					self.oldConversation = angular.copy($scope.conversation);
 
@@ -70,7 +70,7 @@ define([
 					$scope.isDownloadDisabled = true;
 					$scope.template = (self.isNew) ? self.templates[0] : self.templates[$scope.conversation.selected];
 
-					/* scope watchers */
+					/* ================ scope watchers ================ */
 
 					// logo
 					$scope.$watch('conversation.logo.hide', function(checked){
@@ -119,7 +119,7 @@ define([
 					};
 					
 
-					/* scope listener */
+					/* ================ scope listener ================ */
 
 					self.hideElement = function(checked, element){
 						// var $logo = $('svg#' + element);
@@ -149,7 +149,7 @@ define([
 						}
 					};
 
-					/* simetris elements */
+					/* ================ simetris elements ================ */
 
 					var currentYPos = {el:null, y:null};
 					var currentXPos = {el:null, x:null};
@@ -761,10 +761,7 @@ define([
 				},
 				link: function($scope, iElm, iAttrs, controller) {
 
-					$('a.handler-left').switchClass('invisible', 'visible', 0);
-					$('a.handler-right').switchClass('invisible', 'visible', 0);
-
-					/* handling collapse */
+					/* ================ handling collapse ================ */
 
 					var $editorTpl = $('#editor .template');
 					$('.collapse').live('show', function() {
@@ -793,7 +790,10 @@ define([
 						$rootScope.pageService.loaded = true;
 					}, 1000);
 
-					/* Handling Panel */
+					/* ================ Handling Panel ================ */
+
+					$('a.handler-left').switchClass('invisible', 'visible', 0);
+					$('a.handler-right').switchClass('invisible', 'visible', 0);
 
 					// set model (search form)
 					console.log('panel.left.model', $rootScope.panel.left.model);
@@ -945,7 +945,7 @@ define([
 						});
 					};
 
-					/* Initialize event listener */
+					/* ================ Initialize event listener ================ */
 
 					// event listener button logo input file
 					controller.btnLogo.live('click', function() {
@@ -1046,7 +1046,7 @@ define([
 							}
 						});
 
-					/* handling draggable SVG */
+					/* ================ handling draggable SVG ================ */
 
 					// define bounds elements
 					var bounds = {

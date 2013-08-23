@@ -97,7 +97,7 @@ a:hover {
     width: 92%;
     z-index: 1;
     overflow: auto;
-    opacity: 0;
+    opacity: 1;
     -webkit-transition: opacity 0s .5s;
 }
 #panel-right {
@@ -107,7 +107,7 @@ a:hover {
 
 #panel-right.open-panel,
 #panel-left.open-panel {
-    opacity: 1 !important;
+    /*opacity: 1 !important;*/
     -webkit-transition: opacity 0s 0s;
     -moz-transition: opacity 0s 0s;
 }
@@ -827,13 +827,13 @@ h3 {
 }
 
 
-.tabbable ul > li > a {
+.tabbable ul.nav > li > a {
 	padding: 15px 20px;
 	font: normal 18px/20px arial;
 }
-.tabbable ul > li > a {
+.tabbable ul.nav > li > a {
 	color: #221F1F;
-}.tabbable ul > li.active > a {
+}.tabbable ul.nav > li.active > a {
 	/*font-weight: bold;*/
 	color: #0088cc;
 }

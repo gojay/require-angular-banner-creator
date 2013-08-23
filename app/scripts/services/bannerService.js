@@ -20,15 +20,16 @@ define(['services/services'], function(services){
 		})
 		.factory('BannerConfig', ['BannerImages', function(BannerImages){
 			return {
-				allowDownloadable : false,
 				data: {
-					ID: null,
-					title : {
+					ID: new Date().getTime(),
+					title: '',
+					description: '',
+					mtitle : {
 						text    : 'Company Name, Company Contest, Contest',
 						limit   : 50,
 						counter : 50
 					},
-					description : {
+					mdescription : {
 						text    : 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, fugit hic tempora dolorem non sunt incidunt velit quam distinctio cum.',
 						limit   : 225,
 						counter : 255

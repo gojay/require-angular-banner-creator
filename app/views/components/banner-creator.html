@@ -1,12 +1,12 @@
 <div id="banner-editor" >
-	<h3 class="span8" style="margin-top:0;">Design Preview</h3>
+	<h3 class="span8" style="margin-top: 0px; padding-left: 0px;">Design Preview</h3>
 	<div id="display-tpl" class="hide span4 btn-group margin-top text-center">
 	    <button class="btn" ng-click="displayTpl($event, 'like')">Like</button>
 	    <button class="btn" ng-click="displayTpl($event, 'both')" disabled="true">Both</button>
 	    <button class="btn" ng-click="displayTpl($event, 'enter')">Enter</button>
 	</div>
 	<div class="span12 prefix tab-content">
-		<div class="tab-pane active" id="svg-tpl-0">
+		<div class="tab-pane" id="svg-tpl-0" ng-class="{true:'active', false:''}[banner.selected == 0]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="381">
 				<defs>
 					<style type="text/css"><![CDATA[
@@ -59,14 +59,14 @@
 					<rect x="20" y="128" width="404" height="232" fill="black" fill-opacity="0.75" />
 					<foreignObject x="20" y="128" width="404" height="232" class="foreign-object-0">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.title.text|comaToNewLine"></h3>
-							<p ng-bind-html-unsafe="banner.description.text|newLineToDblBr"></p>
+							<h3 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h3>
+							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
 				</g>
 			</svg>
 		</div>
-		<div class="tab-pane" id="svg-tpl-1">
+		<div class="tab-pane" id="svg-tpl-1" ng-class="{true:'active', false:''}[banner.selected == 1]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="381">
 				<defs>
 					<style type="text/css"><![CDATA[
@@ -149,8 +149,8 @@
 					<rect x="20" y="128" width="404" height="232" fill="black" fill-opacity="0.75" />
 					<foreignObject x="20" y="128" width="404" height="232" class="foreign-object-1">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.title.text|comaToNewLine"></h3>
-							<p ng-bind-html-unsafe="banner.description.text|newLineToDblBr"></p>
+							<h3 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h3>
+							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
 				</g>
@@ -178,7 +178,7 @@
 				</g>
 			</svg>
 		</div>
-		<div class="tab-pane" id="svg-tpl-2">
+		<div class="tab-pane" id="svg-tpl-2" ng-class="{true:'active', false:''}[banner.selected == 2]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="339">
 				<defs>
 					<style type="text/css"><![CDATA[
@@ -262,8 +262,8 @@
 					<rect x="20" y="128" width="332" height="195" fill="black" fill-opacity="0.75" />
 					<foreignObject x="20" y="128" width="332" height="195" class="foreign-object-2">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.title.text|comaToNewLine"></h3>
-							<p ng-bind-html-unsafe="banner.description.text|newLineToDblBr"></p>
+							<h3 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h3>
+							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
 				</g>
@@ -304,7 +304,7 @@
 				</g>
 			</svg>
 		</div>
-		<div class="tab-pane" id="svg-tpl-3">
+		<div class="tab-pane" id="svg-tpl-3" ng-class="{true:'active', false:''}[banner.selected == 3]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="685">
 				<defs>
 					<style type="text/css"><![CDATA[
@@ -394,8 +394,8 @@
 					<rect x="40" y="165" width="730" height="130" fill="black" fill-opacity="0.75" />
 					<foreignObject x="40" y="165" width="730" height="130" class="foreign-object-3">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.title.text|comaToNewLine"></h3>
-							<p ng-bind-html-unsafe="banner.description.text|newLineToDblBr"></p>
+							<h3 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h3>
+							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
 				</g>
@@ -449,7 +449,7 @@
 				</g>
 			</svg>
 		</div>
-		<div class="tab-pane" id="svg-tpl-4">
+		<div class="tab-pane" id="svg-tpl-4" ng-class="{true:'active', false:''}[banner.selected == 4]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="339">
 				<defs>
 					<style type="text/css"><![CDATA[
@@ -536,8 +536,8 @@
 					<rect x="30" y="83" width="422" height="124" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="83" width="422" height="124" class="foreign-object-4">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.title.text"></h3>
-							<p ng-bind-html-unsafe="banner.description.text|newLineToDblBr"></p>
+							<h3 ng-bind-html-unsafe="banner.mtitle.text"></h3>
+							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
 				</g>
@@ -565,7 +565,7 @@
 				</g>
 			</svg>
 		</div>
-		<div class="tab-pane" id="svg-tpl-5">
+		<div class="tab-pane" id="svg-tpl-5" ng-class="{true:'active', false:''}[banner.selected == 5]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="339">
 				<defs>
 					<style type="text/css"><![CDATA[
@@ -650,8 +650,8 @@
 					<rect x="30" y="83" width="350" height="124" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="83" width="350" height="124" class="foreign-object-5">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.title.text"></h3>
-							<p ng-bind-html-unsafe="banner.description.text|newLineToDblBr"></p>
+							<h3 ng-bind-html-unsafe="banner.mtitle.text"></h3>
+							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
 				</g>
@@ -692,7 +692,7 @@
 				</g>
 			</svg>
 		</div>
-		<div class="tab-pane" id="svg-tpl-6">
+		<div class="tab-pane" id="svg-tpl-6" ng-class="{true:'active', false:''}[banner.selected == 6]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="339">
 				<defs>
 					<style type="text/css"><![CDATA[
@@ -777,8 +777,8 @@
 					<rect x="30" y="84" width="430" height="124" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="84" width="422" height="124" class="foreign-object-6">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.title.text"></h3>
-							<p ng-bind-html-unsafe="banner.description.text|newLineToDblBr"></p>
+							<h3 ng-bind-html-unsafe="banner.mtitle.text"></h3>
+							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
 				</g>
