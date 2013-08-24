@@ -63,9 +63,15 @@ function mapping_object_to_array( $columns, $object, $serialized = false )
 			}
 		} else if( is_array($value) && array_key_exists('uploaded', $value) ){
 			$g = glob( BASE_PATH . '/' . $base . '/' . $key . '.*');
-			if( $creator_meta[$key]['uploaded'] && $g ){
+			$uploaded = $creator_meta[$key]['uploaded'];
+			if( $uploaded && $g ){
 				$imginfo = pathinfo($g[0]);
 				$creator_meta[$key]['image'] = $base . '/' . $imginfo['basename'];
+			} else {
+				$image = $creator_meta[$key]['image'];
+				if(!empty($image) || $image !== null) {
+					$creator_meta[$key]['image'] = '';
+				}
 			}
 		}
 	}

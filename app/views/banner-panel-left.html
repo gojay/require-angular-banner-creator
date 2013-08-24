@@ -57,7 +57,7 @@
 					</div>
 				</div>
 			</form>	
-			<ul class="thumbnails panel-padding" ng-class="$root.panel.left.model.cols">
+			<ul class="thumbnails panel-padding" ng-class="$root.panel.left.model.cols" ng-init="setEqualHeight()">
 				<li id="thumb-banner-{{$index}}"
 					ng-class="{cols2:'span6', cols3:'span4', cols4:'span3', cols6:'span2'}[$root.panel.left.model.cols]"
 					ng-repeat="c in banners | filter:$root.panel.left.model.search | orderBy:$root.panel.left.model.orderProp:$root.panel.left.model.orderReserve">
@@ -76,3 +76,20 @@
 		</div>
 	</div>
 </div>
+<script>
+// function setEqualHeight(columns) {
+// 	var tallestcolumn = 0;
+// 	columns.each(
+// 		function() {
+// 			currentHeight = $(this).height();
+// 			if (currentHeight > tallestcolumn) {
+// 				tallestcolumn = currentHeight;
+// 			}
+// 		}
+// 	);
+// 	columns.height(tallestcolumn);
+// }
+// $('#banner-panel-left').ready(function() {
+//  	setEqualHeight(setEqualHeight($(".thumbnails > li")));
+// });
+</script>

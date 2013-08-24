@@ -2,8 +2,8 @@ define([
 	'controllers/controllers',
 	'services/bannerService'
 ], function(controllers){
-	controllers.controller('BannerController', ['$rootScope', '$scope', '$location', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService', 'banners',
-		function($rootScope, $scope, $location, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService, banners){
+	controllers.controller('BannerController', ['$rootScope', '$scope', '$route', '$location', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService', 'banners',
+		function($rootScope, $scope, $route, $location, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService, banners){
 
 			// banner dimensions
 			var dimensions = BannerConfig.dimensions;
@@ -130,6 +130,25 @@ define([
 			var $panelLeft = '<div ng-include src="\'app/views/banner-panel-left.html\'"></div>';
 			// bind panel left (rootScope), compile inject scope
 			$rootScope.panel.left.template = $compile($panelLeft)($scope);
+
+			$rootScope.setEqualHeight = function() {
+				var si = setInterval(function(){
+					var columns = $(".thumbnails > li")
+					if( $(".thumbnails > li").length ){
+						clearInterval(si);
+						var tallestcolumn = 0;
+						columns.each(
+							function() {
+								currentHeight = $(this).height();
+								if (currentHeight > tallestcolumn) {
+									tallestcolumn = currentHeight;
+								}
+							}
+						);
+						columns.height(tallestcolumn);
+					} 
+				});
+			}
 
 			/* ================ setting tabbable ================ */
 
@@ -1234,10 +1253,12 @@ define([
 				if( isNew ){
 					banner.$save(function(response){
 						console.log('Save response', response);
+						isNew = false;
 						if(callback) callback(true);
 					});
 				} else {
-					banner.$update({id : $route.current.params.bannerId}, function(response){
+					var bannerId = ($route.current.params.bannerId) ? $route.current.params.bannerId : $scope.banner.ID ;
+					banner.$update({id : bannerId}, function(response){
 						console.log('Update response', response);
 						if(callback) callback(false);
 					});

@@ -812,7 +812,10 @@ h3 {
 }
 .thumbnails li h3 {
 	padding: 0;
+	padding-left: 0;
+	padding-bottom: 8px; 
 	margin-bottom: 8px; 
+	line-height: 24px;
 }
 .thumbnails .selected {
 	background: #eee;

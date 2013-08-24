@@ -116,9 +116,7 @@ $app->get('/banner/:bannerId', function($bannerId) use ($app, $db){
 			if($creator->creator_meta()){
 				foreach ($creator->creator_meta() as $meta){
 					$value = @unserialize($meta['meta_value']);
-					$data[$meta['meta_key']] = ($value === false) ? 
-												preg_match('/\d/', $meta['meta_value']) ? (int) $meta['meta_value'] : $meta['meta_value'] :
-												convert_image_uri($value) ;
+					$data[$meta['meta_key']] = ($value === false) ? $meta['meta_value'] : convert_image_uri($value) ;
 					// create data uri images prize
 					if( $meta['meta_key'] == 'prize' ){
 						if( $value['one']['uploaded'] ){
@@ -138,7 +136,7 @@ $app->get('/banner/:bannerId', function($bannerId) use ($app, $db){
 		}
 		else {
 			// sleep(2);
-			throw new NotFoundException("Conversation not found", 1);
+			throw new NotFoundException("Banner not found");
 		}
 	}
 	catch(NotFoundException $e){
@@ -154,9 +152,6 @@ $app->post('/banner', function() use ($app, $db, $creator_columns){
 	try{
 		$body = $app->request()->getBody();
 		$object = json_decode($body);
-
-		// $object->title = $object->title->text;
-		// $object->description = $object->title->text;
 
 		// mapping object to array
 		$arr = mapping_object_to_array($creator_columns, $object, true);
@@ -184,6 +179,50 @@ $app->post('/banner', function() use ($app, $db, $creator_columns){
 	} catch(Exception $e) {
 		$app->halt(500, $e->getMessage());
 	}
+});
+$app->put('/banner/:bannerId', function($bannerId) use ($app, $db, $creator_columns){
+	$app->response()->header("Content-Type", "application/json");
+	try {
+		$creator = $db->creators[$bannerId];
+		if($creator && $creator['type'] == 'banner') {
+			$body = $app->request()->getBody();
+			$object = json_decode($body);
+			// mapping object to array
+			$arr = mapping_object_to_array($creator_columns, $object, true);
+			foreach ($arr['creators'] as $key => $value) {
+				if($key == 'ID') continue;
+				if($key == 'preview') $key = 'image';
+				$creator[$key] = $value;
+			}
+			if( $creator->update() ) {
+				// update meta
+				foreach ($arr['creator_meta'] as $key => $value) {
+					$creator->creator_meta()->where(array('meta_key' => $key))->update(array('meta_value' => $value));
+				}
+			} else {
+				// sleep(2);
+				throw new Exception("Banner failure when updated");
+			}
+			// send response
+			echo json_encode(true);
+		}
+		else {
+			// sleep(2);
+			throw new NotFoundException("Banner not found");
+		}
+
+	} catch(NotFoundException $e){
+		$app->halt(404, $e->getMessage());
+	} catch (Exception $e) {
+		$app->halt(500, $e->getMessage());
+	}
+});
+$app->delete('/banner/:bannerId', function($bannerId) use ($app, $db){
+	$app->response()->header("Content-Type", "application/json");
+	$body = $app->request()->getBody();
+	$data = json_decode($body);
+	$data->type = 'delete';
+	echo json_encode($data);
 });
 
 /* ================================ Conversation ================================ */
@@ -276,7 +315,7 @@ $app->get('/conversation/:conversationId', function($conversationId) use ($app, 
 		}
 		else {
 			sleep(2);
-			throw new NotFoundException("Conversation not found", 1);
+			throw new NotFoundException("Conversation not found");
 		}
 	}
 	catch(NotFoundException $e){
@@ -326,15 +365,17 @@ $app->put('/conversation/:conversationId', function($conversationId) use ($app, 
 		// mapping object to array
 		$arr = mapping_object_to_array($creator_columns, $object, true);
 
-		$creators = $db->creators[$conversationId];
+		$creator = $db->creators[$conversationId];
 		foreach ($arr['creators'] as $key => $value) {
 			if($key == 'ID') continue;
 			if($key == 'preview') $key = 'image';
-			$creators[$key] = $value;
+			$creator[$key] = $value;
 		}
-		// update meta
-		foreach ($arr['creator_meta'] as $key => $value) {
-			$creators->creator_meta()->where(array('meta_key' => $key))->update(array('meta_value' => $value));
+		if( $creator->update() ) {
+			// update meta
+			foreach ($arr['creator_meta'] as $key => $value) {
+				$creator->creator_meta()->where(array('meta_key' => $key))->update(array('meta_value' => $value));
+			}
 		}
 		// send response
 		echo json_encode(true);
