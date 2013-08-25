@@ -43,6 +43,7 @@ define(['services/services'], function(services){
 					},
 					logo : {
 						hide: false,
+						placeholder: false,
 						w : 0,
 						h : 0,
 						uploaded : false,
@@ -71,6 +72,10 @@ define(['services/services'], function(services){
 							uploaded : false,
 							image : null
 						}
+					},
+					fb: {
+						w:283,
+						h:67
 					},
 					preview : null,
 					autosave : true,

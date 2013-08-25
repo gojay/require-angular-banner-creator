@@ -152,12 +152,12 @@ function(angular, app, domReady){
 					controller  : 'BannerController',
 					resolve: {
 						banners: function($rootScope, $route, BannerTemplates, RecentBanners, DetailBanner){
-							$rootScope.pageService.message = 'Preparing banner templates..';
-							return BannerTemplates().then(function(templates){
-								$rootScope.pageService.message = 'Preparing recent banners..';
-								return RecentBanners().then(function(recents){
-									$rootScope.pageService.message = 'Requesting banner id '+ $route.current.params.bannerId +'..';
-									return DetailBanner().then(function(banner){
+							$rootScope.pageService.message = 'Requesting banner id '+ $route.current.params.bannerId +'..';
+							return DetailBanner().then(function(banner){
+								$rootScope.pageService.message = 'Preparing banner templates..';
+								return BannerTemplates().then(function(templates){
+									$rootScope.pageService.message = 'Preparing recent banners..';
+									return RecentBanners().then(function(recents){
 										$rootScope.pageService.start = false;
 										return {
 											templates : templates,
@@ -182,15 +182,23 @@ function(angular, app, domReady){
 						currentLink : '',
 						active :  'Template 1'
 					},
-					template   : '<conversation-creator ng-model="conversation" conversations="conversations"></conversation-creator>',
+					template   : '<conversation-creator ng-model="data"></conversation-creator>',
 					controller : 'ConversationController',
 					resolve: {
-						conversations: function($rootScope, RecentConversations){
-							$rootScope.pageService.message = 'Preparing recent conversations..';
-							return RecentConversations().then(function(conversations){
-								$rootScope.pageService.start = false;
-								return conversations;
+						conversations: function($rootScope, ConversationTemplates, RecentConversations){
+							$rootScope.pageService.message = 'Preparing conversation templates..';
+							return ConversationTemplates().then(function(templates){
+								$rootScope.pageService.message = 'Preparing recent conversations..';
+								return RecentConversations().then(function(recents){
+									$rootScope.pageService.start = false;
+									return {
+										templates: templates,
+										recents: recents,
+										detail: null
+									};
+								});
 							});
+							
 						},
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
@@ -206,19 +214,23 @@ function(angular, app, domReady){
 						currentLink : '#!/facebook/conversation',
 						active :  'Template 1'
 					},
-					template    : '<conversation-creator ng-model="conversation" conversations="conversations"></conversation-creator>',
-					controller  : 'EditConversationController',
+					template    : '<conversation-creator ng-model="data"></conversation-creator>',
+					controller  : 'ConversationController',
 					resolve: {
-						conversations: function($rootScope, $route, RecentConversations, DetailConversation){
+						conversations: function($rootScope, $route, ConversationTemplates, RecentConversations, DetailConversation){
 							$rootScope.pageService.message = 'Requesting conversation id '+ $route.current.params.conversationId +'..';
 							return DetailConversation().then(function(conversation){
-								$rootScope.pageService.message = 'Preparing recent conversations..';
-								return RecentConversations().then(function(conversations){
-									$rootScope.pageService.start = false;
-									return {
-										recents : conversations,
-										detail  : conversation
-									};
+								$rootScope.pageService.message = 'Preparing conversation templates..';
+								return ConversationTemplates().then(function(templates){
+									$rootScope.pageService.message = 'Preparing recent conversations..';
+									return RecentConversations().then(function(recents){
+										$rootScope.pageService.start = false;
+										return {
+											templates: templates,
+											recents: recents,
+											detail: conversation
+										};
+									});
 								});
 							});
 						},

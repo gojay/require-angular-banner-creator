@@ -1,4 +1,4 @@
-<div id="banner-panel-left" style="margin: 0 10px;">
+<div id="banner-panel-left" style="height:61px; margin:0 10px;">
 	<div class="row-fluid">
 		<h3>Recent banners</h3>
 		<div class="relative" style="margin-top: 40px;">
@@ -57,7 +57,9 @@
 					</div>
 				</div>
 			</form>	
-			<ul class="thumbnails panel-padding" ng-class="$root.panel.left.model.cols" ng-init="setEqualHeight()">
+			<ul class="thumbnails panel-padding" 
+				ng-class="$root.panel.left.model.cols" 
+				ng-init="setEqualHeight()">
 				<li id="thumb-banner-{{$index}}"
 					ng-class="{cols2:'span6', cols3:'span4', cols4:'span3', cols6:'span2'}[$root.panel.left.model.cols]"
 					ng-repeat="c in banners | filter:$root.panel.left.model.search | orderBy:$root.panel.left.model.orderProp:$root.panel.left.model.orderReserve">

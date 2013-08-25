@@ -1,16 +1,18 @@
 define([
 	'controllers/controllers',
-	'services/bannerService'
+	'services/bannerService',
+	'jquery',
+	'jqueryui'
 ], function(controllers){
 	controllers.controller('BannerController', ['$rootScope', '$scope', '$route', '$location', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService', 'banners',
 		function($rootScope, $scope, $route, $location, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService, banners){
-
+			var self = this;
 			// banner dimensions
 			var dimensions = BannerConfig.dimensions;
 			// define jsZip
 			var ZIP = new JSZip();
 			// define isNew, copy banner
-			var isNew = true, cBanner = false;
+			var isNew = $scope.isNew = true, cBanner = false;
 
 			// model banner templates n recents
 			$scope.templates = banners.templates;
@@ -21,12 +23,14 @@ define([
 				$scope.banner            = BannerConfig.data;
 				$scope.allowDownloadable = false;
 			} else {
-				isNew = false;
+				isNew = $scope.isNew = false;
 				$scope.banner = banners.banner;
 				$scope.allowDownloadable = true;
 				// copy the banner, to use same updated banner images 
 				// or check has changed / edited
 				cBanner = angular.copy($scope.banner);
+
+				$('a.handler-right').switchClass('invisible', 'visible', 0);
 			}
 
 			console.log('templates', $scope.templates)
@@ -52,6 +56,10 @@ define([
 			}
 			// add model selected for edit view
 			$rootScope.panel.left.model.selected = $scope.banner.ID;
+			// get conversation panel right
+			var $panelRight = '<div ng-include src="\'app/views/banner-panel-right.html\'"></div>';
+			// bind panel right (rootScope), compile inject scope
+			$rootScope.panel.right.template = $compile($panelRight)($scope);
 
 			// panel handler
 			var targetPanel;
@@ -76,7 +84,7 @@ define([
 					}
 				});
 
-			// link panel left
+			// listener panel left
 			$scope.detailBanner = function(index){
 				var ID = $scope.banners[index].ID;
 				var list = 'li#thumb-banner-'+index;
@@ -125,15 +133,25 @@ define([
 					}
 				});
 			};
+			// listener panel right
+			$scope.createNew = function(){
+				// close panel
+				$('a.handler-'+targetPanel)
+					.click()
+					.switchClass('visible', 'invisible', 0);
+				// redirect to new conversation
+				$location.path('/facebook/banner');
+			};
 
 			// get banner panel left
 			var $panelLeft = '<div ng-include src="\'app/views/banner-panel-left.html\'"></div>';
 			// bind panel left (rootScope), compile inject scope
 			$rootScope.panel.left.template = $compile($panelLeft)($scope);
-
-			$rootScope.setEqualHeight = function() {
+			// set equals height banner lists 
+			$scope.setEqualHeight = function() {
+				// check every time, until thumbnail lists rendered
 				var si = setInterval(function(){
-					var columns = $(".thumbnails > li")
+					var columns = $("#banner-panel-left .thumbnails > li")
 					if( $(".thumbnails > li").length ){
 						clearInterval(si);
 						var tallestcolumn = 0;
@@ -145,7 +163,7 @@ define([
 								}
 							}
 						);
-						columns.height(tallestcolumn);
+						columns.find('.thumbnail').height(tallestcolumn);
 					} 
 				});
 			}
@@ -153,13 +171,37 @@ define([
 			/* ================ setting tabbable ================ */
 
 			// set tab selected
-			$('.tabbable > ul > li:eq('+ $scope.banner.selected +') > a').click();
-			if( !isNew ){
-				$timeout(function(){
-					$('#doSetting').click();
-					$rootScope.pageService.loaded = true;
-				}, 100);
-			}
+			$('#templates ul > li:eq('+ $scope.banner.selected +') > a').click();
+			$scope.onLoad = function(){
+				if( !isNew ){
+					var loaded = setInterval(function(){
+						if($('#settings').length){
+							clearInterval(loaded);
+							$('#doSetting').click();
+							$rootScope.pageService.loaded = true;
+							// generate download popup tpl n ZIP
+							$timeout(function(){
+								self.generateTplZIP({
+									like  : $scope.banner.uploaded.like,
+									enter : $scope.banner.uploaded.enter
+								});
+							}, 1000);
+						}	
+					});
+					// $timeout(function(){
+					// 	$('#doSetting').click();
+					// 		$rootScope.pageService.loaded = true;
+					// 		// generate download popup tpl n ZIP
+					// 		$timeout(function(){
+					// 			self.generateTplZIP({
+					// 				like  : $scope.banner.uploaded.like,
+					// 				enter : $scope.banner.uploaded.enter
+					// 			});
+					// 		}, 1000);
+					// }, 100);
+				}
+			};
+			
 			// set text breadcrumb
 			// apply logo n prize image
 			$('a[data-toggle="tab"]').on('shown', function (e) {
@@ -168,26 +210,43 @@ define([
 				var prize    = $(e.target).data('price').match(/\d/)[0];
 				var en       = ['one', 'two', 'three'][prize - 1];
 
+				var isSameasEdit = ((cBanner !== undefined) && (parseInt(cBanner.selected) == selected)) ? true : false ;
+
 				// applying banner images
 				$scope.$apply(function(scope){
 					scope.banner.selected = selected;
 					// apply bg image n type
 					if( selected <= 1 ) {
-						scope.banner.background.image = (cBanner.selected == selected) ? cBanner.background.image : BannerImages.bg[0] ;
 						scope.banner.background.type  = '1';
-					} else if( selected == 3 ) {
-						scope.banner.background.image = (cBanner.selected == selected) ? cBanner.background.image : BannerImages.bg[3] ;
+						if(isSameasEdit){
+							var oldBackground = (cBanner.background.uploaded) ? cBanner.background.image : $scope.templates[1][cBanner.background.set];
+							scope.banner.background.image = oldBackground;
+						} 
+						else scope.banner.background.image = BannerImages.bg[0];
+					} 
+					else if( selected == 3 ) {
 						scope.banner.background.type  = '3';
-					} else {
-						scope.banner.background.image = (cBanner.selected == selected) ? cBanner.background.image : BannerImages.bg[1] ;
+						if(isSameasEdit){
+							var oldBackground = (cBanner.background.uploaded) ? cBanner.background.image : $scope.templates[3][cBanner.background.set];
+							scope.banner.background.image = oldBackground;
+						} 
+						else scope.banner.background.image = BannerImages.bg[2];
+					} 
+					else {
 						scope.banner.background.type  = '2';
+						if(isSameasEdit){
+							var oldBackground = (cBanner.background.uploaded) ? cBanner.background.image : $scope.templates[3][cBanner.background.set];
+							scope.banner.background.image = oldBackground;
+						} 
+						else scope.banner.background.image = BannerImages.bg[1];
 					}
+
 					// logo n prize image (has prize only)
+					scope.banner.logo.image = (isSameasEdit) ? cBanner.logo.image : BannerImages.logo[type];
 					if( selected != 0 ){
-						scope.banner.logo.image        = (cBanner.selected == selected) ? cBanner.logo.image : BannerImages.logo[type];
-						scope.banner.prize.one.image   = (cBanner.selected == selected) ? cBanner.prize.one.image : BannerImages.prize[en][type];
-						scope.banner.prize.two.image   = (cBanner.selected == selected) ? cBanner.prize.two.image : BannerImages.prize[en][type];
-						scope.banner.prize.three.image = (cBanner.selected == selected) ? cBanner.prize.three.image : BannerImages.prize[en][type];
+						scope.banner.prize.one.image   = (isSameasEdit) ? cBanner.prize.one.image : BannerImages.prize[en][type];
+						scope.banner.prize.two.image   = (isSameasEdit) ? cBanner.prize.two.image : BannerImages.prize[en][type];
+						scope.banner.prize.three.image = (isSameasEdit) ? cBanner.prize.three.image : BannerImages.prize[en][type];
 					}
 				});
 
@@ -198,6 +257,44 @@ define([
 
 			/* ================ scope watchers ================ */
 
+			// max width banner fb 
+			self.fbMax = { w:283, h:67 };
+
+			$scope.getX = function(){
+				var calc = 810 - $scope.banner.fb.w;
+				return $scope.banner.background.type == 3 ? calc - 20 : calc ;
+			}
+			$scope.$watch('banner.fb.w', function(input){
+				if(input > self.fbMax.w) {
+					$scope.banner.fb.w = input = self.fbMax.w;
+				}
+				console.log('fb resize', $scope.banner.fb.w, input);
+				var ratio = [input / self.fbMax.w, 67 / self.fbMax.h];
+				var aspectRatio = Math.min(ratio[0], ratio[1]);
+				$scope.banner.fb.h = parseInt(self.fbMax.h * aspectRatio);
+			});
+
+			var logoDimension = BannerConfig.dimensions['tpl-0'].logo;
+			// calculate image position (center)
+			// calculate aspect ratio image height
+			$scope.$watch('banner.logo.w', function(input) {
+				if(parseInt(input) <= logoDimension.image.width){
+					// dimension
+					var ratio = [input / logoDimension.image.width, logoDimension.image.height / logoDimension.image.height];
+					var aspectRatio = Math.min(ratio[0], ratio[1]);
+					$scope.banner.logo.h = parseInt(logoDimension.image.height * aspectRatio);
+					// position
+					var dx = (logoDimension.image.width + 10) - parseInt(input);
+					var dy = (logoDimension.image.height + 10) - parseInt($scope.banner.logo.h);
+					var x = (dx <= 0) ? $scope.banner.logo.x : (dx / 2) + logoDimension.pos.placeholder.x;
+					$scope.banner.logo.x = ($scope.banner.background.type == 3) ? x + 20 : x ;
+					$scope.banner.logo.y = (dy <= 0) ? $scope.banner.logo.y : (dy / 2) + logoDimension.pos.placeholder.y;
+				}
+				else {
+					$scope.banner.logo.w = logoDimension.image.width;
+					$scope.banner.logo.h = logoDimension.image.height;
+				}
+			});
 			$scope.$watch('banner.mtitle.text', function(input){
 				$scope.banner.mtitle.limit = $scope.banner.mtitle.counter - input.length;
 				if($scope.banner.mtitle.limit <= 0) {
@@ -236,9 +333,44 @@ define([
 					$scope.banner.prize.three.text = $scope.banner.prize.three.text.substring(0, $scope.banner.prize.three.limit);
 				}
 			});
+			$scope.$watch('banner.logo.hide', function(checked){
+				self.hideLogo(checked);
+			});
+			$scope.$watch('banner.logo.placeholder', function(checked){
+				self.addWhitePlaceholder(checked);
+			});
+			
+			self.hideLogo = function(checked){
+				console.info('hide logo', checked);
+				$('#svg-editor > svg').each(function(i,e){
+					var $logo = $(e).find('#logo').eq(0);
+					// console.log('SVG logo element', $logo);
+					(checked) ? $logo.hide() : $logo.show();
+				});
+			};
+			self.addWhitePlaceholder = function(checked){
+				console.log('placeholder logo', checked);
+				var $rect = $('#svg-editor > svg > #logo > rect');
+				console.log('placeholder element', $rect[0]);
+				(checked) ? $rect.attr('fill', 'white') : $rect.attr('fill', 'transparent');
+			};
 
 			// bind cancel template
 			$('#templates').bind('cancelTemplate', function(e){
+				if( !isNew && cBanner !== false ) {
+					// $scope.banner.background = cBanner.background;
+					var set = cBanner.background.set;
+					if(set == 'upload')
+						$scope.banner.background.image  = cBanner.background.image;
+					else
+						$scope.banner.background.image  = $scope.templates[cBanner.background.type][set];
+					$scope.banner.selected  = cBanner.selected;
+					$scope.banner.logo.image      = cBanner.logo.image;
+					$scope.banner.prize.one.image   = cBanner.prize.one.image;
+					$scope.banner.prize.two.image   = cBanner.prize.one.image;
+					$scope.banner.prize.three.image = cBanner.prize.three.image;
+					console.log('banner', $scope.banner)
+				}
 				$(this).fadeOut(400, function(){
 					$(this).hide();
 					$('.tab-content').hide();
@@ -260,7 +392,31 @@ define([
 				var tplType = $scope.banner.background.type;
 				console.log('tplType', tplType)
 				if(type == 'upload') {
-					$scope.banner.background.image  = BannerImages.bg[tplType-1];
+					$scope.banner.background.image  = ( !$scope.banner.background.uploaded ) ? 
+														BannerImages.bg[tplType-1] :
+														cBanner.background.image ;
+					$scope.banner.background.enable = true;
+				} else {
+					$scope.banner.background.image  = $scope.templates[tplType][type];
+					$scope.banner.background.enable = false;
+				}
+
+				$scope.banner.background.set = type;
+			};
+
+			$scope.setBG2 = function(type, evt){
+				var $el  = $(evt.target),
+					text = $el.text(),
+					$parent = $el.parents('.btn-group');
+
+				$('.text', $parent).text(text);
+				
+				var tplType = $scope.banner.background.type;
+				console.log('tplType', tplType)
+				if(type == 'upload') {
+					$scope.banner.background.image  = ( !$scope.banner.background.uploaded ) ? 
+														BannerImages.bg[tplType-1] :
+														cBanner.background.image ;
 					$scope.banner.background.enable = true;
 				} else {
 					$scope.banner.background.image  = $scope.templates[tplType][type];
@@ -309,9 +465,9 @@ define([
 				// alert overwrite
 				if($btnTemplate.hasClass('overwrite')){
 					$('#popup-overwrite').bind('overwrite', function(){
-						var self = this;
+						// var self = this;
 						$('.blockOverlay').click();
-						bannerSetting(settings, true);
+						self.bannerSetting(settings, true);
 					});
 					// show message
 					$.blockUI({
@@ -330,6 +486,8 @@ define([
 				}
 				// return to the templates
 				if($templateField.is(':hidden')){
+					// set default selected
+					$('ul > li:eq('+ $scope.banner.selected +') > a', $templateField).click();
 					$templateField.show(400, function(){
 						$btnCancel.show();
 						$btnTemplate.addClass('overwrite').html('<i class="icon-cog"></i> Settings');
@@ -347,58 +505,21 @@ define([
 					$('#Background .bg-' + $scope.banner.background.set).click();
 				}, 400);
 
-				bannerSetting(settings, false);
+				self.bannerSetting(settings, false);
 			};
-
-			$scope.overwiriteTplYes = function(co){
-				$('#popup-overwrite').trigger('overwrite');
+			$scope.overwriteTpl = function(evt, val){
+				if( val ){
+					$('#popup-overwrite').trigger('overwrite');
+				} else {
+					$('.blockOverlay').click();
+					$('#templates').trigger('cancelTemplate');
+				}
 			};
-			$scope.overwiriteTplNo = function(evt){
-				$('.blockOverlay').click();
-				$('#templates').trigger('cancelTemplate');
-			};
-
 			$scope.cancelTemplate = function($event){
 				$('#templates').trigger('cancelTemplate');
 			};
 
-			$scope.hideLogo = function(event){
-				var $chHide = $(event.currentTarget);
-				
-				$scope.banner.logo.hide = !$scope.banner.logo.hide;
-
-				$('#svg-editor > svg').each(function(i,e){
-					var $logo = $(e).find('#logo').eq(0);
-					console.log($logo);
-					if($chHide.is(":checked")){
-						$logo.hide();
-						$chHide.parents('.accordion-inner').children().each(function(x,z){
-							if(x > 0){
-								$(z).hide('slow');
-							}
-						});
-					} else {
-						$logo.show();
-						$chHide.parents('.accordion-inner').children().each(function(x,z){
-							if(x > 0){
-								$(z).show('slow');
-							}
-						});
-					}
-				});
-			};
-
-			$scope.addWhitePlaceholder = function(event){
-				var $placeholder = $(event.currentTarget);
-				var $rect = $('#svg-editor > svg > #logo > rect');
-				if($placeholder.is(":checked")){
-					$rect.attr('fill', 'white');
-				} else {
-					$rect.attr('fill', 'transparent');
-				}
-			};
-
-			var bannerSetting = function( options, overwrite ){
+			self.bannerSetting = function( options, overwrite ){
 				var $tpl          = options.field.template;
 				var $settingField = options.field.setting;
 				var $tplContent   = options.field.content;
@@ -432,8 +553,8 @@ define([
 
 				// compile SVG (inject scope)
 				var tplIndex = tplDimension.match(/(\d)/)[0];
-				var $svg = getSVGCompiled($tplContent, 'like', tplIndex);
-				var $svg2 = getSVGCompiled($tplContent, 'enter', tplIndex);
+				var $svg  = self.getSVGCompiled($tplContent, 'like', tplIndex);
+				var $svg2 = self.getSVGCompiled($tplContent, 'enter', tplIndex);
 				$tpl.hide(400, function(){
 					$(this).hide();
 					$tplContent.hide();
@@ -456,11 +577,32 @@ define([
 						// append canvas
 						$editorSVG.append(inputCanvas);
 						// set height drop background same as canvas dimension
-						$('#drop-background').css('height', backgroundDimension.height + 'px');
+						$('#drop-background').css('height', backgroundDimension.height + 'px'); 
 
 						// show editor
 						if($editorSVG.is(':hidden')) $editorSVG.show();
+
+						$('#input-fb-width').unbind('spinner')
+							.spinner({
+								min:0, max:self.fbMax.w,
+								spin: function( event, ui ) {
+									$scope.$apply(function(scope){
+										scope.banner.fb.w = ui.value;
+									});
+								}
+							});
+						$('#input-logo-width').unbind('spinner')
+							.spinner({
+								min:0, max:logoDimension.image.width,
+								spin: function( event, ui ) {
+									$scope.$apply(function(scope){
+										scope.banner.logo.w = ui.value;
+									});
+								}
+							});
+
 						/* initialize image reader */
+
 						// background
 						imageReader.init({
 							buttonClass   : 'btn-success',
@@ -588,7 +730,7 @@ define([
 													}
 												});
 												// do upload
-												uploadFile({
+												self.uploadFile({
 													file  : blob,
 													name  : 'background',
 													width : backgroundDimension.width,
@@ -632,7 +774,7 @@ define([
 									}
 								});
 								// upload to resize
-								uploadFile({
+								self.uploadFile({
 									file  : blob,
 									name  : 'logo',
 									width : logoDimension.image.width,
@@ -677,24 +819,24 @@ define([
 										console.log('scope', scope);
 										// calculate image position (center)
 										// calculate aspect ratio image height
-										scope.$watch('banner.logo.w', function(input) {
-											if(parseInt(input) <= logoDimension.image.width){
-												// dimension
-												var ratio = [input / logoDimension.image.width, logoDimension.image.height / logoDimension.image.height];
-												var aspectRatio = Math.min(ratio[0], ratio[1]);
-												scope.banner.logo.h = parseInt(logoDimension.image.height * aspectRatio);
-												// position
-												var dx = (logoDimension.image.width + 10) - parseInt(input);
-												var dy = (logoDimension.image.height + 10) - parseInt(scope.banner.logo.h);
-												var x = (dx <= 0) ? scope.banner.logo.x : (dx / 2) + logoDimension.pos.placeholder.x;
-												scope.banner.logo.x = (tplIndex == 3) ? x + 20 : x ;
-												scope.banner.logo.y = (dy <= 0) ? scope.banner.logo.y : (dy / 2) + logoDimension.pos.placeholder.y;
-											}
-											else {
-												scope.banner.logo.w = logoDimension.image.width;
-												scope.banner.logo.h = logoDimension.image.height;
-											}
-										});
+										// scope.$watch('banner.logo.w', function(input) {
+										// 	if(parseInt(input) <= logoDimension.image.width){
+										// 		// dimension
+										// 		var ratio = [input / logoDimension.image.width, logoDimension.image.height / logoDimension.image.height];
+										// 		var aspectRatio = Math.min(ratio[0], ratio[1]);
+										// 		scope.banner.logo.h = parseInt(logoDimension.image.height * aspectRatio);
+										// 		// position
+										// 		var dx = (logoDimension.image.width + 10) - parseInt(input);
+										// 		var dy = (logoDimension.image.height + 10) - parseInt(scope.banner.logo.h);
+										// 		var x = (dx <= 0) ? scope.banner.logo.x : (dx / 2) + logoDimension.pos.placeholder.x;
+										// 		scope.banner.logo.x = (tplIndex == 3) ? x + 20 : x ;
+										// 		scope.banner.logo.y = (dy <= 0) ? scope.banner.logo.y : (dy / 2) + logoDimension.pos.placeholder.y;
+										// 	}
+										// 	else {
+										// 		scope.banner.logo.w = logoDimension.image.width;
+										// 		scope.banner.logo.h = logoDimension.image.height;
+										// 	}
+										// });
 									});
 									$.unblockUI();
 								});
@@ -816,7 +958,7 @@ define([
 											var prizeIndex = parseInt(index[0]);
 											var en = ['one', 'two', 'three'][prizeIndex-1];
 											// upload
-											uploadFile({
+											self.uploadFile({
 												file  : blob,
 												name  : 'prize-' + prizeIndex,
 												width : priceDimension.width,
@@ -868,7 +1010,7 @@ define([
 				});
 			};
 
-			var getSVGCompiled = function ($tplContent, type, tplIndex){
+			self.getSVGCompiled = function ($tplContent, type, tplIndex){
 				var $svg = $('.active > svg', $tplContent).clone();
 				$svg.attr('id', 'svg-editor-'+type);
 				$('#pattern', $svg).children().map(function(i,e){
@@ -904,34 +1046,36 @@ define([
 						e.setAttribute('width', '{{banner.fb.w}}');
 						e.setAttribute('height', '{{banner.fb.h}}');
 						e.setAttribute('x', '{{getX()}}');
-						// compile banner fb 
-						$scope.banner.fb = {
-							w:283,
-							h:67
-						};
-						$scope.$watch('banner.fb.w', function(input){
-							var ratio = [input / 283, 67 / 67];
-							var aspectRatio = Math.min(ratio[0], ratio[1]);
-							$scope.banner.fb.h = parseInt(67 * aspectRatio);
-						});
-						$scope.getX = function(){
-							var calc = 810 - $scope.banner.fb.w;
-							return tplIndex == 3 ? calc - 20 : calc ;
-						}
 					}
 				});
 				$('#logo', $svg).children().map(function(i,e){
-					if($(e).attr('id') !== undefined) {
+					if($(e).attr('id') !== undefined) { // image
 						$(e).attr('id', function(index, id){
 							return id.replace(/(\d+)/, function(fullMatch, n) {
 								return 'editor-'+type;
 							});
-						}).attr('xlink:href', '{{banner.logo.image}}');
-					} else if($(e).attr('filter') !== undefined) {
+						}).attr('xlink:href','{{banner.logo.image}}');
+						// set logo position
+						if( $scope.banner.logo.w != 0 && $scope.banner.logo.hh != 0 && 
+							$scope.banner.logo.x !== undefined && $scope.banner.logo.y !== undefined ){
+							$(e).attr({
+								width:'{{banner.logo.w}}',
+								height:'{{banner.logo.h}}',
+								x:'{{banner.logo.x}}',
+								y:'{{banner.logo.y}}'
+							});
+						}
+						// check logo is hidden
+						if($scope.banner.logo.hide){ 
+							$(e).hide(); 
+						}
+					} else if($(e).attr('filter') !== undefined) { // rect (placeholder)
 						$(e).attr('filter', function(index, id){
 							return id.replace(/(\d+)/, function(fullMatch, n) {
 								return 'editor';
 							});
+						}).attr('fill', function(){
+							return $scope.banner.logo.placeholder ? 'white' : 'transparent';
 						});
 					}
 					else return;
@@ -978,7 +1122,7 @@ define([
 			 * convert SVG to Image
 			 * there are some issues, and only work on firefox
 			 */
-			var svgToImage = function(svg, callback){
+			self.svgToImage = function(svg, callback){
 				var svg_xml = (new XMLSerializer()).serializeToString(svg);
 				var canvas  = document.createElement('canvas');
 				// get canvas context
@@ -997,7 +1141,7 @@ define([
 			/**
 			 * convert data URI to Blob
 			 */
-			var dataURItoBlob = function(dataURI) {
+			self.dataURItoBlob = function(dataURI) {
 				var byteString;
 				if (dataURI.split(',')[0].indexOf('base64') >= 0)
 					byteString = atob(dataURI.split(',')[1]);
@@ -1043,12 +1187,12 @@ define([
 
 				$progress.text('Generating banner like...');
 				// convert image svg like, then upload the screenshot
-				svgToImage(svg_like, function(imgLike, imgDataURILike){
+				self.svgToImage(svg_like, function(imgLike, imgDataURILike){
 
 					/* upload banner like */
 
-					// convert data URI to blob (banner like as screenshot/preview)
-					var blobLike = dataURItoBlob(imgDataURILike);
+					// convert data URI to blob
+					var blobLike = self.dataURItoBlob(imgDataURILike);
 
 					console.log('blob banner like', blobLike);
 					console.info('start uploading banner like screenshot..');
@@ -1056,7 +1200,7 @@ define([
 					$progress.text('Uploading banner like...');
 
 					// do upload banner like
-					uploadFile({
+					self.uploadFile({
 						file  : blobLike,
 						name  : 'banner-like',
 						width : 'original',
@@ -1068,12 +1212,12 @@ define([
 						$progress.text('Generating banner enter...');
 
 						// create canvas banner enter
-						svgToImage(svg_enter, function(imgEnter, imgDataURIEnter){
+						self.svgToImage(svg_enter, function(imgEnter, imgDataURIEnter){
 							
 							/* upload banner enter */
 
 							// convert data URI to blob
-							var blobEnter = dataURItoBlob(imgDataURIEnter);
+							var blobEnter = self.dataURItoBlob(imgDataURIEnter);
 
 							console.log('blob banner enter', blobEnter);
 							console.info('start uploading banner enter screenshot..');
@@ -1081,7 +1225,7 @@ define([
 							$progress.text('Uploading banner enter...');
 
 							// do upload banner enter
-							uploadFile({
+							self.uploadFile({
 								file  : blobEnter,
 								name  : 'banner-enter',
 								width : 'original',
@@ -1103,25 +1247,10 @@ define([
 
 								/* add banner images to zip */
 
-								// get base64 data URI
-								var imgURILike  = imgDataURILike.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
-								var imgURIEnter = imgDataURIEnter.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
-								// create folder n add image files into folder
-								var imgFolder = ZIP.folder('banner-'+$scope.banner.ID);
-								imgFolder.file('banner_like.jpg', imgURILike, {base64: true});
-								imgFolder.file('banner_enter.jpg', imgURIEnter, {base64: true});
-
-								// generate template modal n show
-								// generate ZIP file
-								var generateCallback = showModalNgenerateZIP({
-									el : {
-										like  : imgLike,
-										enter : imgEnter
-									},
-									uri : {
-										like  : imgDataURILike,
-										enter : imgURIEnter
-									}
+								// callback generate template n ZIP file
+								var generateCallback = self.generateTplZIP({
+									like  : imgDataURILike,
+									enter : imgDataURIEnter
 								}, function(){
 									// close loading popup
 									$timeout(function() {
@@ -1142,24 +1271,22 @@ define([
 								if( isSaved ){
 									console.info('do Save');
 									$progress.text('Saving configuration...');
-									doSave( generateCallback );
+									self.doSave( generateCallback );
 								} else {
 									console.info('generate only');
 									generateCallback;
 								}
-								
 							});
 						});
-						
 					});
 				});
 			};
 
-			var showModalNgenerateZIP = function( data, callback ){
+			self.generateTplZIP = function( imgURI, callback ){
 				// create anchor banner like download 
 				var downloadLinkLike       = document.createElement('a');
 				downloadLinkLike.title     = 'Download Banner Like';
-				downloadLinkLike.href      = data.uri.like;
+				downloadLinkLike.href      = imgURI.like;
 				downloadLinkLike.target    = '_blank';
 				downloadLinkLike.className = 'btn btn-success';
 				downloadLinkLike.innerHTML = '<i class="icon-download-alt"></i> Download Banner Like';
@@ -1167,22 +1294,19 @@ define([
 				// create anchor banner enter download
 				var downloadLinkEnter       = document.createElement('a');
 				downloadLinkEnter.title     = 'Download Banner Enter';
-				downloadLinkEnter.href      = data.uri.enter;
+				downloadLinkEnter.href      = imgURI.enter;
 				downloadLinkEnter.target    = '_blank';
 				downloadLinkEnter.className = 'btn btn-success';
 				downloadLinkEnter.innerHTML = '<i class="icon-download-alt"></i> Download Banner Enter';
 				downloadLinkEnter.download  = 'banner-enter-'+ $scope.banner.ID +'.jpg';
 
-				// set image class
-				var el = data.el;
-				el.like.className  = 'span12';
-				el.enter.className = 'span12';
 				// define generate element
 				var $generate     = $('#popup-result-generate-image-modal');
 				var $generateBody = $generate.find('.modal-body');
 				// create template banner list
 				var tplImages = '<li class="span6 banner-like">' +
-									'<div class="thumbnail">' + el.like.outerHTML +
+									'<div class="thumbnail">' + 
+										'<img src="'+ imgURI.like +'" class="span12" />' +
 										'<div class="caption">' +
 											'<h3>Banner Like</h3>' +
 											'<p>This is banner like description</p>'+
@@ -1191,7 +1315,8 @@ define([
 									'</div>' +
 								'</li>'+
 								'<li class="span6 banner-like">' +
-									'<div class="thumbnail">' + el.enter.outerHTML +
+									'<div class="thumbnail">' +
+										'<img src="'+ imgURI.enter +'" class="span12" />' +
 										'<div class="caption">' +
 											'<h3>Banner Enter</h3>' +
 											'<p>This is banner enter description</p>'+
@@ -1203,16 +1328,28 @@ define([
 				$('#preview > ul', $generateBody)
 					.html('')
 					.append(tplImages);
+
+				// var downloadName = 'banner-'+ $scope.banner.ID +'.zip';
+				var downloadName = 'banner_'+ self.slugify($scope.banner.title); 
+				
+				// get base64 data URI
+				var imgURILike  = imgURI.like.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+				var imgURIEnter = imgURI.enter.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+				// create folder n add image files into folder
+				var imgFolder = ZIP.folder(downloadName);
+				imgFolder.file('banner_like.jpg', imgURILike, {base64: true});
+				imgFolder.file('banner_enter.jpg', imgURIEnter, {base64: true});
 				// generate zip link
 				var DOMURL = window.URL || window.mozURL;
 				var downloadlink = DOMURL.createObjectURL(ZIP.generate({type:"blob"}));
+				// var downloadlink = ZIP.generate();
 
-				// var content = ZIP.generate();
-
-				// get zipe selement n set attribute
+				// set download attribute to download & zip elements
+				var downloadEl      = document.getElementById('setting-download');
+				downloadEl.download = downloadName +'.zip';
+				downloadEl.href     = downloadlink;
 				var zipEl      = $generate.find('.download-zip')[0];
-				zipEl.download = 'banner-'+ $scope.banner.ID +'.zip';
-				// zipEl.href     = "data:application/zip;base64," + content;
+				zipEl.download = downloadName +'.zip';
 				zipEl.href     = downloadlink;
 
 				console.info('finished adding the images into zip');
@@ -1220,7 +1357,14 @@ define([
 				if( callback ) callback();
 			};
 
-			var uploadFile = function(data){
+			self.slugify = function(Text) {
+			    return Text
+				        .toLowerCase()
+				        .replace(/[^\w ]+/g,'')
+				        .replace(/ +/g,'-');
+			};
+
+			self.uploadFile = function(data){
 				console.log(data);
 				// create form data
 				var formData = new FormData();
@@ -1242,28 +1386,61 @@ define([
 				});
 			};
 
-			$scope.save = function(e){
+			$scope.saveSubmit = function(e){
 				var $form = $(e.target).parents('form');
 				console.log('SAVE:form data', $scope.banner);
-				doSave();
+				$form.block({
+					overlayCSS: {
+						backgroundColor: '#fff',
+						opacity: 0.8
+					},
+					message: '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Saving..',
+					css: {
+						border: 'none',
+						background: 'none',
+						color: '#3685C6'
+					}
+				});
+				self.doSave(function(){
+					$form.unblock();
+				});
 			};
 
-			var doSave = function(callback){
+			self.doSave = function(callback){
 				var banner = new BannerService($scope.banner);
 				if( isNew ){
 					banner.$save(function(response){
 						console.log('Save response', response);
-						isNew = false;
-						if(callback) callback(true);
+						isNew = $scope.isNew = false;
+						// update old/copy banner
+						cBanner = angular.copy($scope.banner);
+						$scope.banners.push($scope.banner);
+						console.log('banners', $scope.banners);
+						if(callback) callback();
 					});
 				} else {
 					var bannerId = ($route.current.params.bannerId) ? $route.current.params.bannerId : $scope.banner.ID ;
 					banner.$update({id : bannerId}, function(response){
 						console.log('Update response', response);
-						if(callback) callback(false);
+						// update old/copy banner
+						cBanner = angular.copy($scope.banner);
+						var index = self.getIndexSelectedBanner();
+						var b     = $scope.banners[index];
+						b.title       = cBanner.title;
+						b.description = cBanner.description;
+						b.preview     = cBanner.preview;
+						if(callback) callback();
 					});
 				}
 			}
+
+			// get index selected banner 
+			// get list id panel left on thumbnail selected
+			self.getIndexSelectedBanner = function(){
+				var lID = $('#banner-panel-left .thumbnail.selected').parents('li').attr('id');
+				if(!lID) return null;
+				return lID.match(/\d/)[0];
+			};
 		}
 	]);
 });

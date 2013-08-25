@@ -8,8 +8,22 @@
 			      	</a>
 			    </div>
 			    <div id="Background" class="accordion-body collapse in">
-			      	<div class="accordion-inner">
+			      	<div class="accordion-inner" style="min-height:135px;">
 			        	<div class="control-group">
+							<div class="btn-group">
+				                <button class="btn dropdown-toggle" data-toggle="dropdown">
+				                	Set Background : <span class="text bold"></span>
+				                	<span class="caret"></span>
+				                </button>
+				                <ul class="dropdown-menu">
+				                  	<li><a href class="bg-upload" ng-click="setBG2('upload', $event)">Upload</a></li>
+				                  	<li><a href class="bg-feris" ng-click="setBG2('feris', $event)">Default 1 (Feris)</a></li>
+				                  	<li><a href class="bg-grass" ng-click="setBG2('grass', $event)">Default 2 (Grass)</a></li>
+				                  	<li><a href class="bg-young" ng-click="setBG2('young', $event)">Default 3 (Young)</a></li>
+				                </ul>
+				            </div>
+						</div>
+			        	<!-- <div class="control-group">
 							<label class="control-label" style="margin-left:0; text-align:left;">Set Background</label>
 							<div class="controls" style="margin-left:0;">
 							    <div class="btn-group">
@@ -19,10 +33,10 @@
 								    <button class="btn bg-young" ng-click="setBG('young', $event)">Young</button>
 							    </div>
 							</div>
-						</div>
+						</div> -->
 			        	<div class="control-group" ng-show="banner.background.enable">
-							<label class="control-label" style="margin-left:0; text-align:left;">
-								{{banner.background.uploaded | iif : "Edit" : "Upload"}} Background
+							<label class="control-label" style="width: 55px; margin-left:0; text-align:left;">
+								{{banner.background.uploaded | iif : "Edit" : "Upload"}}
 							</label>
 							<div class="controls" style="margin-left:0;">
 								<input type="file" id="input-background" class="hide" />
@@ -31,7 +45,7 @@
 						<div class="control-group">
 							<label class="control-label" style="width: 100%; text-align:left;">FB Resize</label>
 							<div class="controls" style="margin-left: 0;">
-								<input type="number" id="input-logo-width" class="input-small" placeholder="width" ng-model="banner.fb.w" /> X 
+								<input id="input-fb-width" ng-model="banner.fb.w"  style="width:50px; margin: 5px; border:none" /> X 
 								<input type="text" id="input-logo-height" class="input-small" placeholder="height" ng-model="banner.fb.h" disabled="true" />
 							</div>
 						</div>
@@ -48,11 +62,11 @@
 			      	<div class="accordion-inner">
 						<div class="control-group">
 							<div class="controls" style="margin-left: 0;">
-								<input type="checkbox" id="hide" class="margin-top-zero" ng-click="hideLogo($event)" /> 
+								<input type="checkbox" id="hide" class="margin-top-zero" ng-model="banner.logo.hide"/> 
 								<label class="inline" for="hide">Hide Logo</label>
 							</div>
 						</div>
-						<div class="control-group">
+						<div class="control-group" ng-hide="banner.logo.hide">
 							<label class="control-label" style="width: 100px; text-align:left;">
 								{{banner.logo.uploaded | iif : "Edit" : "Upload"}} Logo
 							</label>
@@ -60,23 +74,23 @@
 								<input type="file" id="input-logo" class="hide" />
 							</div>
 						</div>
-						<div class="control-group">
+						<div class="control-group" ng-hide="banner.logo.hide">
 							<label class="control-label" style="width: 100%; text-align:left;">Resize</label>
 							<div class="controls" style="margin-left: 0;">
-								<input type="number" id="input-logo-width" class="input-small" placeholder="width" ng-model="banner.logo.w" /> X 
+								<input id="input-logo-width" ng-model="banner.logo.w"  style="width:50px; margin: 5px; border:none" /> X 
 								<input type="text" id="input-logo-height" class="input-small" placeholder="height" ng-model="banner.logo.h" disabled="true" />
 							</div>
 						</div>
-						<div class="control-group">
+						<div class="control-group" ng-hide="banner.logo.hide">
 							<div class="controls" style="margin-left: 0;">
-								<input type="checkbox" id="placeholder" class="margin-top-zero" ng-click="addWhitePlaceholder($event)" /> 
+								<input type="checkbox" id="placeholder" class="margin-top-zero" ng-model="banner.logo.placeholder" /> 
 								<label class="inline" for="placeholder">Add Placeholder</label>
 							</div>
 						</div>
 			      	</div>
 			    </div>
 			</div>
-			<div class="accordion-group" ng-hide="isNoPrize">
+			<div class="accordion-group" ng-hide="tplShowPrice == 0">
 				<div class="accordion-heading">
 			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Prizes">
 			        	Prizes
@@ -168,7 +182,7 @@
 </form>
 <div class="align-center margin-bottom">
 	<div class="btn-group btn-block">
-	  	<button class="btn btn-success" ng-click="generate(false)" style="width:90%">Generate Image</button>
+  		<button class="btn btn-success" ng-click="generate(false)" style="width:90%">Generate Image</button>
 	  	<button class="btn btn-success dropdown-toggle" data-toggle="dropdown" data-backdrop="false" style="width:10%">
 	   	 	<span class="caret"></span>
 	  	</button>
@@ -177,6 +191,7 @@
 	    </ul>
 	</div>
 </div>
-<button class="btn btn-success btn-block" type="button" data-toggle="modal" data-target="#popup-result-generate-image-modal" ng-disabled="!allowDownloadable">
+<a id="setting-download" class="btn btn-success btn-block" 
+	ng-disabled="!allowDownloadable">
 	<i class="icon-download"></i> Download
-</button>
+</a>

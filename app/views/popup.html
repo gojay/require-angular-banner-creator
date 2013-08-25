@@ -2,8 +2,8 @@
 	<div class="message" style="position: absolute;right: 7%;top: 60px; width: 352px;">
 	    <p style="font-weight: bold; margin: 10px 10px 0;">Do you want to overwrite it ?</p> 
 	    <p class="text-center" style="padding: 0 10px;position: absolute;top: 54px;right: 119px;">
-		    <button class="btn-link" ng-click="overwiriteTplYes($event)">Yes</button>
-		    <button class="btn-link" ng-click="overwiriteTplNo($event)">No</button>
+		    <button class="btn-link" ng-click="overwriteTpl($event, true)">Yes</button>
+		    <button class="btn-link" ng-click="overwriteTpl($event, false)">No</button>
 	    </p>
 	</div>
 </div>
@@ -51,7 +51,7 @@
 								</div>
 							</div>
 							<div class="form-actions">
-								<button type="submit" class="btn btn-primary" ng-click="save($event)">Save</button>
+								<button type="submit" class="btn btn-primary" ng-click="saveSubmit($event)">Save</button>
 							</div>
 						</fieldset>
 					</form>

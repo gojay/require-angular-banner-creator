@@ -71,7 +71,6 @@ $banner_templates = array(
 
 $app->get('/banner/template', function() use($app, $banner_templates){
 	$app->response()->header('Content-Type', 'application/json');
-	// sleep(2);
 	echo json_encode($banner_templates);
 });
 
@@ -131,6 +130,12 @@ $app->get('/banner/:bannerId', function($bannerId) use ($app, $db){
 					} 
 				}
 			}
+
+			$path = 'images/upload/'.$creator['creator_id'];
+			$data['uploaded'] = array(
+				'like' => create_data_uri( $path . '/banner_like.jpg'),
+				'enter' => create_data_uri( $path . '/banner_enter.jpg')
+			);
 			// sleep(2);
 			echo json_encode($data);
 		}
@@ -194,26 +199,27 @@ $app->put('/banner/:bannerId', function($bannerId) use ($app, $db, $creator_colu
 				if($key == 'preview') $key = 'image';
 				$creator[$key] = $value;
 			}
+			// update creator
 			if( $creator->update() ) {
 				// update meta
 				foreach ($arr['creator_meta'] as $key => $value) {
 					$creator->creator_meta()->where(array('meta_key' => $key))->update(array('meta_value' => $value));
 				}
-			} else {
-				// sleep(2);
-				throw new Exception("Banner failure when updated");
+			} 
+			else {
+				throw new Exception("Error occured when updating banner");
 			}
 			// send response
 			echo json_encode(true);
 		}
 		else {
-			// sleep(2);
 			throw new NotFoundException("Banner not found");
 		}
-
-	} catch(NotFoundException $e){
+	} 
+	catch(NotFoundException $e){
 		$app->halt(404, $e->getMessage());
-	} catch (Exception $e) {
+	} 
+	catch (Exception $e) {
 		$app->halt(500, $e->getMessage());
 	}
 });
@@ -353,7 +359,8 @@ $app->post('/conversation', function() use ($app, $db, $creator_columns){
 		}
 		// send response
 		echo json_encode(true);
-	} catch(Exception $e) {
+	} 
+	catch(Exception $e) {
 		$app->halt(500, $e->getMessage());
 	}
 });
@@ -371,16 +378,20 @@ $app->put('/conversation/:conversationId', function($conversationId) use ($app, 
 			if($key == 'preview') $key = 'image';
 			$creator[$key] = $value;
 		}
+		// update creator
 		if( $creator->update() ) {
 			// update meta
 			foreach ($arr['creator_meta'] as $key => $value) {
 				$creator->creator_meta()->where(array('meta_key' => $key))->update(array('meta_value' => $value));
 			}
 		}
+		else {
+			throw new Exception("Error occured when updating banner");
+		}
 		// send response
 		echo json_encode(true);
-		
-	} catch (Exception $e) {
+	} 
+	catch (Exception $e) {
 		$app->halt(500, $e->getMessage());
 	}
 });

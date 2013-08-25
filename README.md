@@ -7,9 +7,9 @@ Features
 ------
 1. URL Hashbang mode, with "!" as prefix
 2. Adding a fixed header (adjust to the panels)
-3. Save the template configuration and show the list for the edited (for the while only conversation module)
+3. Save the template configuration (banner & conversation modules)
 
-How to Use
+Installation
 ------
 
 1. Clone this repository ( _Recomended_ ), then switch to branch **v.2.1resource**

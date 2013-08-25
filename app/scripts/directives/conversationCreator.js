@@ -10,8 +10,7 @@ define([
 			// Runs during compile
 			return {
 				scope : {
-					conversations : '=',
-					conversation  : '=ngModel'
+					data : '=ngModel'
 				},
 				restrict: 'EAC', // E = Element, A = Attribute, C = Class, M = Comment
 				templateUrl: 'app/views/components/conversation-creator.html',
@@ -19,6 +18,26 @@ define([
 				controller: function($scope, $element, $attrs, $transclude) {
 
 					var self = this;
+
+					self.templates = $scope.data.templates;
+
+					/* ================ model ================ */
+
+					$scope.conversations = $scope.data.recents;
+					$scope.conversation  = $scope.data.detail;
+
+					self.oldConversation = angular.copy($scope.conversation);
+
+					$scope.isNew = false;
+					// if new, set default config conversation
+					if( $scope.conversation === null ){
+						$scope.isNew = self.isNew = true;
+						$scope.conversation = ConversationConfig;
+					}
+					$scope.isDownloadDisabled = true;
+					$scope.template = (self.isNew) ? self.templates[1] : self.templates[$scope.conversation.selected];
+
+					/* ================ init variables ================ */
 
 					var index    = 1,
 						sizes    = 0,
@@ -31,8 +50,6 @@ define([
 					self.btnSpot2   = $('#btn-input-spot2');
 					self.btnBg      = $('#btn-upload-backgrounds');
 					self.sectionBg  = $('#drop-backgrounds');
-					// define templates
-					self.templates  = ConversationTpl.templates;
 					// define dimensions
 					self.dimensions = ConversationTpl.dimensions;
 					// define jsZip
@@ -53,22 +70,6 @@ define([
 					};
 
 					self.isNew = false;
-
-					/* ================ model ================ */
-
-					self.oldConversation = angular.copy($scope.conversation);
-
-					console.log('recents', $scope.conversations);
-
-					$scope.isNew = false;
-					// if new, set ID conversation
-					if( $scope.conversation.ID === null ){
-						self.isNew = true;
-						$scope.isNew = true;
-						$scope.conversation.ID = new Date().getTime();
-					}
-					$scope.isDownloadDisabled = true;
-					$scope.template = (self.isNew) ? self.templates[0] : self.templates[$scope.conversation.selected];
 
 					/* ================ scope watchers ================ */
 
@@ -294,9 +295,9 @@ define([
 						}
 					};
 
-					// get selected conversations index
+					// get index selected conversations 
 					// get list id panel left on thumbnail selected
-					self.getSelectedConversationsIndex = function(){
+					self.getIndexSelectedConversations = function(){
 						var lID = $('#conversation-panel-left .thumbnail.selected').parents('li').attr('id');
 						if(!lID) return null;
 						return lID.match(/\d/)[0];
@@ -318,7 +319,7 @@ define([
 							}).then(function(response){
 								console.log(response);
 								// get selected conversations index
-								var index = self.getSelectedConversationsIndex();
+								var index = self.getIndexSelectedConversations();
 								$scope.$apply(function(scope){
 									$timeout(function(){
 										var img = response.url + '#' + new Date().getTime();
@@ -769,7 +770,8 @@ define([
 						var $link = $(this).parent().find('a');
 						$(this).parent().find('a').addClass('open'); //add active state to button on open
 						// get tpl  
-						var index    = this.id.match(/\d/)[0] - 1;
+						// var index    = this.id.match(/\d/)[0] - 1;
+						var index    = this.id.match(/\d/)[0];
 						var template = controller.templates[index];
 						// applying template
 						$scope.$apply(function(scope){
@@ -785,8 +787,7 @@ define([
 					});
 					// make clicked, set template selected
 					$timeout(function() {
-						var link = parseInt($scope.conversation.selected) + 1;
-						$('a[href="#tpl-'+ link +'"]').click();
+						$('a[href="#tpl-'+ $scope.conversation.selected +'"]').click();
 						$rootScope.pageService.loaded = true;
 					}, 1000);
 
@@ -898,7 +899,8 @@ define([
 						var blockUI     = controller.blockUI;
 						var saveMsg     = 'Saving..';
 
-						if( $scope.conversation.preview === null || controller.isNew || controller.isEdited() ){
+						var isEdited = controller.isEdited();
+						if( $scope.conversation.preview === null || controller.isNew || isEdited ){
 							console.info('generate template then save POST');
 							blockUI.message = '<i class="icon-spinner icon-spin icon-2x"></i> <br/> <span>Generating template..</span>';
 							elPreview.block(blockUI);
@@ -906,13 +908,15 @@ define([
 							controller.generatePreviewTpl(function(){
 								$('.blockMsg span', elPreview).text(saveMsg);
 								doSave( elPreview, function(){
-									// reset old conversation
+									// update old conversation
 									controller.oldConversation = angular.copy($scope.conversation);
-									// applying selected conversations
-									var index = controller.getSelectedConversationsIndex();
-									var c = $scope.conversations[index];
-									c.title       = controller.oldConversation.title;
-									c.description = controller.oldConversation.description;
+									if( isEdited ){
+										// applying selected conversations
+										var index = controller.getIndexSelectedConversations();
+										var c = $scope.conversations[index];
+										c.title       = controller.oldConversation.title;
+										c.description = controller.oldConversation.description;
+									}
 								});
 							});
 						} else {
