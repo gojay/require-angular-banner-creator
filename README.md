@@ -3,6 +3,10 @@ Require Angular Banner Creator v.2.1
 
 Banner creator built by [AngularJS](https://www.angularjs.org) &amp; [RequireJS](https://www.requirejs.org) with resource to save template configuration
 
+Browser Supported
+------
+Lastest Firefox
+
 Features
 ------
 1. URL Hashbang mode, with "!" as prefix

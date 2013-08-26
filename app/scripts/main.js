@@ -2,7 +2,7 @@
 // | Image Creator Built by AngularJS & RequireJS                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Dani Gojay 2013 All rights reserved.                     |
-// | Version       2.0                                                      |
+// | Version       2.1-resource                                                      |
 // | Last modified 15/07/2013                                               |
 // | Email         dani.gojay@gmail.com                                     |
 // | Web           http://github.com/gojay & http://gojayincode.com         |
@@ -271,7 +271,32 @@ function(angular, app, domReady){
 	.config(['$compileProvider' , function ($compileProvider) {
           $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto):/);
     }])
-	.run(function($rootScope, transition) {
+	.run(function($rootScope, $timeout, $location, transition) {
+		window._unsupported = { allow : true, status: false };
+		window._onbeforeunload = true;
+		// show popup for unsopported browsers
+		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow){
+			window._unsupported.status = true;
+			$timeout(function(){
+				$.blockUI({
+					message: $('#popup-unsupported'),
+					overlayCSS: {
+						backgroundColor: '#000',
+						opacity: 0.8,
+						cursor: 'default'
+					},
+					css: {
+						background : 'transparent',
+						border     : 'none',
+						top        : ($(window).height() - 479) / 2 + 'px',
+						left       : ($(window).width() - 649) / 2 + 'px',
+						width      : '649px',
+						cursor     : 'default'
+					}
+				})
+			}, 1000);
+		}
+		// define root scope panel
 		$rootScope.panel = {
 			right: {
 				model: null,
@@ -305,6 +330,17 @@ function(angular, app, domReady){
 			// set start pageService false, if page static, or doesn't needed services
 			if(current.$$route.static !== undefined) $rootScope.pageService.start = false;
 		});
+		$rootScope.$on('$locationChangeStart', function(event, next, current) {
+			console.log(next);
+			if(window._unsupported.status){
+				$location.path('/');
+			}
+			if(!window._onbeforeunload){
+				if(!confirm("You have attempted to leave this page. If you have made any changes to the settings without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?")) {
+					event.preventDefault();
+				}
+			}
+	    });
 	});
 	domReady(function() {
 		angular.bootstrap(document, ['ImageApp']);

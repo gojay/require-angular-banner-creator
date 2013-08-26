@@ -12,7 +12,8 @@ define([
 			// define jsZip
 			var ZIP = new JSZip();
 			// define isNew, copy banner
-			var isNew = $scope.isNew = true, cBanner = false;
+			var isNew = $scope.isNew = true, 
+				cBanner = false;
 
 			// model banner templates n recents
 			$scope.templates = banners.templates;
@@ -29,7 +30,7 @@ define([
 				// copy the banner, to use same updated banner images 
 				// or check has changed / edited
 				cBanner = angular.copy($scope.banner);
-
+				// show the button right panel
 				$('a.handler-right').switchClass('invisible', 'visible', 0);
 			}
 
@@ -39,12 +40,12 @@ define([
 
 			/* ================ Handling Panel ================ */
 
-			// set active panel left
+			// set active left panel
 			$('a.handler-left').switchClass('invisible', 'visible', 0);
 
 			// set model (search form)
 			console.log('panel.left.model', $rootScope.panel.left.model);
-			// set root model (panel left), if is new
+			// set root model (left panel), if is new
 			if( $rootScope.panel.left.model === null ){
 				$rootScope.panel.left.model = {
 					showForm : true,
@@ -56,9 +57,9 @@ define([
 			}
 			// add model selected for edit view
 			$rootScope.panel.left.model.selected = $scope.banner.ID;
-			// get conversation panel right
+			// get conversation right panel
 			var $panelRight = '<div ng-include src="\'app/views/banner-panel-right.html\'"></div>';
-			// bind panel right (rootScope), compile inject scope
+			// bind right panel (rootScope), compile inject scope
 			$rootScope.panel.right.template = $compile($panelRight)($scope);
 
 			// panel handler
@@ -84,7 +85,7 @@ define([
 					}
 				});
 
-			// listener panel left
+			// listener left panel
 			$scope.detailBanner = function(index){
 				var ID = $scope.banners[index].ID;
 				var list = 'li#thumb-banner-'+index;
@@ -133,19 +134,19 @@ define([
 					}
 				});
 			};
-			// listener panel right
+			// listener right panel
 			$scope.createNew = function(){
 				// close panel
 				$('a.handler-'+targetPanel)
 					.click()
 					.switchClass('visible', 'invisible', 0);
-				// redirect to new conversation
+				// redirect to new banner
 				$location.path('/facebook/banner');
 			};
 
-			// get banner panel left
+			// get banner left panel
 			var $panelLeft = '<div ng-include src="\'app/views/banner-panel-left.html\'"></div>';
-			// bind panel left (rootScope), compile inject scope
+			// bind left panel (rootScope), compile inject scope
 			$rootScope.panel.left.template = $compile($panelLeft)($scope);
 			// set equals height banner lists 
 			$scope.setEqualHeight = function() {
@@ -224,7 +225,7 @@ define([
 				var prize    = $(e.target).data('price').match(/\d/)[0];
 				var en       = ['one', 'two', 'three'][prize - 1];
 
-				var isSameasEdit = ((cBanner !== undefined) && (parseInt(cBanner.selected) == selected)) ? true : false ;
+				var isSameasEdit = ((cBanner !== false) && (parseInt(cBanner.selected) == selected)) ? true : false ;
 
 				// applying banner images
 				$scope.$apply(function(scope){
@@ -417,7 +418,6 @@ define([
 
 				$scope.banner.background.set = type;
 			};
-
 			$scope.setBG2 = function(type, evt){
 				var $el  = $(evt.target),
 					text = $el.text(),
@@ -475,6 +475,8 @@ define([
 						tplShowPrice    : tplShowPrice
 					}
 				};
+
+				window._onbeforeunload = false;
 
 				// alert overwrite
 				if($btnTemplate.hasClass('overwrite')){
@@ -1222,6 +1224,9 @@ define([
 						height: 'original',
 						crop  : false
 					}).success(function(response){
+						console.log('response upload banner like', response);
+
+						// set image preview
 						var imgPreview = response.url;
 						
 						$progress.text('Generating banner enter...');
@@ -1231,13 +1236,13 @@ define([
 							
 							/* upload banner enter */
 
+							$progress.text('Uploading banner enter...');
+
 							// convert data URI to blob
 							var blobEnter = dataURItoBlob(imgDataURIEnter);
 
 							console.log('blob banner enter', blobEnter);
 							console.info('start uploading banner enter screenshot..');
-
-							$progress.text('Uploading banner enter...');
 
 							var imgNameEnter = isSaved ? 'banner_enter' : 'g_banner_enter';
 							// do upload banner enter
@@ -1248,7 +1253,7 @@ define([
 								height: 'original',
 								crop  : false
 							}).success(function(response){
-								console.log('response banner enter', response);
+								console.log('response upload banner enter', response);
 								
 								// applying scope
 								$scope.$apply(function(scope){ 
@@ -1268,29 +1273,27 @@ define([
 									like  : imgDataURILike,
 									enter : imgDataURIEnter
 								}, function(){
-									// close loading popup
+
+									// generate template & ZIP finished
+
+									console.info('call generate callback...');
+
 									$timeout(function() {
+										// set empty progress text
 										$progress.text('');
 
-										if(isNew){
-											var downloadName = 'banner_'+ self.slugify($scope.banner.title); 
+										console.log('generateCallback', isNew, $scope.banner.uploaded == undefined,  $scope.banner.download == undefined);
+
+										if( isNew ){
+											// add scope banner uploaded
 											$scope.banner['uploaded'] = {
-												like: imgDataURILike,
+												like : imgDataURILike,
 												enter: imgDataURIEnter
-											}
-											$scope.banner['download'] = {
-												like: {
-													title:'Download Banner Like',
-													href: 'images/upload/'+ $scope.banner.ID + '/' + imgNameLike + '.jpg',
-													download:'banner-like_'+ downloadName +'.jpg'
-												},
-												enter: {
-													title:'Download Banner Enter',
-													href: 'images/upload/'+ $scope.banner.ID + '/' + imgNameEnter + '.jpg',
-													download:'banner-enter_'+ downloadName +'.jpg'
-												}
-											}
+											};
+											// set updated
+											$scope.isNew = isNew = false;
 										} else {
+											// applying scope banner uploaded & download
 											$scope.$apply(function(scope){
 												scope.banner.uploaded.like       = imgDataURILike;
 												scope.banner.uploaded.enter      = imgDataURIEnter;
@@ -1299,22 +1302,14 @@ define([
 											});
 										}
 
+										// hide loading screen
 										$.unblockUI();
 
-										// show button panel right
+										// show button right panel
 										if($('a.handler-right').hasClass('invisible')) $('a.handler-right').switchClass('invisible', 'visible', 0);
+										// show the right panel
 										$('a.handler-right').click();
 
-										// $.unblockUI({
-										// 	onUnblock: function() {
-										// 		// show generated popup without backdrop (bootstrap)
-										// 		$('#popup-result-generate-image-modal')
-										// 			.modal({
-										// 				backdrop: false,
-										// 				show: true
-										// 			});
-										// 	}
-										// });
 									}, 1000);
 								});
 
@@ -1336,52 +1331,7 @@ define([
 				// var downloadName = 'banner-'+ $scope.banner.ID +'.zip';
 				var downloadName = 'banner_'+ self.slugify($scope.banner.title); 
 
-				// create anchor banner like download 
-				// var downloadLinkLike       = document.createElement('a');
-				// downloadLinkLike.title     = 'Download Banner Like';
-				// downloadLinkLike.href      = imgURI.like;
-				// downloadLinkLike.target    = '_blank';
-				// downloadLinkLike.className = 'btn btn-success';
-				// downloadLinkLike.innerHTML = '<i class="icon-download-alt"></i> Download Banner Like';
-				// downloadLinkLike.download  = 'banner-like_'+ downloadName +'.jpg';
-				// // create anchor banner enter download
-				// var downloadLinkEnter       = document.createElement('a');
-				// downloadLinkEnter.title     = 'Download Banner Enter';
-				// downloadLinkEnter.href      = imgURI.enter;
-				// downloadLinkEnter.target    = '_blank';
-				// downloadLinkEnter.className = 'btn btn-success';
-				// downloadLinkEnter.innerHTML = '<i class="icon-download-alt"></i> Download Banner Enter';
-				// downloadLinkEnter.download  = 'banner-enter_'+ downloadName +'.jpg';
-
-				// define generate element
-				// var $generate     = $('#popup-result-generate-image-modal');
-				// var $generateBody = $generate.find('.modal-body');
-				// // create template banner list
-				// var tplImages = '<li class="span6 banner-like">' +
-				// 					'<div class="thumbnail">' + 
-				// 						'<img src="'+ imgURI.like +'" class="span12" />' +
-				// 						'<div class="caption">' +
-				// 							'<h3>Banner Like</h3>' +
-				// 							'<p>This is banner like description</p>'+
-				// 							'<p>'+ downloadLinkLike.outerHTML +'</p>' +
-				// 						'</div>' +
-				// 					'</div>' +
-				// 				'</li>'+
-				// 				'<li class="span6 banner-like">' +
-				// 					'<div class="thumbnail">' +
-				// 						'<img src="'+ imgURI.enter +'" class="span12" />' +
-				// 						'<div class="caption">' +
-				// 							'<h3>Banner Enter</h3>' +
-				// 							'<p>This is banner enter description</p>'+
-				// 							'<p>'+ downloadLinkEnter.outerHTML +'</p>' +
-				// 						'</div>' +
-				// 					'</div>' +
-				// 				'</li>';
-				// // append banner images
-				// $('#preview > ul', $generateBody)
-				// 	.html('')
-				// 	.append(tplImages);
-
+				// add scope banner download
 				$scope.banner['download'] = {
 					like: {
 						title:'Download Banner Like',
@@ -1394,6 +1344,8 @@ define([
 						download:'banner-enter_'+ downloadName +'.jpg'
 					}
 				};
+
+				console.log('scope banner after generated', $scope.banner);
 				
 				// get base64 data URI
 				var imgURILike  = imgURI.like.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
@@ -1417,8 +1369,6 @@ define([
 				zipEl.href     = downloadlink;
 
 				console.info('finished adding the images into zip');
-
-				console.log('generate', $scope.banner)
 
 				if( callback ) callback();
 			};
@@ -1487,11 +1437,13 @@ define([
 			};
 
 			self.doSave = function(callback){
+				
+				window._onbeforeunload = true;
+
 				var banner = new BannerService($scope.banner);
 				if( isNew ){
 					banner.$save(function(response){
 						console.log('Save response', response);
-						isNew = $scope.isNew = false;
 						// update old/copy banner
 						cBanner = angular.copy($scope.banner);
 						$scope.banners.push($scope.banner);
@@ -1515,7 +1467,7 @@ define([
 			}
 
 			// get index selected banner 
-			// get list id panel left on thumbnail selected
+			// get list id left panel on thumbnail selected
 			self.getIndexSelectedBanner = function(){
 				var lID = $('#banner-panel-left .thumbnail.selected').parents('li').attr('id');
 				if(!lID) return null;

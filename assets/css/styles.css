@@ -108,7 +108,8 @@ a:hover {
     z-index: 1;
     overflow: auto;
     opacity: 0;
-    -webkit-transition: opacity 0s .5s;
+    -webkit-transition: opacity 1s 0s;
+    -moz-transition: opacity 1s 0s;
 }
 #panel-right {
     left: auto;
@@ -849,4 +850,20 @@ h3 {
 }.tabbable ul.nav > li.active > a {
 	/*font-weight: bold;*/
 	color: #0088cc;
+}
+
+#popup-unsupported {
+	display: none; 
+	width: 649px; height: 479px; 
+	position: relative; 
+	background: url('../img/ragecomic-focused.png') no-repeat; 
+	background-position: -1px -1px; 
+	font-size:16px;
+	line-height: 35px;
+}
+#popup-unsupported .message {
+	position: absolute;
+	right: 7%;
+	top: 62px; 
+	width: 352px;
 }
