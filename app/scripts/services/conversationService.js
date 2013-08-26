@@ -39,7 +39,7 @@ define(['services/services'], function(services){
 				title: '',
 				description: '',
 				preview: null,
-				autosave: false,
+				autosave: true,
 				logo : {
 					hide: false,
 					placeholder: true,

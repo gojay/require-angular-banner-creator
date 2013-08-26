@@ -5,24 +5,26 @@
 				<!-- <h4>Generated Images</h4> -->
 			</div>
 			<div class="span5 text-right">
-			  	<a href class="btn" ng-click="createNew()" ng-disabled="isNew">
-			  		<i class="icon-plus"></i> Create New
-			  	</a>
 			  	<div class="btn-group">
-					<button class="btn btn-success" 
-							ng-click="generate(false)">Generate Image</button>
-					<button class="btn btn-success dropdown-toggle"
-							data-toggle="dropdown" 
-							data-backdrop="false">
-					 	<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu btn-block">
-					  	<li><a href ng-click="generate(true)">Generate Image & Save</a></li>
-					</ul>
+				  	<a href class="btn" ng-click="createNew()" ng-disabled="isNew">
+				  		<i class="icon-plus"></i> Create New
+				  	</a>
+				  	<!-- <div class="btn-group">
+						<button class="btn btn-success" 
+								ng-click="generate(false)">Generate Image</button>
+						<button class="btn btn-success dropdown-toggle"
+								data-toggle="dropdown" 
+								data-backdrop="false">
+						 	<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu btn-block">
+						  	<li><a href ng-click="generate(true)">Generate Image & Save</a></li>
+						</ul>
+					</div> -->
+				  	<a href id="downloadZip" class="btn btn-success" ng-disabled="isDownloadDisabled">
+				  		<i class="icon-download-alt"></i> Download
+				  	</a>
 				</div>
-			  	<a href id="downloadZip" class="btn btn-success" ng-disabled="isDownloadDisabled">
-			  		<i class="icon-download-alt"></i> Download
-			  	</a>
 			</div>
 		</div>
 		<div class="span12 prefix" style="padding: 15px 10px;">
@@ -39,7 +41,7 @@
 								<div class="caption">
 									<h3>Banner {{k}}</h3>
 									<!-- <p>This is banner like description</p> -->
-									<!-- <p> downloadLinkLike.outerHTML</p> -->
+									<p><a class="btn btn-success" ng-href="{{banner.download[k].href}}" download="{{banner.download[k].download}}" target="_blank"><i class="icon-download"></i> {{banner.download[k].title}}</a></p>
 								</div>
 							</div>
 						</li>

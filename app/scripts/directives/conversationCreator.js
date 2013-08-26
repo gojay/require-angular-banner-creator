@@ -19,6 +19,8 @@ define([
 
 					var self = this;
 
+					self.isNew = false;
+
 					self.templates = $scope.data.templates;
 
 					/* ================ model ================ */
@@ -61,15 +63,13 @@ define([
 							backgroundColor: '#fff',
 							opacity: 0.8
 						},
-						message: '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Reading files..',
+						message: '<i class="icon-spinner icon-spin icon-2x"></i>',
 						css: {
 							border: 'none',
 							background: 'none',
 							color: '#3685C6'
 						}
 					};
-
-					self.isNew = false;
 
 					/* ================ scope watchers ================ */
 
@@ -113,6 +113,7 @@ define([
 						return mObj;
 					};
 					self.isEdited = function(){
+						if( self.oldConversation == null ) return false;
 						var objOld = self.mergeSelected('old');
 						var objNew = self.mergeSelected('new');
 						var r = !angular.equals(objOld, objNew);
@@ -280,11 +281,9 @@ define([
 					 */
 					self.save = function( callback ){
 						var conversation = new ConversationService($scope.conversation);
-						console.log('conversation', $scope.conversation);
-
 						if( self.isNew ){
 							conversation.$save(function(response){
-								console.log('Save response', response);
+								console.log('Insert response', response);
 								if(callback) callback(true);
 							});
 						} else {
@@ -293,6 +292,13 @@ define([
 								if(callback) callback(false);
 							});
 						}
+					};
+
+					self.slugify = function(Text) {
+					    return Text
+						        .toLowerCase()
+						        .replace(/[^\w ]+/g,'')
+						        .replace(/ +/g,'-');
 					};
 
 					// get index selected conversations 
@@ -317,14 +323,16 @@ define([
 								height: 'original',
 								crop  : false
 							}).then(function(response){
-								console.log(response);
+								console.log('generatePreviewTpl', response);
 								// get selected conversations index
 								var index = self.getIndexSelectedConversations();
 								$scope.$apply(function(scope){
+									scope.conversation.preview = response.url;
 									$timeout(function(){
-										var img = response.url + '#' + new Date().getTime();
-										scope.conversation.preview = img;
-										scope.conversations[index].preview = img;
+										if( index ){
+											var img = response.url + '#' + new Date().getTime();
+											scope.conversations[index].preview = img;
+										}
 									}, 1000);
 								});
 								console.log($scope.conversation);
@@ -382,7 +390,7 @@ define([
 								// open right panel
 								$('a.handler-right', self.navbarPanel).click();
 								// tab SVG selected
-								$('.tabbable a[href="#tab-svg"]').click();
+								$('#panel-content a[href="#tab-svg"]').click();
 							}, 1000);
 						});
 					};
@@ -932,11 +940,11 @@ define([
 							if( redirected ){
 								// redirect message
 								$('.blockMsg > span', elPreview).text('Please wait, you will be redirecting to this conversation...');
-								// close panel
-								$('a.handler-'+targetPanel, controller.navbarPanel).click();
 								$timeout(function(){
 									// hide loading popup
 									elPreview.unblock();
+									// close panel
+									$('a.handler-'+targetPanel, controller.navbarPanel).click();
 									// redirect to edit conversation
 									$location.path('/facebook/conversation/' + $scope.conversation.ID);
 									if(callback) callback();
@@ -957,7 +965,7 @@ define([
 							.bind('change', function(evt){
 								var file = evt.target.files[0];
 								controller.handleSingleFile(file, 'logo', function(response){
-									console.log('response logo', response);
+									// console.log('response logo', response);
 									$scope.$apply(function(scope){
 										scope.conversation.logo.uploaded = true;
 										scope.conversation.logo.image = response.dataURI;
@@ -971,7 +979,7 @@ define([
 							.bind('change', function(evt){
 								var file = evt.target.files[0];
 								controller.handleSingleFile(file, 'spot1', function(response){
-									console.log('response spot1', response);
+									// console.log('response spot1', response);
 									$scope.$apply(function(scope){
 										scope.conversation.spot1.uploaded = true;
 										scope.conversation.spot1.image = response.dataURI;
@@ -985,7 +993,7 @@ define([
 							.bind('change', function(evt){
 								var file = evt.target.files[0];
 								controller.handleSingleFile(file, 'spot2', function(response){
-									console.log('response spot2', response);
+									// console.log('response spot2', response);
 									$scope.$apply(function(scope){
 										scope.conversation.spot2.uploaded = true;
 										scope.conversation.spot2.image = response.dataURI;
@@ -1000,6 +1008,7 @@ define([
 					controller.btnBg.click(function() {
 						$(this).next().bind('change', function(evt){
 							var tpl = $scope.template;
+							controller.blockUI.message = '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Reading files..'
 							$dropAreaBG.block(controller.blockUI);
 							controller.handleDeferredMultipleFiles(evt.target.files);
 						}).click();
@@ -1015,6 +1024,7 @@ define([
 							$dropAreaBG.removeClass('over');
 							// $dropAreaBG.addClass('loading');
 
+							controller.blockUI.message = '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Reading files..'
 							$dropAreaBG.block(controller.blockUI);
 
 							// get files

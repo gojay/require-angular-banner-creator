@@ -150,46 +150,48 @@ define([
 			// set equals height banner lists 
 			$scope.setEqualHeight = function() {
 				// check every time, until thumbnail lists rendered
-				var si = setInterval(function(){
+				// var si = setInterval(function(){
+				// 	var columns = $("#banner-panel-left .thumbnails > li")
+				// 	if( columns.length ){
+				// 		clearInterval(si);
+				// 		var tallestcolumn = 0;
+				// 		columns.each(
+				// 			function() {
+				// 				currentHeight = $(this).height();
+				// 				if (currentHeight > tallestcolumn) {
+				// 					tallestcolumn = currentHeight;
+				// 				}
+				// 			}
+				// 		);
+				// 		columns.find('.thumbnail').height(tallestcolumn);
+				// 	} 
+				// });
+
+				$timeout(function(){
 					var columns = $("#banner-panel-left .thumbnails > li")
-					if( $(".thumbnails > li").length ){
-						clearInterval(si);
-						var tallestcolumn = 0;
-						columns.each(
-							function() {
-								currentHeight = $(this).height();
-								if (currentHeight > tallestcolumn) {
-									tallestcolumn = currentHeight;
-								}
+					var tallestcolumn = 0;
+					columns.each(
+						function() {
+							currentHeight = $(this).height();
+							if (currentHeight > tallestcolumn) {
+								tallestcolumn = currentHeight;
 							}
-						);
-						columns.find('.thumbnail').height(tallestcolumn);
-					} 
-				});
+						}
+					);
+					columns.find('.thumbnail').height(tallestcolumn);
+				}, 1000);
 			}
 
 			/* ================ setting tabbable ================ */
 
 			// set tab selected
 			$('#templates ul > li:eq('+ $scope.banner.selected +') > a').click();
-			$scope.onLoad = function(){
+			$rootScope.onLoad = function(){
 				if( !isNew ){
-					var loaded = setInterval(function(){
-						if($('#settings').length){
-							clearInterval(loaded);
-							$('#doSetting').click();
-							$rootScope.pageService.loaded = true;
-							// generate download popup tpl n ZIP
-							$timeout(function(){
-								self.generateTplZIP({
-									like  : $scope.banner.uploaded.like,
-									enter : $scope.banner.uploaded.enter
-								});
-							}, 1000);
-						}	
-					});
-					// $timeout(function(){
-					// 	$('#doSetting').click();
+					// var loaded = setInterval(function(){
+					// 	if($('#settings').length){
+					// 		clearInterval(loaded);
+					// 		$('#doSetting').click();
 					// 		$rootScope.pageService.loaded = true;
 					// 		// generate download popup tpl n ZIP
 					// 		$timeout(function(){
@@ -198,7 +200,19 @@ define([
 					// 				enter : $scope.banner.uploaded.enter
 					// 			});
 					// 		}, 1000);
-					// }, 100);
+					// 	}	
+					// });
+					$timeout(function(){
+						$('#doSetting').click();
+						$rootScope.pageService.loaded = true;
+						// generate download popup tpl n ZIP
+						$timeout(function(){
+							self.generateTplZIP({
+								like  : $scope.banner.uploaded.like,
+								enter : $scope.banner.uploaded.enter
+							});
+						}, 1000);
+					}, 400);
 				}
 			};
 			
@@ -1122,7 +1136,7 @@ define([
 			 * convert SVG to Image
 			 * there are some issues, and only work on firefox
 			 */
-			self.svgToImage = function(svg, callback){
+			var svgToImage = function(svg, callback){
 				var svg_xml = (new XMLSerializer()).serializeToString(svg);
 				var canvas  = document.createElement('canvas');
 				// get canvas context
@@ -1141,7 +1155,7 @@ define([
 			/**
 			 * convert data URI to Blob
 			 */
-			self.dataURItoBlob = function(dataURI) {
+			var dataURItoBlob = function(dataURI) {
 				var byteString;
 				if (dataURI.split(',')[0].indexOf('base64') >= 0)
 					byteString = atob(dataURI.split(',')[1]);
@@ -1187,22 +1201,23 @@ define([
 
 				$progress.text('Generating banner like...');
 				// convert image svg like, then upload the screenshot
-				self.svgToImage(svg_like, function(imgLike, imgDataURILike){
+				svgToImage(svg_like, function(imgLike, imgDataURILike){
 
 					/* upload banner like */
 
 					// convert data URI to blob
-					var blobLike = self.dataURItoBlob(imgDataURILike);
+					var blobLike = dataURItoBlob(imgDataURILike);
 
 					console.log('blob banner like', blobLike);
 					console.info('start uploading banner like screenshot..');
 				
 					$progress.text('Uploading banner like...');
 
+					var imgNameLike = isSaved ? 'banner_like' : 'g_banner_like';
 					// do upload banner like
 					self.uploadFile({
 						file  : blobLike,
-						name  : 'banner-like',
+						name  : imgNameLike,
 						width : 'original',
 						height: 'original',
 						crop  : false
@@ -1212,22 +1227,23 @@ define([
 						$progress.text('Generating banner enter...');
 
 						// create canvas banner enter
-						self.svgToImage(svg_enter, function(imgEnter, imgDataURIEnter){
+						svgToImage(svg_enter, function(imgEnter, imgDataURIEnter){
 							
 							/* upload banner enter */
 
 							// convert data URI to blob
-							var blobEnter = self.dataURItoBlob(imgDataURIEnter);
+							var blobEnter = dataURItoBlob(imgDataURIEnter);
 
 							console.log('blob banner enter', blobEnter);
 							console.info('start uploading banner enter screenshot..');
 
 							$progress.text('Uploading banner enter...');
 
+							var imgNameEnter = isSaved ? 'banner_enter' : 'g_banner_enter';
 							// do upload banner enter
 							self.uploadFile({
 								file  : blobEnter,
-								name  : 'banner-enter',
+								name  : imgNameEnter,
 								width : 'original',
 								height: 'original',
 								crop  : false
@@ -1255,16 +1271,50 @@ define([
 									// close loading popup
 									$timeout(function() {
 										$progress.text('');
-										$.unblockUI({
-											onUnblock: function() {
-												// show generated popup without backdrop (bootstrap)
-												$('#popup-result-generate-image-modal')
-													.modal({
-														backdrop: false,
-														show: true
-													});
+
+										if(isNew){
+											var downloadName = 'banner_'+ self.slugify($scope.banner.title); 
+											$scope.banner['uploaded'] = {
+												like: imgDataURILike,
+												enter: imgDataURIEnter
 											}
-										});
+											$scope.banner['download'] = {
+												like: {
+													title:'Download Banner Like',
+													href: 'images/upload/'+ $scope.banner.ID + '/' + imgNameLike + '.jpg',
+													download:'banner-like_'+ downloadName +'.jpg'
+												},
+												enter: {
+													title:'Download Banner Enter',
+													href: 'images/upload/'+ $scope.banner.ID + '/' + imgNameEnter + '.jpg',
+													download:'banner-enter_'+ downloadName +'.jpg'
+												}
+											}
+										} else {
+											$scope.$apply(function(scope){
+												scope.banner.uploaded.like       = imgDataURILike;
+												scope.banner.uploaded.enter      = imgDataURIEnter;
+												scope.banner.download.like.href  = 'images/upload/' + scope.banner.ID + '/' + imgNameLike + '.jpg';
+												scope.banner.download.enter.href = 'images/upload/' + scope.banner.ID + '/' + imgNameEnter + '.jpg';
+											});
+										}
+
+										$.unblockUI();
+
+										// show button panel right
+										if($('a.handler-right').hasClass('invisible')) $('a.handler-right').switchClass('invisible', 'visible', 0);
+										$('a.handler-right').click();
+
+										// $.unblockUI({
+										// 	onUnblock: function() {
+										// 		// show generated popup without backdrop (bootstrap)
+										// 		$('#popup-result-generate-image-modal')
+										// 			.modal({
+										// 				backdrop: false,
+										// 				show: true
+										// 			});
+										// 	}
+										// });
 									}, 1000);
 								});
 
@@ -1283,54 +1333,67 @@ define([
 			};
 
 			self.generateTplZIP = function( imgURI, callback ){
-				// create anchor banner like download 
-				var downloadLinkLike       = document.createElement('a');
-				downloadLinkLike.title     = 'Download Banner Like';
-				downloadLinkLike.href      = imgURI.like;
-				downloadLinkLike.target    = '_blank';
-				downloadLinkLike.className = 'btn btn-success';
-				downloadLinkLike.innerHTML = '<i class="icon-download-alt"></i> Download Banner Like';
-				downloadLinkLike.download  = 'banner-like-'+ $scope.banner.ID +'.jpg';
-				// create anchor banner enter download
-				var downloadLinkEnter       = document.createElement('a');
-				downloadLinkEnter.title     = 'Download Banner Enter';
-				downloadLinkEnter.href      = imgURI.enter;
-				downloadLinkEnter.target    = '_blank';
-				downloadLinkEnter.className = 'btn btn-success';
-				downloadLinkEnter.innerHTML = '<i class="icon-download-alt"></i> Download Banner Enter';
-				downloadLinkEnter.download  = 'banner-enter-'+ $scope.banner.ID +'.jpg';
-
-				// define generate element
-				var $generate     = $('#popup-result-generate-image-modal');
-				var $generateBody = $generate.find('.modal-body');
-				// create template banner list
-				var tplImages = '<li class="span6 banner-like">' +
-									'<div class="thumbnail">' + 
-										'<img src="'+ imgURI.like +'" class="span12" />' +
-										'<div class="caption">' +
-											'<h3>Banner Like</h3>' +
-											'<p>This is banner like description</p>'+
-											'<p>'+ downloadLinkLike.outerHTML +'</p>' +
-										'</div>' +
-									'</div>' +
-								'</li>'+
-								'<li class="span6 banner-like">' +
-									'<div class="thumbnail">' +
-										'<img src="'+ imgURI.enter +'" class="span12" />' +
-										'<div class="caption">' +
-											'<h3>Banner Enter</h3>' +
-											'<p>This is banner enter description</p>'+
-											'<p>'+ downloadLinkEnter.outerHTML +'</p>' +
-										'</div>' +
-									'</div>' +
-								'</li>';
-				// append banner images
-				$('#preview > ul', $generateBody)
-					.html('')
-					.append(tplImages);
-
 				// var downloadName = 'banner-'+ $scope.banner.ID +'.zip';
 				var downloadName = 'banner_'+ self.slugify($scope.banner.title); 
+
+				// create anchor banner like download 
+				// var downloadLinkLike       = document.createElement('a');
+				// downloadLinkLike.title     = 'Download Banner Like';
+				// downloadLinkLike.href      = imgURI.like;
+				// downloadLinkLike.target    = '_blank';
+				// downloadLinkLike.className = 'btn btn-success';
+				// downloadLinkLike.innerHTML = '<i class="icon-download-alt"></i> Download Banner Like';
+				// downloadLinkLike.download  = 'banner-like_'+ downloadName +'.jpg';
+				// // create anchor banner enter download
+				// var downloadLinkEnter       = document.createElement('a');
+				// downloadLinkEnter.title     = 'Download Banner Enter';
+				// downloadLinkEnter.href      = imgURI.enter;
+				// downloadLinkEnter.target    = '_blank';
+				// downloadLinkEnter.className = 'btn btn-success';
+				// downloadLinkEnter.innerHTML = '<i class="icon-download-alt"></i> Download Banner Enter';
+				// downloadLinkEnter.download  = 'banner-enter_'+ downloadName +'.jpg';
+
+				// define generate element
+				// var $generate     = $('#popup-result-generate-image-modal');
+				// var $generateBody = $generate.find('.modal-body');
+				// // create template banner list
+				// var tplImages = '<li class="span6 banner-like">' +
+				// 					'<div class="thumbnail">' + 
+				// 						'<img src="'+ imgURI.like +'" class="span12" />' +
+				// 						'<div class="caption">' +
+				// 							'<h3>Banner Like</h3>' +
+				// 							'<p>This is banner like description</p>'+
+				// 							'<p>'+ downloadLinkLike.outerHTML +'</p>' +
+				// 						'</div>' +
+				// 					'</div>' +
+				// 				'</li>'+
+				// 				'<li class="span6 banner-like">' +
+				// 					'<div class="thumbnail">' +
+				// 						'<img src="'+ imgURI.enter +'" class="span12" />' +
+				// 						'<div class="caption">' +
+				// 							'<h3>Banner Enter</h3>' +
+				// 							'<p>This is banner enter description</p>'+
+				// 							'<p>'+ downloadLinkEnter.outerHTML +'</p>' +
+				// 						'</div>' +
+				// 					'</div>' +
+				// 				'</li>';
+				// // append banner images
+				// $('#preview > ul', $generateBody)
+				// 	.html('')
+				// 	.append(tplImages);
+
+				$scope.banner['download'] = {
+					like: {
+						title:'Download Banner Like',
+						href: 'images/upload/'+ $scope.banner.ID + '/banner_like.jpg',
+						download:'banner-like_'+ downloadName +'.jpg'
+					},
+					enter: {
+						title:'Download Banner Enter',
+						href: 'images/upload/'+ $scope.banner.ID + '/banner_enter.jpg',
+						download:'banner-enter_'+ downloadName +'.jpg'
+					}
+				};
 				
 				// get base64 data URI
 				var imgURILike  = imgURI.like.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
@@ -1348,11 +1411,14 @@ define([
 				var downloadEl      = document.getElementById('setting-download');
 				downloadEl.download = downloadName +'.zip';
 				downloadEl.href     = downloadlink;
-				var zipEl      = $generate.find('.download-zip')[0];
+				// var zipEl      = $generate.find('.download-zip')[0];
+				var zipEl      = document.getElementById('downloadZip'); // download panel-right
 				zipEl.download = downloadName +'.zip';
 				zipEl.href     = downloadlink;
 
 				console.info('finished adding the images into zip');
+
+				console.log('generate', $scope.banner)
 
 				if( callback ) callback();
 			};
@@ -1394,7 +1460,7 @@ define([
 						backgroundColor: '#fff',
 						opacity: 0.8
 					},
-					message: '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Saving..',
+					message: '<i class="icon-spinner icon-spin icon-2x"></i> <br/> <span>Saving..</span>',
 					css: {
 						border: 'none',
 						background: 'none',
@@ -1402,7 +1468,21 @@ define([
 					}
 				});
 				self.doSave(function(){
-					$form.unblock();
+					if( isNew ){
+						// redirect message
+						$('.blockMsg > span', $form).text('Please wait, you will be redirecting to this banner...');
+						// close panel
+						$('a.handler-right').click();
+						$timeout(function(){
+							// hide loading popup
+							$form.unblock();
+							// redirect to edit conversation
+							$location.path('/facebook/banner/' + $scope.banner.ID);
+						}, 3000);
+					}
+					else {
+						$form.unblock();
+					}
 				});
 			};
 

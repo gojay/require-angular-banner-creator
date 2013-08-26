@@ -268,6 +268,9 @@ function(angular, app, domReady){
   				.hashPrefix('!');
 		}
 	])
+	.config(['$compileProvider' , function ($compileProvider) {
+          $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto):/);
+    }])
 	.run(function($rootScope, transition) {
 		$rootScope.panel = {
 			right: {

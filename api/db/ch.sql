@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.4
+-- version 3.4.10.1
 -- http://www.phpmyadmin.net
 --
--- Inang: localhost
--- Waktu pembuatan: 25 Agu 2013 pada 14.46
--- Versi Server: 5.6.12-log
--- Versi PHP: 5.4.16
+-- Host: 127.0.0.1
+-- Generation Time: Aug 26, 2013 at 08:14 AM
+-- Server version: 5.5.31
+-- PHP Version: 5.3.10
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,15 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Basis data: `ch`
+-- Database: `ch`
 --
-CREATE DATABASE IF NOT EXISTS `ch` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `ch`;
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `creators`
+-- Table structure for table `creators`
 --
 
 CREATE TABLE IF NOT EXISTS `creators` (
@@ -39,18 +37,22 @@ CREATE TABLE IF NOT EXISTS `creators` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `creators`
+-- Dumping data for table `creators`
 --
 
 INSERT INTO `creators` (`creator_id`, `title`, `type`, `image`, `description`, `autosave`) VALUES
-(1377345120349, 'HTML5, Learning 24 hours, Contest', 'banner', 'http://dev.angularjs/_learn_/require-angular-banner-creator-master/images/upload/1377345120349/banner_like.jpg', 'HTML5 learning courses 24 hours', 1),
+(1377345120349, 'HTML5, Learning 24 hours, Contest', 'banner', 'images/upload/1377345120349/banner_like.jpg', 'HTML5 learning courses 24 hours', 1),
 (1377408793809, 'HTML5, Company Contest, Contest', 'banner', 'images/upload/1377408793809/banner_like.jpg', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, fugit hic tempora dolorem non sunt incidunt velit quam distinctio cum.', 1),
-(1377409082277, 'HTML5, Company Contest, Contest', 'banner', 'images/upload/1377409082277/banner_like.jpg', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, fugit hic tempora dolorem non sunt incidunt velit quam distinctio cum.', 1);
+(1377409082277, 'HTML5, Company Contest, Contest', 'banner', 'images/upload/1377409082277/banner_like.jpg', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, fugit hic tempora dolorem non sunt incidunt velit quam distinctio cum.', 1),
+(1377493978485, 'Meiji, Company Contest, Contest', 'banner', 'images/upload/1377493978485/g_banner_like.jpg', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, fugit hic tempora dolorem non sunt incidunt velit quam distinctio cum.', 1),
+(1377494269060, 'Meiji 2, Contest', 'banner', 'images/upload/1377494269060/g_banner_like.jpg', 'Meiji 2, Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, fugit hic tempora dolorem non sunt incidunt velit quam distinctio cum.', 1),
+(1377503868036, 'Meiji Conversation', 'conversation', 'images/upload/1377503868036/conversation_tpl.jpg', 'meiji conversation template 2', 1),
+(1377504714019, 'Meiji Conversation 2', 'conversation', 'images/upload/1377504714019/conversation_tpl.jpg', 'Meiji Conversation template 2', 1);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `creator_meta`
+-- Table structure for table `creator_meta`
 --
 
 CREATE TABLE IF NOT EXISTS `creator_meta` (
@@ -59,10 +61,10 @@ CREATE TABLE IF NOT EXISTS `creator_meta` (
   `meta_key` varchar(255) NOT NULL,
   `meta_value` text NOT NULL,
   PRIMARY KEY (`cmeta_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=34 ;
 
 --
--- Dumping data untuk tabel `creator_meta`
+-- Dumping data for table `creator_meta`
 --
 
 INSERT INTO `creator_meta` (`cmeta_id`, `creator_id`, `meta_key`, `meta_value`) VALUES
@@ -86,7 +88,19 @@ INSERT INTO `creator_meta` (`cmeta_id`, `creator_id`, `meta_key`, `meta_value`) 
 (18, 1377409082277, 'logo', 'a:8:{s:4:"hide";b:0;s:11:"placeholder";b:1;s:1:"w";i:122;s:1:"h";i:80;s:8:"uploaded";b:1;s:5:"image";s:36:"images/upload/1377409082277/logo.png";s:1:"x";i:45;s:1:"y";i:10;}'),
 (19, 1377409082277, 'prize', 'a:4:{s:5:"title";s:19:"This Month''s Prizes";s:3:"one";a:5:{s:4:"text";s:10:"CUte Kitty";s:5:"limit";i:75;s:7:"counter";i:65;s:8:"uploaded";b:1;s:5:"image";s:39:"images/upload/1377409082277/prize_1.jpg";}s:3:"two";a:5:{s:4:"text";s:18:"Comic The Avengers";s:5:"limit";i:75;s:7:"counter";i:57;s:8:"uploaded";b:1;s:5:"image";s:39:"images/upload/1377409082277/prize_2.jpg";}s:5:"three";a:5:{s:4:"text";s:12:"Blue Bubbles";s:5:"limit";i:75;s:7:"counter";i:63;s:8:"uploaded";b:1;s:5:"image";s:39:"images/upload/1377409082277/prize_3.jpg";}}'),
 (20, 1377409082277, 'selected', '3'),
-(21, 1377409082277, 'fb', 'a:2:{s:1:"w";i:283;s:1:"h";i:67;}');
+(21, 1377409082277, 'fb', 'a:2:{s:1:"w";i:283;s:1:"h";i:67;}'),
+(22, 1377503868036, 'logo', 'a:5:{s:4:"hide";b:0;s:11:"placeholder";b:1;s:8:"position";a:2:{s:1:"x";i:18;s:1:"y";i:78;}s:8:"uploaded";b:1;s:5:"image";s:36:"images/upload/1377503868036/logo.png";}'),
+(23, 1377503868036, 'spot1', 'a:6:{s:4:"hide";b:0;s:11:"placeholder";b:1;s:4:"clip";s:6:"circle";s:8:"position";a:2:{s:1:"x";i:17;s:1:"y";i:316;}s:8:"uploaded";b:1;s:5:"image";s:37:"images/upload/1377503868036/spot1.png";}'),
+(24, 1377503868036, 'spot2', 'a:6:{s:4:"hide";b:0;s:11:"placeholder";b:1;s:4:"clip";s:6:"circle";s:8:"position";a:2:{s:1:"x";s:3:"306";s:1:"y";s:3:"316";}s:8:"uploaded";b:1;s:5:"image";s:37:"images/upload/1377503868036/spot2.png";}'),
+(25, 1377503868036, 'align', 'a:2:{s:1:"x";s:2:"x1";s:1:"y";s:2:"y1";}'),
+(26, 1377503868036, 'queue', 'a:3:{s:5:"empty";b:1;s:5:"count";i:0;s:8:"finished";i:0;}'),
+(27, 1377503868036, 'selected', '1'),
+(28, 1377504714019, 'logo', 'a:5:{s:4:"hide";b:0;s:11:"placeholder";b:1;s:8:"position";a:2:{s:1:"x";i:229;s:1:"y";i:12;}s:8:"uploaded";b:1;s:5:"image";s:36:"images/upload/1377504714019/logo.png";}'),
+(29, 1377504714019, 'spot1', 'a:6:{s:4:"hide";b:0;s:11:"placeholder";b:1;s:4:"clip";s:6:"circle";s:8:"position";a:2:{s:1:"x";i:106;s:1:"y";i:212;}s:8:"uploaded";b:1;s:5:"image";s:37:"images/upload/1377504714019/spot1.png";}'),
+(30, 1377504714019, 'spot2', 'a:6:{s:4:"hide";b:0;s:11:"placeholder";b:1;s:4:"clip";s:6:"circle";s:8:"position";a:2:{s:1:"x";s:3:"217";s:1:"y";s:3:"212";}s:8:"uploaded";b:1;s:5:"image";s:37:"images/upload/1377504714019/spot2.png";}'),
+(31, 1377504714019, 'align', 'a:2:{s:1:"x";s:2:"x1";s:1:"y";s:2:"y1";}'),
+(32, 1377504714019, 'queue', 'a:3:{s:5:"empty";b:1;s:5:"count";i:0;s:8:"finished";i:0;}'),
+(33, 1377504714019, 'selected', '2');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

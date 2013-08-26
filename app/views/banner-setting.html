@@ -35,18 +35,18 @@
 							</div>
 						</div> -->
 			        	<div class="control-group" ng-show="banner.background.enable">
-							<label class="control-label" style="width: 55px; margin-left:0; text-align:left;">
-								{{banner.background.uploaded | iif : "Edit" : "Upload"}}
+							<label class="control-label" style="width: 100px; margin-left:0; text-align:left;">
+								{{banner.background.uploaded | iif : "Edit" : "Upload"}} BG
 							</label>
 							<div class="controls" style="margin-left:0;">
 								<input type="file" id="input-background" class="hide" />
 							</div>
 						</div>
 						<div class="control-group">
-							<label class="control-label" style="width: 100%; text-align:left;">FB Resize</label>
+							<label class="control-label" style="width: 100px; text-align:left;">FB Resize</label>
 							<div class="controls" style="margin-left: 0;">
 								<input id="input-fb-width" ng-model="banner.fb.w"  style="width:50px; margin: 5px; border:none" /> X 
-								<input type="text" id="input-logo-height" class="input-small" placeholder="height" ng-model="banner.fb.h" disabled="true" />
+								<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.fb.h" disabled="true" style="width:35px" />
 							</div>
 						</div>
 			      	</div>
@@ -75,10 +75,10 @@
 							</div>
 						</div>
 						<div class="control-group" ng-hide="banner.logo.hide">
-							<label class="control-label" style="width: 100%; text-align:left;">Resize</label>
+							<label class="control-label" style="width: 100px; text-align:left;">Resize</label>
 							<div class="controls" style="margin-left: 0;">
 								<input id="input-logo-width" ng-model="banner.logo.w"  style="width:50px; margin: 5px; border:none" /> X 
-								<input type="text" id="input-logo-height" class="input-small" placeholder="height" ng-model="banner.logo.h" disabled="true" />
+								<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.logo.h" disabled="true" style="width:35px" />
 							</div>
 						</div>
 						<div class="control-group" ng-hide="banner.logo.hide">
@@ -147,7 +147,7 @@
 								<p class="help-block text-right">Limit : {{banner.mdescription.counter}}/{{banner.mdescription.limit}}</p>
 							</div>
 						</div>
-						<div class="control-group" ng-hide="isNoPrize">
+						<div class="control-group" ng-hide="tplShowPrice == 0">
 							<label>Prize Header</label>
 							<div class="controls" style="margin-left: 0;">
 								<input type="text" class="input-large" ng-model="banner.prize.title" />

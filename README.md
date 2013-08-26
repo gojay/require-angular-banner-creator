@@ -32,7 +32,7 @@ git checkout -b v.2.1_resource origin/v.2.1_resource
 define('ABS_URL', 'http://example.com');
  ```
 
-3. Create MySQL DB, the dump SQL file at api/db/creators.sql (maybe before you dumping these SQL, change your abs URL in table creators at line 170). Set your DB configuration at config.php
+3. Create MySQL DB, the dump SQL file at [REPO]/api/db/ch.sql (maybe before you dumping these SQL, change your abs URL in table creators at line 170). Set your DB configuration at config.php
 
  ```php
 // DB Config
