@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors','on');
 include '../config.php';
 // Autoload
 include 'vendor/autoload.php';
