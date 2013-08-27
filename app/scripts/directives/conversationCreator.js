@@ -18,10 +18,9 @@ define([
 				controller: function($scope, $element, $attrs, $transclude) {
 
 					var self = this;
-
 					self.isNew = false;
-
 					self.templates = $scope.data.templates;
+
 
 					/* ================ model ================ */
 
@@ -372,6 +371,9 @@ define([
 					};
 					// handle multiple files (background images) /w Deferred
 					self.handleDeferredMultipleFiles = function(files){
+
+						window._onbeforeunload = false;
+
 						var currentFile = self.taskList(files, 0);
 						for (var i = 1; i < files.length; i++) {
 							currentFile = currentFile.pipe(function(j) {
@@ -906,6 +908,8 @@ define([
 						var elPreview   = $('#save-conversation'); // form
 						var blockUI     = controller.blockUI;
 						var saveMsg     = 'Saving..';
+
+						window._onbeforeunload = true;
 
 						var isEdited = controller.isEdited();
 						if( $scope.conversation.preview === null || controller.isNew || isEdited ){

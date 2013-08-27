@@ -31,7 +31,13 @@ define([
 				// or check has changed / edited
 				cBanner = angular.copy($scope.banner);
 				// show the button right panel
-				$('a.handler-right').switchClass('invisible', 'visible', 0);
+				var $rPanel = $('a.handler-right');
+				var redirect = $location.search()['redirect'];
+				$rPanel.switchClass('invisible', 'visible', 0);
+				// if this page from redirected page, click the right panel 
+				if( redirect !== undefined && redirect ){
+					$rPanel.click();
+				}
 			}
 
 			console.log('templates', $scope.templates)
@@ -57,34 +63,10 @@ define([
 			}
 			// add model selected for edit view
 			$rootScope.panel.left.model.selected = $scope.banner.ID;
-			// get conversation right panel
-			var $panelRight = '<div ng-include src="\'app/views/banner-panel-right.html\'"></div>';
-			// bind right panel (rootScope), compile inject scope
-			$rootScope.panel.right.template = $compile($panelRight)($scope);
-
-			// panel handler
-			var targetPanel;
-			// bind/unbind panel handler
-			$('.navbar-container a')
-				.unbind('click')
-				.bind('click', function(e){
-					targetPanel = $(e.currentTarget).data('target');
-
-					var $panel = $('#panel-'+targetPanel);
-					var openWrapper = 'open-wrapper-'+targetPanel;
-					if($('#wrapper').hasClass(openWrapper)){
-						$('#wrapper').removeClass(openWrapper);
-						$panel.removeClass('open-panel panel-focused').removeAttr('style');
-					} else {
-						$('#wrapper').addClass(openWrapper);
-						$panel.addClass('open-panel');
-						// set focused panel for scrolling
-						$timeout(function(){
-							$panel.addClass('panel-focused');
-						}, 500);
-					}
-				});
-
+			// get banner left panel
+			var $panelLeft = '<div ng-include src="\'app/views/banner-panel-left.html\'"></div>';
+			// bind left panel (rootScope), compile inject scope
+			$rootScope.panel.left.template = $compile($panelLeft)($scope);
 			// listener left panel
 			$scope.detailBanner = function(index){
 				var ID = $scope.banners[index].ID;
@@ -134,20 +116,6 @@ define([
 					}
 				});
 			};
-			// listener right panel
-			$scope.createNew = function(){
-				// close panel
-				$('a.handler-'+targetPanel)
-					.click()
-					.switchClass('visible', 'invisible', 0);
-				// redirect to new banner
-				$location.path('/facebook/banner');
-			};
-
-			// get banner left panel
-			var $panelLeft = '<div ng-include src="\'app/views/banner-panel-left.html\'"></div>';
-			// bind left panel (rootScope), compile inject scope
-			$rootScope.panel.left.template = $compile($panelLeft)($scope);
 			// set equals height banner lists 
 			$scope.setEqualHeight = function() {
 				// check every time, until thumbnail lists rendered
@@ -182,6 +150,44 @@ define([
 					columns.find('.thumbnail').height(tallestcolumn);
 				}, 1000);
 			}
+
+			// panel handler
+			var targetPanel;
+			// bind/unbind panel handler
+			$('.navbar-container a')
+				.unbind('click')
+				.bind('click', function(e){
+					targetPanel = $(e.currentTarget).data('target');
+
+					var $panel = $('#panel-'+targetPanel);
+					var openWrapper = 'open-wrapper-'+targetPanel;
+					if($('#wrapper').hasClass(openWrapper)){
+						$('#wrapper').removeClass(openWrapper);
+						$panel.removeClass('open-panel panel-focused').removeAttr('style');
+					} else {
+						$('#wrapper').addClass(openWrapper);
+						$panel.addClass('open-panel');
+						// set focused panel for scrolling
+						$timeout(function(){
+							$panel.addClass('panel-focused');
+						}, 500);
+					}
+				});
+
+			// listener right panel
+			$scope.createNew = function(){
+				// close panel
+				$('a.handler-'+targetPanel)
+					.click()
+					.switchClass('visible', 'invisible', 0);
+				// redirect to new banner
+				$location.path('/facebook/banner/');
+			};
+			// get conversation right panel
+			var $panelRight = '<div ng-include src="\'app/views/banner-panel-right.html\'"></div>';
+			// bind right panel (rootScope), compile inject scope
+			$rootScope.panel.right.template = $compile($panelRight)($scope);
+
 
 			/* ================ setting tabbable ================ */
 
@@ -263,6 +269,7 @@ define([
 						scope.banner.prize.two.image   = (isSameasEdit) ? cBanner.prize.two.image : BannerImages.prize[en][type];
 						scope.banner.prize.three.image = (isSameasEdit) ? cBanner.prize.three.image : BannerImages.prize[en][type];
 					}
+
 				});
 
 				// set text breadcrumb
@@ -289,10 +296,13 @@ define([
 				$scope.banner.fb.h = parseInt(self.fbMax.h * aspectRatio);
 			});
 
-			var logoDimension = BannerConfig.dimensions['tpl-0'].logo;
 			// calculate image position (center)
 			// calculate aspect ratio image height
 			$scope.$watch('banner.logo.w', function(input) {
+
+				var tplType = 'tpl-' + $scope.banner.selected;
+				var logoDimension = BannerConfig.dimensions[tplType].logo;
+
 				if(parseInt(input) <= logoDimension.image.width){
 					// dimension
 					var ratio = [input / logoDimension.image.width, logoDimension.image.height / logoDimension.image.height];
@@ -301,9 +311,9 @@ define([
 					// position
 					var dx = (logoDimension.image.width + 10) - parseInt(input);
 					var dy = (logoDimension.image.height + 10) - parseInt($scope.banner.logo.h);
-					var x = (dx <= 0) ? $scope.banner.logo.x : (dx / 2) + logoDimension.pos.placeholder.x;
+					var x = (dx <= 0) ? logoDimension.pos.image.x : (dx / 2) + logoDimension.pos.placeholder.x;
 					$scope.banner.logo.x = ($scope.banner.background.type == 3) ? x + 20 : x ;
-					$scope.banner.logo.y = (dy <= 0) ? $scope.banner.logo.y : (dy / 2) + logoDimension.pos.placeholder.y;
+					$scope.banner.logo.y = (dy <= 0) ? logoDimension.pos.image.y : (dy / 2) + logoDimension.pos.placeholder.y;
 				}
 				else {
 					$scope.banner.logo.w = logoDimension.image.width;
@@ -789,6 +799,11 @@ define([
 										border: '1px solid #007dbc'
 									}
 								});
+
+								// $.unblockUI();
+								console.log('logoDimension', logoDimension, tplDimension);
+								// return;
+
 								// upload to resize
 								self.uploadFile({
 									file  : blob,
@@ -797,7 +812,8 @@ define([
 									height: logoDimension.image.height,
 									crop  : false
 								}).success(function(response){
-									console.log('response:upload logo', response);
+									// console.log('response:upload logo', response);
+
 									// change image src only
 									angular.forEach(changeEl, function(e,i){
 										var logo = {
@@ -810,10 +826,6 @@ define([
 										// logo.holder.setAttribute('height','{{getHH()}}');
 										// inject logo image
 										// logo.image.setAttribute('xlink:href',response.dataURI);
-										$scope.$apply(function(scope){
-											scope.banner.logo.uploaded = true;
-											scope.banner.logo.image = response.dataURI;
-										});
 										logo.image.setAttribute('width','{{banner.logo.w}}');
 										logo.image.setAttribute('height','{{banner.logo.h}}');
 										logo.image.setAttribute('x','{{banner.logo.x}}');
@@ -826,13 +838,22 @@ define([
 										logo.parent.append($compile(logo.image)($scope));
 									});
 
-									// applying scope
 									$scope.$apply(function(scope){
+										scope.banner.logo.uploaded = true;
+										scope.banner.logo.image = response.dataURI;
 										scope.banner.logo.w = logoDimension.image.width;
 										scope.banner.logo.h = logoDimension.image.height;
 										scope.banner.logo.x = logoDimension.pos.image.x;
 										scope.banner.logo.y = logoDimension.pos.image.y;
-										console.log('scope', scope);
+									});
+
+									// applying scope
+									// $scope.$apply(function(scope){
+									// 	scope.banner.logo.w = logoDimension.image.width;
+									// 	scope.banner.logo.h = logoDimension.image.height;
+									// 	scope.banner.logo.x = logoDimension.pos.image.x;
+									// 	scope.banner.logo.y = logoDimension.pos.image.y;
+									// 	console.log('scope logo', scope);
 										// calculate image position (center)
 										// calculate aspect ratio image height
 										// scope.$watch('banner.logo.w', function(input) {
@@ -853,7 +874,7 @@ define([
 										// 		scope.banner.logo.h = logoDimension.image.height;
 										// 	}
 										// });
-									});
+									// });
 									$.unblockUI();
 								});
 							}
@@ -1274,13 +1295,14 @@ define([
 									enter : imgDataURIEnter
 								}, function(){
 
+									// set empty progress text
+									$progress.text('');
+
 									// generate template & ZIP finished
 
 									console.info('call generate callback...');
 
 									$timeout(function() {
-										// set empty progress text
-										$progress.text('');
 
 										console.log('generateCallback', isNew, $scope.banner.uploaded == undefined,  $scope.banner.download == undefined);
 
@@ -1292,6 +1314,17 @@ define([
 											};
 											// set updated
 											$scope.isNew = isNew = false;
+
+											if( isSaved ){
+												// set empty progress text
+												$progress.text('Please wait, you will be redirecting to this banner...');
+												$timeout(function(){
+													// hide loading screen
+													$.unblockUI();
+													$location.path('/facebook/banner/'+ $scope.banner.ID).search({'redirect': 'true'});
+												}, 2000);
+												return;
+											}
 										} else {
 											// applying scope banner uploaded & download
 											$scope.$apply(function(scope){

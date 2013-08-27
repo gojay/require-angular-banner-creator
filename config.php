@@ -10,6 +10,6 @@ define('UPLOAD_URL', 'images/upload');
 $db_config = array(
 	'host'     => 'localhost',
 	'username' => 'root',
-	'password' => '',
+	'password' => 'root',
 	'dbname'   => 'ch',
 );
