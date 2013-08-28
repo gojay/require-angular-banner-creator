@@ -26,18 +26,18 @@
 		</div>
 		<div id="panel-content" class="span12 prefix" style="padding: 15px 10px;">
 			<ul class="nav nav-pills">
-				<li class="active"><a href="#tab-image" data-toggle="tab">Selected</a></li>
+				<li><a href="#tab-image" data-toggle="tab">Selected</a></li>
 				<li><a href="#tab-svg" data-toggle="tab">Generated</a></li>
-				<li><a href="#tab-save" data-toggle="tab">Save Template</a></li>
+				<li class="active"><a href="#tab-save" data-toggle="tab">Save Template</a></li>
 			</ul>
 			<div class="tab-content">
-				<div class="tab-pane active" id="tab-image">
+				<div class="tab-pane" id="tab-image">
 			    	<ul class="thumbnails img-list" style="padding:20px"></ul>
 				</div>
 				<div class="tab-pane" id="tab-svg">
 					<ul class="thumbnails svg-list"></ul>
 				</div>
-				<div class="tab-pane" id="tab-save">
+				<div class="tab-pane active" id="tab-save">
 					<form id="save-conversation" class="form-horizontal" ng-submit="saveSubmit()">
 						<div class="control-group">
 							<label class="control-label" for="input01">Title</label>

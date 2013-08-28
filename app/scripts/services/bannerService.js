@@ -21,7 +21,7 @@ define(['services/services'], function(services){
 		.factory('BannerConfig', ['BannerImages', function(BannerImages){
 			return {
 				data: {
-					ID: new Date().getTime(),
+					ID: null,
 					title: '',
 					description: '',
 					mtitle : {

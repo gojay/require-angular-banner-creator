@@ -35,7 +35,7 @@ define(['services/services'], function(services){
 		// default configuration
 		.factory('ConversationConfig', function(){
 			return {
-				ID: new Date().getTime(),
+				ID: null,
 				title: '',
 				description: '',
 				preview: null,

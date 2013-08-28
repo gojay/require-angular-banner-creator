@@ -15,13 +15,18 @@ define([
 			var isNew = $scope.isNew = true, 
 				cBanner = false;
 
+				console.log('banners', banners)
+
+			self.onbeforeunloadNeeded = true;
+
 			// model banner templates n recents
 			$scope.templates = banners.templates;
 			$scope.banners   = banners.recents;
 
 			// model banner
 			if(banners.banner === null){
-				$scope.banner            = BannerConfig.data;
+				$scope.banner 	 = angular.copy(BannerConfig.data);
+				$scope.banner.ID = new Date().getTime();
 				$scope.allowDownloadable = false;
 			} else {
 				isNew = $scope.isNew = false;
@@ -32,17 +37,21 @@ define([
 				cBanner = angular.copy($scope.banner);
 				// show the button right panel
 				var $rPanel = $('a.handler-right');
-				var redirect = $location.search()['redirect'];
 				$rPanel.switchClass('invisible', 'visible', 0);
 				// if this page from redirected page, click the right panel 
+				var redirect = $location.search()['redirect'];
+				console.log('redirect', redirect);
 				if( redirect !== undefined && redirect ){
-					$rPanel.click();
+					console.log('click right panel')
+					self.onbeforeunloadNeeded = false;
+					$timeout(function(){ $rPanel.click(); }, 500);
 				}
 			}
 
 			console.log('templates', $scope.templates)
 			console.log('recents', $scope.banners)
-			console.log('detail is new ?', isNew, $scope.banner)
+			console.log('detail is new ?', isNew)
+			console.log('banner', $scope.banner)
 
 			/* ================ Handling Panel ================ */
 
@@ -91,7 +100,7 @@ define([
 
 				// set loaded to false
 				if($rootScope.pageService.loaded) $rootScope.pageService.loaded = false;
-				$location.path('/facebook/banner/'+ ID);
+				$location.path('/facebook/banner/'+ ID).search('redirect', null);
 
 				// unbind function that will kill the
 				// $watch() listener when its called.
@@ -177,11 +186,11 @@ define([
 			// listener right panel
 			$scope.createNew = function(){
 				// close panel
-				$('a.handler-'+targetPanel)
+				$('a.handler-right')
 					.click()
 					.switchClass('visible', 'invisible', 0);
 				// redirect to new banner
-				$location.path('/facebook/banner/');
+				$location.path('/facebook/banner').search('redirect', null);
 			};
 			// get conversation right panel
 			var $panelRight = '<div ng-include src="\'app/views/banner-panel-right.html\'"></div>';
@@ -290,7 +299,7 @@ define([
 				if(input > self.fbMax.w) {
 					$scope.banner.fb.w = input = self.fbMax.w;
 				}
-				console.log('fb resize', $scope.banner.fb.w, input);
+				console.log('watch:fb', $scope.banner.fb.w, input);
 				var ratio = [input / self.fbMax.w, 67 / self.fbMax.h];
 				var aspectRatio = Math.min(ratio[0], ratio[1]);
 				$scope.banner.fb.h = parseInt(self.fbMax.h * aspectRatio);
@@ -451,6 +460,9 @@ define([
 			};
 
 			$scope.doSetting = function($event){
+
+				if( self.onbeforeunloadNeeded ) window._onbeforeunload = false;
+
 				var $btnTemplate     = $($event.currentTarget);
 				var $btnCancel       = $btnTemplate.next();
 				var $templateField   = $('#templates');
@@ -485,8 +497,6 @@ define([
 						tplShowPrice    : tplShowPrice
 					}
 				};
-
-				window._onbeforeunload = false;
 
 				// alert overwrite
 				if($btnTemplate.hasClass('overwrite')){
@@ -1321,7 +1331,7 @@ define([
 												$timeout(function(){
 													// hide loading screen
 													$.unblockUI();
-													$location.path('/facebook/banner/'+ $scope.banner.ID).search({'redirect': 'true'});
+													$location.path('/facebook/banner/'+ $scope.banner.ID).search('redirect','true');
 												}, 2000);
 												return;
 											}
@@ -1474,6 +1484,9 @@ define([
 				window._onbeforeunload = true;
 
 				var banner = new BannerService($scope.banner);
+
+				console.log('save banner', banner);
+
 				if( isNew ){
 					banner.$save(function(response){
 						console.log('Save response', response);

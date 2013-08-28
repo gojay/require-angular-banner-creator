@@ -21,7 +21,6 @@ define([
 					self.isNew = false;
 					self.templates = $scope.data.templates;
 
-
 					/* ================ model ================ */
 
 					$scope.conversations = $scope.data.recents;
@@ -32,8 +31,9 @@ define([
 					$scope.isNew = false;
 					// if new, set default config conversation
 					if( $scope.conversation === null ){
-						$scope.isNew = self.isNew = true;
-						$scope.conversation = ConversationConfig;
+						$scope.isNew           = self.isNew = true;
+						$scope.conversation    = angular.copy(ConversationConfig);
+						$scope.conversation.ID = new Date().getTime();
 					}
 					$scope.isDownloadDisabled = true;
 					$scope.template = (self.isNew) ? self.templates[1] : self.templates[$scope.conversation.selected];
@@ -963,59 +963,74 @@ define([
 
 					/* ================ Initialize event listener ================ */
 
+					// unbind event live() with die()
+
 					// event listener button logo input file
-					controller.btnLogo.live('click', function() {
-						$(this).next()
-							.bind('change', function(evt){
-								var file = evt.target.files[0];
-								controller.handleSingleFile(file, 'logo', function(response){
-									// console.log('response logo', response);
-									$scope.$apply(function(scope){
-										scope.conversation.logo.uploaded = true;
-										scope.conversation.logo.image = response.dataURI;
-									});
+					controller.btnLogo.die('click').live('click', function() {
+						var handlerLogo = function(evt){
+							var file = evt.target.files[0];
+							controller.handleSingleFile(file, 'logo', function(response){
+								// console.log('response logo', response);
+								$scope.$apply(function(scope){
+									scope.conversation.logo.uploaded = true;
+									scope.conversation.logo.image = response.dataURI;
 								});
-							}).click();
+							});
+						};
+						$(this).next()
+							.unbind('change')
+							.bind('change', handlerLogo)
+							.click();
 					});
 					// event listener button spot1 input file
-					controller.btnSpot1.live('click', function() {
-						$(this).next()
-							.bind('change', function(evt){
-								var file = evt.target.files[0];
-								controller.handleSingleFile(file, 'spot1', function(response){
-									// console.log('response spot1', response);
-									$scope.$apply(function(scope){
-										scope.conversation.spot1.uploaded = true;
-										scope.conversation.spot1.image = response.dataURI;
-									});
+					controller.btnSpot1.die('click').live('click', function() {
+						var handlerSpot1 = function(evt){
+							var file = evt.target.files[0];
+							controller.handleSingleFile(file, 'spot1', function(response){
+								// console.log('response spot1', response);
+								$scope.$apply(function(scope){
+									scope.conversation.spot1.uploaded = true;
+									scope.conversation.spot1.image = response.dataURI;
 								});
-							}).click();
+							});
+						};
+						$(this).next()
+							.unbind('change')
+							.bind('change', handlerSpot1)
+							.click();
 					});
 					// event listener button spot2 input file
-					controller.btnSpot2.live('click', function() {
-						$(this).next()
-							.bind('change', function(evt){
-								var file = evt.target.files[0];
-								controller.handleSingleFile(file, 'spot2', function(response){
-									// console.log('response spot2', response);
-									$scope.$apply(function(scope){
-										scope.conversation.spot2.uploaded = true;
-										scope.conversation.spot2.image = response.dataURI;
-									});
+					controller.btnSpot2.die('click').live('click', function() {
+						var handlerSpot2 = function(evt){
+							var file = evt.target.files[0];
+							controller.handleSingleFile(file, 'spot2', function(response){
+								// console.log('response spot2', response);
+								$scope.$apply(function(scope){
+									scope.conversation.spot2.uploaded = true;
+									scope.conversation.spot2.image = response.dataURI;
 								});
-							}).click();
+							});
+						};
+						$(this).next()
+							.unbind('change')
+							.bind('change', handlerSpot2)
+							.click();
 					});
 
 					var $dropAreaBG = $('.drop', controller.sectionBg);
 
 					// handling button add backgrounds
 					controller.btnBg.click(function() {
-						$(this).next().bind('change', function(evt){
+						var handler = function(evt){
 							var tpl = $scope.template;
 							controller.blockUI.message = '<i class="icon-spinner icon-spin icon-2x"></i> <br/> Reading files..'
 							$dropAreaBG.block(controller.blockUI);
 							controller.handleDeferredMultipleFiles(evt.target.files);
-						}).click();
+						};
+						$(this).next()
+							.unbind('change', handler)
+							.bind('change', handler)
+							.click();
 					});
 
 					// drag n drop events

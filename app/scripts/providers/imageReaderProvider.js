@@ -88,11 +88,13 @@ define(['providers/providers'], function(providers){
 
 					/* input file event */
 
-					$(config.inputFileEl).bind('change', {config : config}, function(evt){
-						var file   = evt.target.files[0];
-						var config = evt.data.config;
-						self.handleReadImage(file, config);
-					});
+					$(config.inputFileEl)
+						.unbind('change')
+						.bind('change', {config : config}, function(evt){
+							var file   = evt.target.files[0];
+							var config = evt.data.config;
+							self.handleReadImage(file, config);
+						});
 				},
 
 				handleReadImage: function(file, config){
