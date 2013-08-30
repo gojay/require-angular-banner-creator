@@ -9,7 +9,7 @@
 			    </div>
 			    <div id="Background" class="accordion-body collapse in">
 			      	<div class="accordion-inner" style="min-height:135px;">
-			        	<div class="control-group">
+			        	<!-- <div class="control-group">
 							<div class="btn-group">
 				                <button class="btn dropdown-toggle" data-toggle="dropdown">
 				                	Set Background : <span class="text bold"></span>
@@ -22,9 +22,9 @@
 				                  	<li><a href class="bg-young" ng-click="setBG2('young', $event)">Default 3 (Young)</a></li>
 				                </ul>
 				            </div>
-						</div>
-			        	<!-- <div class="control-group">
-							<label class="control-label" style="margin-left:0; text-align:left;">Set Background</label>
+						</div> -->
+			        	<div class="control-group">
+							<!-- <label class="control-label" style="margin-left:0; text-align:left;">Set Background</label> -->
 							<div class="controls" style="margin-left:0;">
 							    <div class="btn-group">
 								    <button class="btn bg-upload active" ng-click="setBG('upload', $event)">Upload</button>
@@ -33,13 +33,22 @@
 								    <button class="btn bg-young" ng-click="setBG('young', $event)">Young</button>
 							    </div>
 							</div>
-						</div> -->
+						</div>
 			        	<div class="control-group" ng-show="banner.background.enable">
 							<label class="control-label" style="width: 100px; margin-left:0; text-align:left;">
 								{{banner.background.uploaded | iif : "Edit" : "Upload"}} BG
 							</label>
 							<div class="controls" style="margin-left:0;">
 								<input type="file" id="input-background" class="hide" />
+							</div>
+						</div>
+			        	<div class="control-group">
+							<!-- <label class="control-label" style="width:100px; margin-left:0; text-align:left;">Background</label> -->
+							<div class="controls" style="margin-left:0;">
+							    <div id="set-bg-tpl" class="btn-group">
+								    <button class="btn tpl-normal active" ng-click="setTplType(true, $event)">Overlay</button>
+								    <button class="btn tpl-bottom" ng-click="setTplType(false, $event)">Non Overlay</button>
+							    </div>
 							</div>
 						</div>
 						<div class="control-group">

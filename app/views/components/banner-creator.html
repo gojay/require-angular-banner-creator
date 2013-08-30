@@ -9,31 +9,6 @@
 	<div class="span12 prefix tab-content">
 		<div class="tab-pane" id="svg-tpl-0" ng-class="{true:'active', false:''}[banner.selected == 0]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="381">
-				<defs>
-					<style type="text/css"><![CDATA[
-						.foreign-object-0 h3 {
-							text-align: left;
-							color:#FFFFFF; 
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size:27px;
-							line-height: 32px;
-							margin: 0;
-							padding: 10px 20px;
-							border-bottom: none;
-						}
-						.foreign-object-0 h3 ~ p {
-							text-align: left;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							line-height: 16px;
-							font-size: 13px;
-							line-height: 16px;
-							margin: 0;
-							padding: 0 20px;
-						}
-					]]></style>
-				</defs>
 				<defs id="pattern">
 					<pattern id="banner-background-0" patternUnits="userSpaceOnUse" width="810" height="381">
 				        <image xlink:href="{{banner.background.image}}" x="0" y="0" width="810" height="381" />
@@ -41,15 +16,14 @@
 				</defs>
 				<defs id="shadow">
 					<filter id="dropshadow-0" height="130%">
-					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> <!-- stdDeviation is how much to blur -->
-					  	<feOffset dx="0" dy="1" result="offsetblur"/> <!-- how much to offset -->
+					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> 
+					  	<feOffset dx="0" dy="1" result="offsetblur"/> 
 					  	<feMerge> 
-					    	<feMergeNode/> <!-- this contains the offset blurred image -->
-					    	<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+					    	<feMergeNode/> 
+					    	<feMergeNode in="SourceGraphic"/> 
 					  	</feMerge>
 					</filter>
 				</defs>
-
 				<g id="background">
 					<rect x="0" y="0" width="810" height="381" fill="url(#banner-background-0)"/>
 					<image x="527" y="5" width="283" height="67" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARsAAABDCAYAAACsh6EPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTVCMzA1NUNERTE2MTFFMjg3NzZBRTM4OEQyMjUxOUYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTVCMzA1NURERTE2MTFFMjg3NzZBRTM4OEQyMjUxOUYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5NUIzMDU1QURFMTYxMUUyODc3NkFFMzg4RDIyNTE5RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5NUIzMDU1QkRFMTYxMUUyODc3NkFFMzg4RDIyNTE5RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PvOOyB8AABa9SURBVHja7F0LcFRF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" />
@@ -62,7 +36,7 @@
 					<rect x="20" y="128" width="404" height="232" fill="black" fill-opacity="0.75" />
 					<foreignObject x="20" y="128" width="404" height="232" class="foreign-object-0">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h3>
+							<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h2>
 							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
@@ -71,61 +45,6 @@
 		</div>
 		<div class="tab-pane" id="svg-tpl-1" ng-class="{true:'active', false:''}[banner.selected == 1]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="381">
-				<defs>
-					<style type="text/css"><![CDATA[
-						.foreign-object-1 h3 {
-							text-align: left;
-							color:#FFFFFF; 
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size:27px;
-							line-height: 32px;
-							margin: 0;
-							padding: 10px 20px;
-							border-bottom: none;
-						}
-						.foreign-object-1 h3 ~ p {
-							text-align: left;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							line-height: 16px;
-							font-size: 13px;
-							padding: 0 20px;
-						}
-						.foreign-object-prize-1 h3 {
-    						margin: 0;
-							line-height: 18px;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size: 18px;
-							border-bottom: none;
-						}
-						.foreign-object-prize-1 span {
-							display: block;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 12px;
-						}
-						.foreign-object-prize-1 p {
-							width: 335px;
-							height: 50px;
-							padding: 0;
-
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 13px;
-							font-weight: bold;
-							line-height: 15px;
-
-							text-align: center;
-							vertical-align: middle;
-							display: table-cell;
-						}
-					]]></style>
-				</defs>
 				<defs id="pattern">
 					<pattern id="banner-background-1" patternUnits="userSpaceOnUse" width="810" height="381">
 				        <image xlink:href="{{banner.background.image}}" x="0" y="0" width="810" height="381" />
@@ -133,11 +52,11 @@
 				</defs>
 				<defs id="shadow">
 					<filter id="dropshadow-1" height="130%">
-					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> <!-- stdDeviation is how much to blur -->
-					  	<feOffset dx="0" dy="1" result="offsetblur"/> <!-- how much to offset -->
+					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> 
+					  	<feOffset dx="0" dy="1" result="offsetblur"/> 
 					  	<feMerge> 
-					    	<feMergeNode/> <!-- this contains the offset blurred image -->
-					    	<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+					    	<feMergeNode/> 
+					    	<feMergeNode in="SourceGraphic"/> 
 					  	</feMerge>
 					</filter>
 				</defs>
@@ -150,7 +69,37 @@
 					<rect x="20" y="5" width="132" height="90" fill="transparent" filter="url(#dropshadow-1)" />
 					<image id="logo-image-1" xlink:href="{{banner.logo.image}}" x="25" y="10" width="122" height="80" />
 				</g>
-				<g id="description">
+				<svg id="wrap-prize" x="0" y="128" width="810" height="254">
+					<g id="description">
+						<rect x="20" y="0" width="404" height="232" fill="black" fill-opacity="0.75" ng-show="banner.background.inline" />
+						<foreignObject x="20" y="0" width="404" height="232" class="foreign-object-1">
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]"></h2>
+								<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]"></p>
+							</body>
+						</foreignObject>
+					</g>
+					<g id="price">
+						<rect x="504" y="0" width="231" height="38" fill="black" fill-opacity="0.75" ng-show="banner.background.inline" />
+						<foreignObject x="504" y="0" width="231" height="38" class="foreign-object-prize-1">
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<h2 ng-bind-html-unsafe="banner.prize.title" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]"></h2>
+								<span class="prize-description" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]">Like our page to win!</span>
+							</body>
+						</foreignObject>
+						<svg id="price-image-1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="450" y="42" width="350" height="193">
+							<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3" />
+							<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="340" height="183" />
+						</svg>
+						<rect x="455" y="167" width="340" height="50" fill="black" fill-opacity="0.75" />
+						<foreignObject x="455" y="167" width="340" height="50" class="foreign-object-prize-1">
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
+							</body>
+						</foreignObject>
+					</g>
+				</svg>
+				<!-- <g id="description">
 					<rect x="20" y="128" width="404" height="232" fill="black" fill-opacity="0.75" />
 					<foreignObject x="20" y="128" width="404" height="232" class="foreign-object-1">
 						<body xmlns="http://www.w3.org/1999/xhtml">
@@ -168,79 +117,21 @@
 						</body>
 					</foreignObject>
 
-					<svg id="price-image-1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="450" y="175" width="340" height="183">
-						<rect x="0" y="0" width="340" height="183" fill="white"></rect>
-						<image xlink:href="{{banner.prize.one.image}}" x="0" y="0" width="340" height="183" />
+					<svg id="price-image-1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="450" y="170" width="350" height="193">
+						<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3" />
+						<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="340" height="183" />
 					</svg>
-					<rect x="450" y="175" width="340" height="183" stroke="white" stroke-width="5" fill="transparent" />
-
-					<rect x="452" y="295" width="335" height="50" fill="black" fill-opacity="0.8" />
-					<foreignObject x="452" y="295" width="335" height="50" class="foreign-object-prize-1">
+					<rect x="456" y="295" width="328" height="50" stroke="black" stroke-opacity="0.75" />
+					<foreignObject x="456" y="295" width="328" height="50" class="foreign-object-prize-1 prize-black-text">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
 						</body>
 					</foreignObject>
-				</g>
+				</g> -->
 			</svg>
 		</div>
 		<div class="tab-pane" id="svg-tpl-2" ng-class="{true:'active', false:''}[banner.selected == 2]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="339">
-				<defs>
-					<style type="text/css"><![CDATA[
-						.foreign-object-2 h3 {
-							text-align: left;
-							color:#FFFFFF; 
-							font-family: "Rockwell";
-							font-weight: normal;
-							font-size:24px; 
-							line-height: 29px;
-							margin: 0;
-							padding: 10px 20px;
-							border-bottom: none;
-						}
-						.foreign-object-2 h3 ~ p {
-							text-align: left;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							line-height: 16px;
-							font-size: 12px;
-							padding: 0 20px;
-							top: 10px;
-						}
-						.foreign-object-prize-2 h3 {
-    						margin: 5px 0 0;
-							line-height: 24px;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size: 24px;
-							border-bottom: none;
-						}
-						.foreign-object-prize-2 span {
-							display: block;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 12px;
-						}
-						.foreign-object-prize-2 p {
-							width: 199px;
-							height: 30px;
-							padding: 0;
-
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 12px;
-							font-weight: bold;
-							line-height: 15px;
-
-							text-align: center;
-							vertical-align: middle;
-							display: table-cell;
-						}
-					]]></style>
-				</defs>
 				<defs id="pattern">
 					<pattern id="banner-background-2" patternUnits="userSpaceOnUse" width="810" height="339">
 				        <image xlink:href="{{banner.background.image}}" x="0" y="0" width="810" height="339" />
@@ -248,11 +139,11 @@
 				</defs>
 				<defs id="shadow">
 					<filter id="dropshadow-2" height="130%">
-					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> <!-- stdDeviation is how much to blur -->
-					  	<feOffset dx="0" dy="1" result="offsetblur"/> <!-- how much to offset -->
+					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> 
+					  	<feOffset dx="0" dy="1" result="offsetblur"/> 
 					  	<feMerge> 
-					    	<feMergeNode/> <!-- this contains the offset blurred image -->
-					    	<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+					    	<feMergeNode/> 
+					    	<feMergeNode in="SourceGraphic"/> 
 					  	</feMerge>
 					</filter>
 				</defs>
@@ -265,11 +156,53 @@
 					<rect x="20" y="5" width="132" height="90" fill="transparent" filter="url(#dropshadow-2)" />
 					<image id="logo-image-2" xlink:href="{{banner.logo.image}}" x="25" y="10" width="122" height="80" />
 				</g>
-				<g id="description">
+				<svg id="wrap-prize" x="0" y="128" width="810" height="211">
+					<g id="description">
+						<rect x="20" y="0" width="332" height="195" fill="black" fill-opacity="0.75" ng-show="banner.background.inline" />
+						<foreignObject x="20" y="0" width="332" height="195" class="foreign-object-2">
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]"></h2>
+								<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]"></p>
+							</body>
+						</foreignObject>
+					</g>
+					<g id="price">
+						<rect x="447" y="1" width="272" height="50" fill="black" fill-opacity="0.75" ng-show="banner.background.inline" />
+						<foreignObject x="447" y="1" width="272" height="50" class="foreign-object-prize-2">
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<h2 ng-bind-html-unsafe="banner.prize.title" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]"></h2>
+								<span class="prize-description" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]">Like our page to win!</span>
+							</body>
+						</foreignObject>
+
+						<svg id="price-image-2"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="374" y="61" width="213" height="140">
+							<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
+							<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="203" height="130" />
+						</svg>
+						<rect x="379" y="145" width="203" height="30" fill="black" fill-opacity="0.75" />
+						<foreignObject x="379" y="145" width="203" height="30" class="foreign-object-prize-2">
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
+							</body>
+						</foreignObject>
+
+						<svg id="price-image-2"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="590" y="61" width="213" height="140">
+							<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
+							<image xlink:href="{{banner.prize.two.image}}" x="5" y="5" width="203" height="130" />
+						</svg>
+						<rect x="595" y="145" width="203" height="30" fill="black" fill-opacity="0.75" />
+						<foreignObject x="595" y="145" width="203" height="30" class="foreign-object-prize-2">
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
+							</body>
+						</foreignObject>
+					</g>
+				</svg>
+				<!-- <g id="description">
 					<rect x="20" y="128" width="332" height="195" fill="black" fill-opacity="0.75" />
 					<foreignObject x="20" y="128" width="332" height="195" class="foreign-object-2">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h3>
+							<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h2>
 							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
@@ -278,7 +211,7 @@
 					<rect x="447" y="129" width="272" height="50" fill="black" fill-opacity="0.75" />
 					<foreignObject x="447" y="129" width="272" height="50" class="foreign-object-prize-2">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.prize.title"></h3>
+							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
 							<span class="prize-description">Like our page to win!</span>
 						</body>
 					</foreignObject>
@@ -289,7 +222,7 @@
 					</svg>
 					<rect x="374" y="189" width="203" height="130" stroke="white" stroke-width="5" fill="transparent" />
 
-					<rect x="376" y="273" width="199" height="30" fill="black" fill-opacity="0.8" />
+					<rect x="376" y="273" width="199" height="30" fill="black" fill-opacity="0.75" />
 					<foreignObject x="376" y="273" width="199" height="30" class="foreign-object-prize-2">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
@@ -302,76 +235,17 @@
 					</svg>
 					<rect x="588" y="189" width="203" height="130" stroke="white" stroke-width="5" fill="transparent" />
 
-					<rect x="590" y="273" width="199" height="30" fill="black" fill-opacity="0.8" />
+					<rect x="590" y="273" width="199" height="30" fill="black" fill-opacity="0.75" />
 					<foreignObject x="590" y="273" width="199" height="50" class="foreign-object-prize-2">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
 						</body>
 					</foreignObject>
-				</g>
+				</g> -->
 			</svg>
 		</div>
 		<div class="tab-pane" id="svg-tpl-3" ng-class="{true:'active', false:''}[banner.selected == 3]">
-			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="685">
-				<defs>
-					<style type="text/css"><![CDATA[
-						.foreign-object-3 h3 {
-							float: left;
-							width: 40%;
-							text-align: left;
-							color:#fff; 
-							font-family: "Rockwell";
-							font-weight: normal;
-							font-size:24px; 
-							line-height: 29px;
-							margin: 0;
-							padding: 20px;
-							border-bottom: none;
-						}
-						.foreign-object-3 h3 ~ p {
-							text-align: left;
-							color:#fff; 
-							font-family: 'Arial';
-							padding: 0;
-							font-size: 12px;
-							margin: 0;
-							padding: 20px;
-						}
-						.foreign-object-prize-3 h3 {
-    						margin: 0;
-							line-height: 30px;
-							text-align: center;
-							color: #303030;
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size: 30px;
-							border-bottom: none;
-							padding: 0;
-						}
-						.foreign-object-prize-3 span {
-							display: block;
-							text-align: center;
-							color: #303030;
-							font-family: 'Arial';
-							font-size: 18px;
-						}
-						.foreign-object-prize-3 p {
-							width: 240px;
-							height: 67px;
-							padding: 0;
-
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 14px;
-							font-weight: bold;
-							line-height: 15px;
-
-							text-align: center;
-							vertical-align: middle;
-							display: table-cell;
-						}
-					]]></style>
-				</defs>
+			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="670">
 				<defs id="pattern">
 					<pattern id="banner-background-3" patternUnits="userSpaceOnUse" width="770" height="315" x="20">
 				        <image x="0" y="0" width="770" height="315" xlink:href="{{banner.background.image}}" />
@@ -379,11 +253,11 @@
 				</defs>
 				<defs id="shadow">
 					<filter id="dropshadow-3" height="130%">
-					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> <!-- stdDeviation is how much to blur -->
-					  	<feOffset dx="0" dy="1" result="offsetblur"/> <!-- how much to offset -->
+					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> 
+					  	<feOffset dx="0" dy="1" result="offsetblur"/> 
 					  	<feMerge> 
-					    	<feMergeNode/> <!-- this contains the offset blurred image -->
-					    	<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+					    	<feMergeNode/> 
+					    	<feMergeNode in="SourceGraphic"/> 
 					  	</feMerge>
 					</filter>
 				</defs>
@@ -399,20 +273,73 @@
 					<rect x="40" y="5" width="132" height="90" fill="transparent" filter="url(#dropshadow-3)" />
 					<image id="logo-image-3" xlink:href="{{banner.logo.image}}" x="45" y="10" width="122" height="80" />
 				</g>
-				<g id="description">
+				<svg id="wrap-prize" x="0" y="165" width="810" height="500">
+					<g id="description">
+						<rect x="40" y="0" width="730" height="130" fill="black" fill-opacity="0.75" ng-show="banner.background.inline" />
+						<foreignObject x="40" y="0" width="730" height="130" class="foreign-object-3">
+							<body xmlns="http://www.w3.org/1999/xhtml">
+								<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]"></h2>
+								<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr" ng-class="{true:'', false:'prize-black-text'}[banner.background.inline]"></p>
+							</body>
+						</foreignObject>
+					</g>
+					<svg id="prizes" x="0" y="170" width="100%" height="100%">
+						<g id="price">
+							<foreignObject x="20" y="0" width="770" height="55" class="foreign-object-prize-3">
+								<body xmlns="http://www.w3.org/1999/xhtml">
+									<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
+									<span class="prize-description">Like our page to win!</span>
+								</body>
+							</foreignObject>
+
+							<svg id="price-image-3"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="10" y="70" width="260" height="260">
+								<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
+								<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="250" height="250" />
+							</svg>
+							<rect x="15" y="238" width="250" height="67" fill="black" fill-opacity="0.75" />
+							<foreignObject x="15" y="238" width="250" height="67" class="foreign-object-prize-3">
+								<body xmlns="http://www.w3.org/1999/xhtml">
+									<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
+								</body>
+							</foreignObject>
+
+							<svg id="price-image-4"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="275" y="70" width="260" height="260">
+								<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
+								<image xlink:href="{{banner.prize.two.image}}" x="5" y="5" width="250" height="250" />
+							</svg>
+							<rect x="280" y="238" width="250" height="67" fill="black" fill-opacity="0.75" />
+							<foreignObject x="280" y="238" width="250" height="67" class="foreign-object-prize-3">
+								<body xmlns="http://www.w3.org/1999/xhtml">
+									<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
+								</body>
+							</foreignObject>
+
+							<svg id="price-image-5"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="540" y="70" width="260" height="260">
+								<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
+								<image xlink:href="{{banner.prize.three.image}}" x="5" y="5" width="250" height="250" />
+							</svg>
+							<rect x="545" y="238" width="250" height="67" fill="black" fill-opacity="0.75" />
+							<foreignObject x="545" y="238" width="250" height="67" class="foreign-object-prize-3">
+								<body xmlns="http://www.w3.org/1999/xhtml">
+									<p ng-bind-html-unsafe="banner.prize.three.text|newLineToBr"></p>
+								</body>
+							</foreignObject>
+						</g>
+					</svg>
+				</svg>
+				<!-- <g id="description">
 					<rect x="40" y="165" width="730" height="130" fill="black" fill-opacity="0.75" />
 					<foreignObject x="40" y="165" width="730" height="130" class="foreign-object-3">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h3>
+							<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h2>
 							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
 				</g>
-
 				<g id="price">
 					<foreignObject x="20" y="335" width="770" height="55" class="foreign-object-prize-3">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.prize.title"></h3>
+							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
 							<span class="prize-description">Like our page to win!</span>
 						</body>
 					</foreignObject>
@@ -423,7 +350,7 @@
 					</svg>
 					<rect x="20" y="405" width="250" height="250" stroke="white" stroke-width="5" fill="transparent" />
 
-					<rect x="25" y="573" width="240" height="67" fill="black" fill-opacity="0.8" />
+					<rect x="25" y="573" width="240" height="67" fill="black" fill-opacity="0.75" />
 					<foreignObject x="25" y="573" width="240" height="67" class="foreign-object-prize-3">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
@@ -436,7 +363,7 @@
 					</svg>
 					<rect x="280" y="405" width="250" height="250" stroke="white" stroke-width="5" fill="transparent" />
 
-					<rect x="285" y="573" width="240" height="67" fill="black" fill-opacity="0.8" />
+					<rect x="285" y="573" width="240" height="67" fill="black" fill-opacity="0.75" />
 					<foreignObject x="285" y="573" width="240" height="67" class="foreign-object-prize-3">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
@@ -449,76 +376,17 @@
 					</svg>
 					<rect x="540" y="405" width="250" height="250" stroke="white" stroke-width="5" fill="transparent" />
 
-					<rect x="545" y="573" width="240" height="67" fill="black" fill-opacity="0.8" />
+					<rect x="545" y="573" width="240" height="67" fill="black" fill-opacity="0.75" />
 					<foreignObject x="545" y="573" width="240" height="67" class="foreign-object-prize-3">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.three.text|newLineToBr"></p>
 						</body>
 					</foreignObject>
-				</g>
+				</g> -->
 			</svg>
 		</div>
 		<div class="tab-pane" id="svg-tpl-4" ng-class="{true:'active', false:''}[banner.selected == 4]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="339">
-				<defs>
-					<style type="text/css"><![CDATA[
-						.foreign-object-4 h3 {
-							text-align: left;
-							color:#FFFFFF; 
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size:25px;
-							line-height: 32px;
-							margin: 0;
-							padding: 10px 20px;
-							border-bottom: none;
-						}
-						.foreign-object-4 h3 ~ p {
-							text-align: left;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							line-height: 16px;
-							font-size: 12px;
-							line-height: 15px;
-							margin: 0;
-							padding: 0 20px;
-						}
-						.foreign-object-prize-4 h3 {
-    						margin: 10px 0 0 0;
-    						padding: 0 5px;
-							line-height: 21px;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size: 21px;
-							border-bottom: none;
-						}
-						.foreign-object-prize-4 span {
-							display: block;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 14px;
-							padding: 0 5px;
-						}
-						.foreign-object-prize-4 p {
-							width: 207px;
-							height: 48px;
-							padding: 0;
-
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 12px;
-							font-weight: bold;
-							line-height: 15px;
-
-							text-align: center;
-							vertical-align: middle;
-							display: table-cell;
-						}
-					]]></style>
-				</defs>
 				<defs id="pattern">
 					<pattern id="banner-background-4" patternUnits="userSpaceOnUse" width="810" height="339">
 				        <image xlink:href="{{banner.background.image}}" x="0" y="0" width="810" height="339" />
@@ -526,11 +394,11 @@
 				</defs>
 				<defs id="shadow">
 					<filter id="dropshadow-4" height="130%">
-					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> <!-- stdDeviation is how much to blur -->
-					  	<feOffset dx="0" dy="1" result="offsetblur"/> <!-- how much to offset -->
+					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> 
+					  	<feOffset dx="0" dy="1" result="offsetblur"/> 
 					  	<feMerge> 
-					    	<feMergeNode/> <!-- this contains the offset blurred image -->
-					    	<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+					    	<feMergeNode/> 
+					    	<feMergeNode in="SourceGraphic"/> 
 					  	</feMerge>
 					</filter>
 				</defs>
@@ -547,7 +415,7 @@
 					<rect x="30" y="83" width="422" height="124" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="83" width="422" height="124" class="foreign-object-4">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.mtitle.text"></h3>
+							<h2 ng-bind-html-unsafe="banner.mtitle.text"></h2>
 							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
@@ -556,7 +424,7 @@
 					<rect x="30" y="209" width="207" height="65" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="209" width="207" height="65" class="foreign-object-prize-4">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.prize.title"></h3>
+							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
 							<span class="prize-description">Like our page to win!</span>
 						</body>
 					</foreignObject>
@@ -567,7 +435,7 @@
 					</svg>
 					<rect x="243" y="211" width="208" height="109" stroke="white" stroke-width="5" fill="transparent" />
 
-					<rect x="30" y="275" width="207" height="48" fill="black" fill-opacity="0.8" />
+					<rect x="30" y="275" width="207" height="48" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="275" width="207" height="48" class="foreign-object-prize-4">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
@@ -578,63 +446,6 @@
 		</div>
 		<div class="tab-pane" id="svg-tpl-5" ng-class="{true:'active', false:''}[banner.selected == 5]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="339">
-				<defs>
-					<style type="text/css"><![CDATA[
-						.foreign-object-5 h3 {
-							color:#FFFFFF; 
-							text-align: left;
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size: 21px;
-							line-height: 24px;
-							margin: 0;
-							padding: 10px 20px 10px;
-							border-bottom: none;
-						}
-						.foreign-object-5 h3 ~ p {
-							text-align: left;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							line-height: 16px;
-							font-size: 12px;
-							padding: 0 20px;
-						}
-						.foreign-object-prize-5 h3 {
-    						margin: 5px 0 0;
-    						padding: 0 5px;
-							line-height: 21px;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size: 21px;
-							border-bottom: none;
-						}
-						.foreign-object-prize-5 span {
-							display: block;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 14px;
-							padding: 0 5px;
-						}
-						.foreign-object-prize-5 p {
-							width: 163px;
-							height: 20px;
-							padding: 0;
-
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 10px;
-							font-weight: bold;
-							line-height: 8px;
-
-							text-align: center;
-							vertical-align: middle;
-							display: table-cell;
-						}
-					]]></style>
-				</defs>
 				<defs id="pattern">
 					<pattern id="banner-background-5" patternUnits="userSpaceOnUse" width="810" height="339">
 				        <image xlink:href="{{banner.background.image}}" x="0" y="0" width="810" height="339" />
@@ -642,11 +453,11 @@
 				</defs>
 				<defs id="shadow">
 					<filter id="dropshadow-5" height="130%">
-					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> <!-- stdDeviation is how much to blur -->
-					  	<feOffset dx="0" dy="1" result="offsetblur"/> <!-- how much to offset -->
+					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> 
+					  	<feOffset dx="0" dy="1" result="offsetblur"/> 
 					  	<feMerge> 
-					    	<feMergeNode/> <!-- this contains the offset blurred image -->
-					    	<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+					    	<feMergeNode/> 
+					    	<feMergeNode in="SourceGraphic"/> 
 					  	</feMerge>
 					</filter>
 				</defs>
@@ -663,7 +474,7 @@
 					<rect x="30" y="83" width="350" height="124" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="83" width="350" height="124" class="foreign-object-5">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.mtitle.text"></h3>
+							<h2 ng-bind-html-unsafe="banner.mtitle.text"></h2>
 							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
@@ -672,7 +483,7 @@
 					<rect x="30" y="209" width="350" height="50" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="30" y="209" width="350" height="50" class="foreign-object-prize-5">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.prize.title"></h3>
+							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
 							<span class="prize-description">Like our page to win!</span>
 						</body>
 					</foreignObject>
@@ -683,7 +494,7 @@
 					</svg>
 					<rect x="33" y="264" width="169" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="36" y="311" width="163" height="20" fill="black" fill-opacity="0.8"></rect>
+					<rect x="36" y="311" width="163" height="20" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="36" y="311" width="163" height="20" class="foreign-object-prize-5">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
@@ -696,7 +507,7 @@
 					</svg>
 					<rect x="210" y="264" width="169" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="213" y="311" width="163" height="20" fill="black" fill-opacity="0.8"></rect>
+					<rect x="213" y="311" width="163" height="20" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="213" y="311" width="163" height="20" class="foreign-object-prize-5">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
@@ -707,63 +518,6 @@
 		</div>
 		<div class="tab-pane" id="svg-tpl-6" ng-class="{true:'active', false:''}[banner.selected == 6]">
 			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="339">
-				<defs>
-					<style type="text/css"><![CDATA[
-						.foreign-object-6 h3 {
-							text-align: left;
-							color:#FFFFFF; 
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size:27px;
-							line-height: 32px;
-							margin: 0;
-							padding: 10px 20px;
-							border-bottom: none;
-						}
-						.foreign-object-6 h3 ~ p {
-							text-align: left;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							line-height: 16px;
-							font-size: 12px;
-							padding: 0 20px;
-						}
-						.foreign-object-prize-6 h3 {
-    						margin: 5px 0 0;
-    						padding: 0 5px;
-							line-height: 21px;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Rockwell';
-							font-weight: normal;
-							font-size: 21px;
-							border-bottom: none;
-						}
-						.foreign-object-prize-6 span {
-							display: block;
-							text-align: center;
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 14px;
-							padding: 0 5px;
-						}
-						.foreign-object-prize-6 p {
-							width: 131px;
-							height: 20px;
-							padding: 0;
-
-							color: #FFFFFF;
-							font-family: 'Arial';
-							font-size: 10px;
-							font-weight: bold;
-							line-height: 8px;
-
-							text-align: center;
-							vertical-align: middle;
-							display: table-cell;
-						}
-					]]></style>
-				</defs>
 				<defs id="pattern">
 					<pattern id="banner-background-6" patternUnits="userSpaceOnUse" width="810" height="339">
 				        <image xlink:href="{{banner.background.image}}" x="0" y="0" width="810" height="339" />
@@ -771,11 +525,11 @@
 				</defs>
 				<defs id="shadow">
 					<filter id="dropshadow-6" height="130%">
-					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> <!-- stdDeviation is how much to blur -->
-					  	<feOffset dx="0" dy="1" result="offsetblur"/> <!-- how much to offset -->
+					 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> 
+					  	<feOffset dx="0" dy="1" result="offsetblur"/> 
 					  	<feMerge> 
-					    	<feMergeNode/> <!-- this contains the offset blurred image -->
-					    	<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+					    	<feMergeNode/> 
+					    	<feMergeNode in="SourceGraphic"/> 
 					  	</feMerge>
 					</filter>
 				</defs>
@@ -792,7 +546,7 @@
 					<rect x="30" y="84" width="430" height="124" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="84" width="422" height="124" class="foreign-object-6">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.mtitle.text"></h3>
+							<h2 ng-bind-html-unsafe="banner.mtitle.text"></h2>
 							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
 						</body>
 					</foreignObject>
@@ -801,7 +555,7 @@
 					<rect x="30" y="210" width="430" height="50" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="30" y="210" width="430" height="50" class="foreign-object-prize-6">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.prize.title"></h3>
+							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
 							<span class="prize-description">Like our page to win!</span>
 						</body>
 					</foreignObject>
@@ -812,7 +566,7 @@
 					</svg>
 					<rect x="30" y="265" width="137" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="33" y="312" width="131" height="20" fill="black" fill-opacity="0.8"></rect>
+					<rect x="33" y="312" width="131" height="20" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="33" y="312" width="131" height="20" class="foreign-object-prize-6">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
@@ -825,7 +579,7 @@
 					</svg>
 					<rect x="178" y="265" width="137" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="181" y="312" width="131" height="20" fill="black" fill-opacity="0.8"></rect>
+					<rect x="181" y="312" width="131" height="20" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="181" y="312" width="131" height="20" class="foreign-object-prize-6">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
@@ -838,7 +592,7 @@
 					</svg>
 					<rect x="324" y="265" width="137" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="327" y="312" width="131" height="20" fill="black" fill-opacity="0.8"></rect>
+					<rect x="327" y="312" width="131" height="20" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="327" y="312" width="131" height="20" class="foreign-object-prize-6">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.three.text|newLineToBr"></p>
@@ -850,6 +604,62 @@
 	</div>
 
 	<div id="svg-editor"></div>
+
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810" height="643" style="display:none">
+		<defs id="pattern">
+			<pattern id="banner-background-1" patternUnits="userSpaceOnUse" width="810" height="381">
+		        <image xlink:href="{{banner.background.image}}" x="0" y="0" width="810" height="381" />
+		    </pattern>
+		</defs>
+		<defs id="shadow">
+			<filter id="dropshadow-1" height="130%">
+			 	<feGaussianBlur in="SourceAlpha" stdDeviation="4"/> 
+			  	<feOffset dx="0" dy="1" result="offsetblur"/> 
+			  	<feMerge> 
+			    	<feMergeNode/> 
+			    	<feMergeNode in="SourceGraphic"/> 
+			  	</feMerge>
+			</filter>
+		</defs>
+		<g id="background">
+			<rect x="0" y="0" width="810" height="381" fill="url(#banner-background-1)"/>
+			<image x="527" y="5" width="283" height="67" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARsAAABDCAYAAACsh6EPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTVCMzA1NUNERTE2MTFFMjg3NzZBRTM4OEQyMjUxOUYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTVCMzA1NURERTE2MTFFMjg3NzZBRTM4OEQyMjUxOUYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5NUIzMDU1QURFMTYxMUUyODc3NkFFMzg4RDIyNTE5RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5NUIzMDU1QkRFMTYxMUUyODc3NkFFMzg4RDIyNTE5RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PvOOyB8AABa9SURBVHja7F0LcFRF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" />
+		</g>
+		<g id="logo">
+			<rect x="20" y="5" width="132" height="90" fill="transparent" filter="url(#dropshadow-1)" />
+			<image id="logo-image-1" xlink:href="{{banner.logo.image}}" x="25" y="10" width="122" height="80" />
+		</g>
+		<svg id="wrap-prize" x="0" y="396" width="810" height="254">
+			<g id="description">
+				<rect x="20" y="0" width="404" height="232" fill="black" fill-opacity="0.75" style="display:none;" />
+				<foreignObject x="20" y="0" width="404" height="232" class="foreign-object-1">
+					<body xmlns="http://www.w3.org/1999/xhtml">
+						<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine" class="prize-black-text"></h2>
+						<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr" class="prize-black-text"></p>
+					</body>
+				</foreignObject>
+			</g>
+			<g id="price">
+				<rect x="504" y="0" width="231" height="38" fill="black" fill-opacity="0.75" style="display:none;" />
+				<foreignObject x="504" y="0" width="231" height="38" class="foreign-object-prize-1">
+					<body xmlns="http://www.w3.org/1999/xhtml">
+						<h2 ng-bind-html-unsafe="banner.prize.title" class="prize-black-text"></h2>
+						<span class="prize-description prize-black-text">Like our page to win!</span>
+					</body>
+				</foreignObject>
+				<svg id="price-image-1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="450" y="42" width="350" height="193">
+					<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3" />
+					<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="340" height="183" />
+				</svg>
+				<rect x="455" y="167" width="340" height="50" fill="black" fill-opacity="0.75" />
+				<foreignObject x="455" y="167" width="340" height="50" class="foreign-object-prize-1">
+					<body xmlns="http://www.w3.org/1999/xhtml">
+						<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
+					</body>
+				</foreignObject>
+			</g>
+		</svg>
+	</svg>
 
 	<div id="canvas"></div>
 

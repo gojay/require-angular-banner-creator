@@ -458,6 +458,39 @@ define([
 
 				$scope.banner.background.set = type;
 			};
+			$scope.setTplType = function(inline, evt){
+				var $el     = $(evt.target),
+					$parent = $el.parent();
+				$('.btn', $parent).each(function(){ $(this).removeClass('active') });
+				$el.addClass('active');
+
+				$('#svg-editor > svg').each(function(i,e){
+					var $wrapPrize = $(e).find('#wrap-prize'),
+						wrapHeight = parseInt($wrapPrize.attr('height'));
+
+					var selected = $scope.banner.selected;
+					var SVGheight, wh, values = {};
+
+					console.log('selected', $scope.banner.selected)
+
+					if( selected == 3 ){
+						values = ( inline ) ? {svg:670 , wrap:165} : {svg:785 , wrap:330};
+						var py = ( inline ) ? 170 : 120 ;
+						$(e).find('#prizes').attr('y', py);
+					} else {
+						SVGheight = BannerConfig.dimensions['tpl-' + $scope.banner.selected]['background']['height'];
+						wh = 128 ;
+						values = ( inline ) ? {svg:SVGheight , wrap:wh} : {svg:SVGheight + wrapHeight + 5 , wrap:SVGheight + 15};
+					}
+
+					console.log(values);
+
+					$(e).attr('height', values.svg);
+					$wrapPrize.attr('y', values.wrap);
+				});
+
+				$scope.banner.background.inline = inline;
+			};
 
 			$scope.doSetting = function($event){
 
@@ -497,6 +530,8 @@ define([
 						tplShowPrice    : tplShowPrice
 					}
 				};
+
+				$scope.banner.background.inline = true;
 
 				// alert overwrite
 				if($btnTemplate.hasClass('overwrite')){
@@ -579,6 +614,17 @@ define([
 					$('input[type="file"]', $settingField).each(function(e,i){
 						$(this).val('');
 					});
+					
+					$timeout(function(){
+						console.info('click bg-' + $scope.banner.background.set)
+						$('#Background .bg-' + $scope.banner.background.set).click();
+					}, 400);
+
+					var $setBgTpl = $('#set-bg-tpl');
+					$('.btn', $setBgTpl).each(function(){ 
+						$(this).removeClass('active') 
+					});
+					$('.tpl-normal', $setBgTpl).addClass('active');
 				}
 
 				// canvas dimensions
