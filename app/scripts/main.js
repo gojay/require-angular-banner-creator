@@ -272,7 +272,7 @@ function(angular, app, domReady){
           $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto):/);
     }])
 	.run(function($rootScope, $timeout, $location, transition) {
-		window._unsupported = { allow : false, status: false };
+		window._unsupported = { allow : true, status: false };
 		window._onbeforeunload = true;
 		// show popup for unsopported browsers
 		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow){

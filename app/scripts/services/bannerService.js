@@ -35,7 +35,7 @@ define(['services/services'], function(services){
 						counter : 255
 					},
 					background : {
-						inline : true,
+						overlay: true,
 						enable : true,
 						type   : 1,
 						set    : 'feris',

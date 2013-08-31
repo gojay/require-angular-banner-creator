@@ -1,206 +1,208 @@
-<form class="form-horizontal margin-bottom-zero">
-	<fieldset>
-		<div class="accordion" id="accordion2">
-			<div class="accordion-group" style=" border-top: 1px solid #E5E5E5; ">
-				<div class="accordion-heading">
-			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Background">
-			        	Background
-			      	</a>
-			    </div>
-			    <div id="Background" class="accordion-body collapse in">
-			      	<div class="accordion-inner" style="min-height:135px;">
-			        	<!-- <div class="control-group">
-							<div class="btn-group">
-				                <button class="btn dropdown-toggle" data-toggle="dropdown">
-				                	Set Background : <span class="text bold"></span>
-				                	<span class="caret"></span>
-				                </button>
-				                <ul class="dropdown-menu">
-				                  	<li><a href class="bg-upload" ng-click="setBG2('upload', $event)">Upload</a></li>
-				                  	<li><a href class="bg-feris" ng-click="setBG2('feris', $event)">Default 1 (Feris)</a></li>
-				                  	<li><a href class="bg-grass" ng-click="setBG2('grass', $event)">Default 2 (Grass)</a></li>
-				                  	<li><a href class="bg-young" ng-click="setBG2('young', $event)">Default 3 (Young)</a></li>
-				                </ul>
-				            </div>
-						</div> -->
-			        	<div class="control-group">
-							<!-- <label class="control-label" style="margin-left:0; text-align:left;">Set Background</label> -->
-							<div class="controls" style="margin-left:0;">
-							    <div class="btn-group">
-								    <button class="btn bg-upload active" ng-click="setBG('upload', $event)">Upload</button>
-								    <button class="btn bg-feris" ng-click="setBG('feris', $event)">Feris</button>
-								    <button class="btn bg-grass" ng-click="setBG('grass', $event)">Grass</button>
-								    <button class="btn bg-young" ng-click="setBG('young', $event)">Young</button>
-							    </div>
+<div ng-init="settingOnLoad()">
+	<form class="form-horizontal margin-bottom-zero">
+		<fieldset>
+			<div class="accordion" id="accordion2">
+				<div class="accordion-group" style=" border-top: 1px solid #E5E5E5; ">
+					<div class="accordion-heading">
+				      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Background">
+				        	Background
+				      	</a>
+				    </div>
+				    <div id="Background" class="accordion-body collapse in">
+				      	<div class="accordion-inner" style="min-height:135px;">
+				        	<!-- <div class="control-group">
+								<div class="btn-group">
+					                <button class="btn dropdown-toggle" data-toggle="dropdown">
+					                	Set Background : <span class="text bold"></span>
+					                	<span class="caret"></span>
+					                </button>
+					                <ul class="dropdown-menu">
+					                  	<li><a href class="bg-upload" ng-click="setBG2('upload', $event)">Upload</a></li>
+					                  	<li><a href class="bg-feris" ng-click="setBG2('feris', $event)">Default 1 (Feris)</a></li>
+					                  	<li><a href class="bg-grass" ng-click="setBG2('grass', $event)">Default 2 (Grass)</a></li>
+					                  	<li><a href class="bg-young" ng-click="setBG2('young', $event)">Default 3 (Young)</a></li>
+					                </ul>
+					            </div>
+							</div> -->
+				        	<div class="control-group">
+								<!-- <label class="control-label" style="margin-left:0; text-align:left;">Set Background</label> -->
+								<div class="controls" style="margin-left:0;">
+								    <div class="btn-group">
+									    <button class="btn bg-upload active" ng-click="setBG('upload', $event)">Upload</button>
+									    <button class="btn bg-feris" ng-click="setBG('feris', $event)">Feris</button>
+									    <button class="btn bg-grass" ng-click="setBG('grass', $event)">Grass</button>
+									    <button class="btn bg-young" ng-click="setBG('young', $event)">Young</button>
+								    </div>
+								</div>
 							</div>
-						</div>
-			        	<div class="control-group" ng-show="banner.background.enable">
-							<label class="control-label" style="width: 100px; margin-left:0; text-align:left;">
-								{{banner.background.uploaded | iif : "Edit" : "Upload"}} BG
-							</label>
-							<div class="controls" style="margin-left:0;">
-								<input type="file" id="input-background" class="hide" />
+				        	<div class="control-group" ng-show="banner.background.enable">
+								<label class="control-label" style="width: 100px; margin-left:0; text-align:left;">
+									{{banner.background.uploaded | iif : "Edit" : "Upload"}} BG
+								</label>
+								<div class="controls" style="margin-left:0;">
+									<input type="file" id="input-background" class="hide" />
+								</div>
 							</div>
-						</div>
-			        	<div class="control-group">
-							<!-- <label class="control-label" style="width:100px; margin-left:0; text-align:left;">Background</label> -->
-							<div class="controls" style="margin-left:0;">
-							    <div id="set-bg-tpl" class="btn-group">
-								    <button class="btn tpl-normal active" ng-click="setTplType(true, $event)">Overlay</button>
-								    <button class="btn tpl-bottom" ng-click="setTplType(false, $event)">Non Overlay</button>
-							    </div>
+				        	<div class="control-group">
+								<!-- <label class="control-label" style="width:100px; margin-left:0; text-align:left;">Background</label> -->
+								<div class="controls" style="margin-left:0;">
+								    <div id="set-overlay" class="btn-group">
+									    <button class="btn overlay-normal active" ng-click="setOverlay(true, $event)">Overlay</button>
+									    <button class="btn overlay-bottom" ng-click="setOverlay(false, $event)">Non Overlay</button>
+								    </div>
+								</div>
 							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label" style="width: 100px; text-align:left;">FB Resize</label>
-							<div class="controls" style="margin-left: 0;">
-								<input id="input-fb-width" ng-model="banner.fb.w"  style="width:50px; margin: 5px; border:none" /> X 
-								<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.fb.h" disabled="true" style="width:35px" />
+							<div class="control-group">
+								<label class="control-label" style="width: 100px; text-align:left;">FB Resize</label>
+								<div class="controls" style="margin-left: 0;">
+									<input id="input-fb-width" ng-model="banner.fb.w"  style="width:50px; margin: 5px; border:none" /> X 
+									<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.fb.h" disabled="true" style="width:35px" />
+								</div>
 							</div>
-						</div>
-			      	</div>
-			    </div>
+				      	</div>
+				    </div>
+				</div>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+				      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#logo">
+				        	Logo
+				      	</a>
+				    </div>
+				    <div id="logo" class="accordion-body collapse">
+				      	<div class="accordion-inner">
+							<div class="control-group">
+								<div class="controls" style="margin-left: 0;">
+									<input type="checkbox" id="hide" class="margin-top-zero" ng-model="banner.logo.hide"/> 
+									<label class="inline" for="hide">Hide Logo</label>
+								</div>
+							</div>
+							<div class="control-group" ng-hide="banner.logo.hide">
+								<label class="control-label" style="width: 100px; text-align:left;">
+									{{banner.logo.uploaded | iif : "Edit" : "Upload"}} Logo
+								</label>
+								<div class="controls" style="margin-left: 100px;">
+									<input type="file" id="input-logo" class="hide" />
+								</div>
+							</div>
+							<div class="control-group" ng-hide="banner.logo.hide">
+								<label class="control-label" style="width: 100px; text-align:left;">Resize</label>
+								<div class="controls" style="margin-left: 0;">
+									<input id="input-logo-width" ng-model="banner.logo.w"  style="width:50px; margin: 5px; border:none" /> X 
+									<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.logo.h" disabled="true" style="width:35px" />
+								</div>
+							</div>
+							<div class="control-group" ng-hide="banner.logo.hide">
+								<div class="controls" style="margin-left: 0;">
+									<input type="checkbox" id="placeholder" class="margin-top-zero" ng-model="banner.logo.placeholder" /> 
+									<label class="inline" for="placeholder">Add Placeholder</label>
+								</div>
+							</div>
+				      	</div>
+				    </div>
+				</div>
+				<div class="accordion-group" ng-hide="tplShowPrice == 0">
+					<div class="accordion-heading">
+				      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Prizes">
+				        	Prizes
+				      	</a>
+				    </div>
+				    <div id="Prizes" class="accordion-body collapse">
+				      	<div class="accordion-inner">
+							<div class="control-group" ng-show="tplShowPrice >= 1">
+								<label class="control-label" style="width: 100px; text-align:left;">
+									{{banner.prize.one.uploaded | iif : "Edit" : "Upload"}} Prize 1
+								</label>
+								<div class="controls" style="margin-left: 100px;">
+									<input type="file" id="input-price-1" class="hide" />
+								</div>
+							</div>
+							<div class="control-group" ng-show="tplShowPrice >= 2">
+								<label class="control-label" style="width: 100px; text-align:left;">
+									{{banner.prize.two.uploaded | iif : "Edit" : "Upload"}} Prize 2
+								</label>
+								<div class="controls" style="margin-left: 100px;">
+									<input type="file" id="input-price-2" class="hide" />
+								</div>
+							</div>
+							<div class="control-group" ng-show="tplShowPrice >= 3">
+								<label class="control-label" style="width: 100px; text-align:left;">
+									{{banner.prize.three.uploaded | iif : "Edit" : "Upload"}} Prize 3
+								</label>
+								<div class="controls" style="margin-left: 100px;">
+									<input type="file" id="input-price-3" class="hide" />
+								</div>
+							</div>
+				      	</div>
+				    </div>
+				</div>
+				<div class="accordion-group" style=" border-bottom: 1px solid #E5E5E5; ">
+					<div class="accordion-heading">
+				      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Text">
+				        	Text
+				      	</a>
+				    </div>
+				    <div id="Text" class="accordion-body collapse">
+				      	<div class="accordion-inner">
+							<div class="control-group">
+								<label>Title <a href class="pull-right" data-toggle="tooltip" data-placement="left" title="Add a new line by comma"><i class="icon-question-sign" style="margin-left:10px"></i></a></label>
+								<div class="controls" style="margin-left: 0;">
+									<input type="text" class="input-large" ng-model="banner.mtitle.text">
+									<p class="help-block text-right">Limit : {{banner.mtitle.counter}}/{{banner.mtitle.limit}}</p>
+								</div>
+							</div>
+							<div class="control-group">
+								<label>Description</label>
+								<div class="controls" style="margin-left: 0;">
+									<textarea class="input-large" ng-model="banner.mdescription.text" placeholder="Enter content description here.." rows="8"></textarea>
+									<p class="help-block text-right">Limit : {{banner.mdescription.counter}}/{{banner.mdescription.limit}}</p>
+								</div>
+							</div>
+							<div class="control-group" ng-hide="tplShowPrice == 0">
+								<label>Prize Header</label>
+								<div class="controls" style="margin-left: 0;">
+									<input type="text" class="input-large" ng-model="banner.prize.title" />
+								</div>
+							</div>
+							<div class="control-group" ng-show="tplShowPrice >= 1">
+								<label>Prize 1</label>
+								<div class="controls" style="margin-left: 0;">
+									<textarea class="input-large" ng-model="banner.prize.one.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+									<p class="help-block text-right">Limit : {{banner.prize.one.counter}}/{{banner.prize.one.limit}}</p>
+								</div>
+							</div>
+							<div class="control-group" ng-show="tplShowPrice >= 2">
+								<label>Prize 2</label>
+								<div class="controls" style="margin-left: 0;">
+									<textarea class="input-large" ng-model="banner.prize.two.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+									<p class="help-block text-right">Limit : {{banner.prize.two.counter}}/{{banner.prize.two.limit}}</p>
+								</div>
+							</div>
+							<div class="control-group" ng-show="tplShowPrice >= 3">
+								<label>Prize 3</label>
+								<div class="controls" style="margin-left: 0;">
+									<textarea class="input-large" ng-model="banner.prize.three.text" placeholder="Enter Prize description here.." rows="4"></textarea>
+									<p class="help-block text-right">Limit : {{banner.prize.three.counter}}/{{banner.prize.three.limit}}</p>
+								</div>
+							</div>
+				      	</div>
+				    </div>
+				</div>
 			</div>
-			<div class="accordion-group">
-				<div class="accordion-heading">
-			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#logo">
-			        	Logo
-			      	</a>
-			    </div>
-			    <div id="logo" class="accordion-body collapse">
-			      	<div class="accordion-inner">
-						<div class="control-group">
-							<div class="controls" style="margin-left: 0;">
-								<input type="checkbox" id="hide" class="margin-top-zero" ng-model="banner.logo.hide"/> 
-								<label class="inline" for="hide">Hide Logo</label>
-							</div>
-						</div>
-						<div class="control-group" ng-hide="banner.logo.hide">
-							<label class="control-label" style="width: 100px; text-align:left;">
-								{{banner.logo.uploaded | iif : "Edit" : "Upload"}} Logo
-							</label>
-							<div class="controls" style="margin-left: 100px;">
-								<input type="file" id="input-logo" class="hide" />
-							</div>
-						</div>
-						<div class="control-group" ng-hide="banner.logo.hide">
-							<label class="control-label" style="width: 100px; text-align:left;">Resize</label>
-							<div class="controls" style="margin-left: 0;">
-								<input id="input-logo-width" ng-model="banner.logo.w"  style="width:50px; margin: 5px; border:none" /> X 
-								<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.logo.h" disabled="true" style="width:35px" />
-							</div>
-						</div>
-						<div class="control-group" ng-hide="banner.logo.hide">
-							<div class="controls" style="margin-left: 0;">
-								<input type="checkbox" id="placeholder" class="margin-top-zero" ng-model="banner.logo.placeholder" /> 
-								<label class="inline" for="placeholder">Add Placeholder</label>
-							</div>
-						</div>
-			      	</div>
-			    </div>
-			</div>
-			<div class="accordion-group" ng-hide="tplShowPrice == 0">
-				<div class="accordion-heading">
-			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Prizes">
-			        	Prizes
-			      	</a>
-			    </div>
-			    <div id="Prizes" class="accordion-body collapse">
-			      	<div class="accordion-inner">
-						<div class="control-group" ng-show="tplShowPrice >= 1">
-							<label class="control-label" style="width: 100px; text-align:left;">
-								{{banner.prize.one.uploaded | iif : "Edit" : "Upload"}} Prize 1
-							</label>
-							<div class="controls" style="margin-left: 100px;">
-								<input type="file" id="input-price-1" class="hide" />
-							</div>
-						</div>
-						<div class="control-group" ng-show="tplShowPrice >= 2">
-							<label class="control-label" style="width: 100px; text-align:left;">
-								{{banner.prize.two.uploaded | iif : "Edit" : "Upload"}} Prize 2
-							</label>
-							<div class="controls" style="margin-left: 100px;">
-								<input type="file" id="input-price-2" class="hide" />
-							</div>
-						</div>
-						<div class="control-group" ng-show="tplShowPrice >= 3">
-							<label class="control-label" style="width: 100px; text-align:left;">
-								{{banner.prize.three.uploaded | iif : "Edit" : "Upload"}} Prize 3
-							</label>
-							<div class="controls" style="margin-left: 100px;">
-								<input type="file" id="input-price-3" class="hide" />
-							</div>
-						</div>
-			      	</div>
-			    </div>
-			</div>
-			<div class="accordion-group" style=" border-bottom: 1px solid #E5E5E5; ">
-				<div class="accordion-heading">
-			      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#Text">
-			        	Text
-			      	</a>
-			    </div>
-			    <div id="Text" class="accordion-body collapse">
-			      	<div class="accordion-inner">
-						<div class="control-group">
-							<label>Title <a href class="pull-right" data-toggle="tooltip" data-placement="left" title="Add a new line by comma"><i class="icon-question-sign" style="margin-left:10px"></i></a></label>
-							<div class="controls" style="margin-left: 0;">
-								<input type="text" class="input-large" ng-model="banner.mtitle.text">
-								<p class="help-block text-right">Limit : {{banner.mtitle.counter}}/{{banner.mtitle.limit}}</p>
-							</div>
-						</div>
-						<div class="control-group">
-							<label>Description</label>
-							<div class="controls" style="margin-left: 0;">
-								<textarea class="input-large" ng-model="banner.mdescription.text" placeholder="Enter content description here.." rows="8"></textarea>
-								<p class="help-block text-right">Limit : {{banner.mdescription.counter}}/{{banner.mdescription.limit}}</p>
-							</div>
-						</div>
-						<div class="control-group" ng-hide="tplShowPrice == 0">
-							<label>Prize Header</label>
-							<div class="controls" style="margin-left: 0;">
-								<input type="text" class="input-large" ng-model="banner.prize.title" />
-							</div>
-						</div>
-						<div class="control-group" ng-show="tplShowPrice >= 1">
-							<label>Prize 1</label>
-							<div class="controls" style="margin-left: 0;">
-								<textarea class="input-large" ng-model="banner.prize.one.text" placeholder="Enter Prize description here.." rows="4"></textarea>
-								<p class="help-block text-right">Limit : {{banner.prize.one.counter}}/{{banner.prize.one.limit}}</p>
-							</div>
-						</div>
-						<div class="control-group" ng-show="tplShowPrice >= 2">
-							<label>Prize 2</label>
-							<div class="controls" style="margin-left: 0;">
-								<textarea class="input-large" ng-model="banner.prize.two.text" placeholder="Enter Prize description here.." rows="4"></textarea>
-								<p class="help-block text-right">Limit : {{banner.prize.two.counter}}/{{banner.prize.two.limit}}</p>
-							</div>
-						</div>
-						<div class="control-group" ng-show="tplShowPrice >= 3">
-							<label>Prize 3</label>
-							<div class="controls" style="margin-left: 0;">
-								<textarea class="input-large" ng-model="banner.prize.three.text" placeholder="Enter Prize description here.." rows="4"></textarea>
-								<p class="help-block text-right">Limit : {{banner.prize.three.counter}}/{{banner.prize.three.limit}}</p>
-							</div>
-						</div>
-			      	</div>
-			    </div>
-			</div>
+		</fieldset>
+	</form>
+	<div class="align-center margin-bottom">
+		<div class="btn-group btn-block">
+	  		<button class="btn btn-success" ng-click="generate(false)" style="width:90%">Generate Image</button>
+		  	<button class="btn btn-success dropdown-toggle" data-toggle="dropdown" data-backdrop="false" style="width:10%">
+		   	 	<span class="caret"></span>
+		  	</button>
+		    <ul class="dropdown-menu btn-block">
+		      	<li><a href ng-click="generate(true)">Generate Image & Save</a></li>
+		    </ul>
 		</div>
-	</fieldset>
-</form>
-<div class="align-center margin-bottom">
-	<div class="btn-group btn-block">
-  		<button class="btn btn-success" ng-click="generate(false)" style="width:90%">Generate Image</button>
-	  	<button class="btn btn-success dropdown-toggle" data-toggle="dropdown" data-backdrop="false" style="width:10%">
-	   	 	<span class="caret"></span>
-	  	</button>
-	    <ul class="dropdown-menu btn-block">
-	      	<li><a href ng-click="generate(true)">Generate Image & Save</a></li>
-	    </ul>
 	</div>
+	<a id="setting-download" class="btn btn-success btn-block" 
+		ng-disabled="!allowDownloadable">
+		<i class="icon-download"></i> Download
+	</a>
 </div>
-<a id="setting-download" class="btn btn-success btn-block" 
-	ng-disabled="!allowDownloadable">
-	<i class="icon-download"></i> Download
-</a>

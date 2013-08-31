@@ -95,7 +95,7 @@ $app->get('/banner', function() use ($app, $db){
 				'autosave'	  => (boolean) $creator['autosave']
 			);
 		}
-		// sleep(2);
+		sleep(2);
 		echo json_encode($data);
 	}
 	catch(Exception $e){

@@ -19,6 +19,17 @@ define([
 
 			self.onbeforeunloadNeeded = true;
 
+			$scope.safeApply = function(fn) {
+			  	var phase = this.$root.$$phase;
+			  	if(phase == '$apply' || phase == '$digest') {
+			    	if(fn && (typeof(fn) === 'function')) {
+			      	fn();
+			    	}
+			  	} else {
+			    	this.$apply(fn);
+			  	}
+			};
+
 			// model banner templates n recents
 			$scope.templates = banners.templates;
 			$scope.banners   = banners.recents;
@@ -32,6 +43,9 @@ define([
 				isNew = $scope.isNew = false;
 				$scope.banner = banners.banner;
 				$scope.allowDownloadable = true;
+				if( $scope.banner.background.overlay === undefined ){
+					$scope.banner.background['overlay'] = true;
+				}
 				// copy the banner, to use same updated banner images 
 				// or check has changed / edited
 				cBanner = angular.copy($scope.banner);
@@ -198,11 +212,20 @@ define([
 			$rootScope.panel.right.template = $compile($panelRight)($scope);
 
 
-			/* ================ setting tabbable ================ */
+			/* ================ settings ================ */
 
-			// set tab selected
-			$('#templates ul > li:eq('+ $scope.banner.selected +') > a').click();
-			$rootScope.onLoad = function(){
+			// call this, when template banner settings has been loaded
+			$scope.settingOnLoad = function(){
+				console.log('callback settingOnLoad');
+				// set tab selected
+				$('#templates ul > li:eq('+ $scope.banner.selected +') > a').click();
+				$('#set-overlay').bind('normalize',function(){
+					$('.btn', this).each(function(){ 
+						$(this).removeClass('active') 
+					});
+					$('.overlay-normal', this).addClass('active');
+					$scope.safeApply(function(){ $scope.banner.background.overlay = true; });
+				})
 				if( !isNew ){
 					// var loaded = setInterval(function(){
 					// 	if($('#settings').length){
@@ -219,7 +242,9 @@ define([
 					// 	}	
 					// });
 					$timeout(function(){
+						// open the setting menu
 						$('#doSetting').click();
+						// send page loaded response
 						$rootScope.pageService.loaded = true;
 						// generate download popup tpl n ZIP
 						$timeout(function(){
@@ -241,44 +266,44 @@ define([
 				var en       = ['one', 'two', 'three'][prize - 1];
 
 				var isSameasEdit = ((cBanner !== false) && (parseInt(cBanner.selected) == selected)) ? true : false ;
+				console.log('choose template', 'selected', selected, 'isSameasEdit', isSameasEdit);
 
 				// applying banner images
-				$scope.$apply(function(scope){
-					scope.banner.selected = selected;
+				$scope.safeApply(function(scope){
+					$scope.banner.selected = selected;
 					// apply bg image n type
 					if( selected <= 1 ) {
-						scope.banner.background.type  = '1';
+						$scope.banner.background.type  = '1';
 						if(isSameasEdit){
 							var oldBackground = (cBanner.background.uploaded) ? cBanner.background.image : $scope.templates[1][cBanner.background.set];
-							scope.banner.background.image = oldBackground;
+							$scope.banner.background.image = oldBackground;
 						} 
-						else scope.banner.background.image = BannerImages.bg[0];
+						else $scope.banner.background.image = BannerImages.bg[0];
 					} 
 					else if( selected == 3 ) {
-						scope.banner.background.type  = '3';
+						$scope.banner.background.type  = '3';
 						if(isSameasEdit){
 							var oldBackground = (cBanner.background.uploaded) ? cBanner.background.image : $scope.templates[3][cBanner.background.set];
-							scope.banner.background.image = oldBackground;
+							$scope.banner.background.image = oldBackground;
 						} 
-						else scope.banner.background.image = BannerImages.bg[2];
+						else $scope.banner.background.image = BannerImages.bg[2];
 					} 
 					else {
-						scope.banner.background.type  = '2';
+						$scope.banner.background.type  = '2';
 						if(isSameasEdit){
 							var oldBackground = (cBanner.background.uploaded) ? cBanner.background.image : $scope.templates[3][cBanner.background.set];
-							scope.banner.background.image = oldBackground;
+							$scope.banner.background.image = oldBackground;
 						} 
-						else scope.banner.background.image = BannerImages.bg[1];
+						else $scope.banner.background.image = BannerImages.bg[1];
 					}
 
 					// logo n prize image (has prize only)
-					scope.banner.logo.image = (isSameasEdit) ? cBanner.logo.image : BannerImages.logo[type];
+					$scope.banner.logo.image = (isSameasEdit) ? cBanner.logo.image : BannerImages.logo[type];
 					if( selected != 0 ){
-						scope.banner.prize.one.image   = (isSameasEdit) ? cBanner.prize.one.image : BannerImages.prize[en][type];
-						scope.banner.prize.two.image   = (isSameasEdit) ? cBanner.prize.two.image : BannerImages.prize[en][type];
-						scope.banner.prize.three.image = (isSameasEdit) ? cBanner.prize.three.image : BannerImages.prize[en][type];
+						$scope.banner.prize.one.image   = (isSameasEdit) ? cBanner.prize.one.image : BannerImages.prize[en][type];
+						$scope.banner.prize.two.image   = (isSameasEdit) ? cBanner.prize.two.image : BannerImages.prize[en][type];
+						$scope.banner.prize.three.image = (isSameasEdit) ? cBanner.prize.three.image : BannerImages.prize[en][type];
 					}
-
 				});
 
 				// set text breadcrumb
@@ -304,11 +329,9 @@ define([
 				var aspectRatio = Math.min(ratio[0], ratio[1]);
 				$scope.banner.fb.h = parseInt(self.fbMax.h * aspectRatio);
 			});
-
-			// calculate image position (center)
-			// calculate aspect ratio image height
 			$scope.$watch('banner.logo.w', function(input) {
-
+				// calculate image position (center)
+				// calculate aspect ratio image height
 				var tplType = 'tpl-' + $scope.banner.selected;
 				var logoDimension = BannerConfig.dimensions[tplType].logo;
 
@@ -412,6 +435,9 @@ define([
 					$('#cancelTpl').hide();
 					$('#settings').show();
 					$('#svg-editor').show();
+
+					$('#set-overlay > .overlay-normal').click()
+					// $('#set-overlay').trigger('normalize');
 				});
 			});
 
@@ -458,7 +484,7 @@ define([
 
 				$scope.banner.background.set = type;
 			};
-			$scope.setTplType = function(inline, evt){
+			$scope.setOverlay = function(overlay, evt){
 				var $el     = $(evt.target),
 					$parent = $el.parent();
 				$('.btn', $parent).each(function(){ $(this).removeClass('active') });
@@ -474,13 +500,13 @@ define([
 					console.log('selected', $scope.banner.selected)
 
 					if( selected == 3 ){
-						values = ( inline ) ? {svg:670 , wrap:165} : {svg:785 , wrap:330};
-						var py = ( inline ) ? 170 : 120 ;
+						values = ( overlay ) ? {svg:670 , wrap:165} : {svg:785 , wrap:330};
+						var py = ( overlay ) ? 170 : 120 ;
 						$(e).find('#prizes').attr('y', py);
 					} else {
 						SVGheight = BannerConfig.dimensions['tpl-' + $scope.banner.selected]['background']['height'];
 						wh = 128 ;
-						values = ( inline ) ? {svg:SVGheight , wrap:wh} : {svg:SVGheight + wrapHeight + 5 , wrap:SVGheight + 15};
+						values = ( overlay ) ? {svg:SVGheight , wrap:wh} : {svg:SVGheight + wrapHeight + 5 , wrap:SVGheight + 15};
 					}
 
 					console.log(values);
@@ -489,7 +515,7 @@ define([
 					$wrapPrize.attr('y', values.wrap);
 				});
 
-				$scope.banner.background.inline = inline;
+				$scope.safeApply(function(scope){ $scope.banner.background.overlay = overlay; });
 			};
 
 			$scope.doSetting = function($event){
@@ -531,12 +557,11 @@ define([
 					}
 				};
 
-				$scope.banner.background.inline = true;
+				$('#set-overlay').trigger('normalize');
 
 				// alert overwrite
 				if($btnTemplate.hasClass('overwrite')){
 					$('#popup-overwrite').bind('overwrite', function(){
-						// var self = this;
 						$('.blockOverlay').click();
 						self.bannerSetting(settings, true);
 					});
@@ -559,7 +584,7 @@ define([
 				if($templateField.is(':hidden')){
 					// set default selected
 					$('ul > li:eq('+ $scope.banner.selected +') > a', $templateField).click();
-					$templateField.show(400, function(){
+					$templateField.show('fast', function(){
 						$btnCancel.show();
 						$btnTemplate.addClass('overwrite').html('<i class="icon-cog"></i> Settings');
 						$contentField.show();
@@ -604,6 +629,7 @@ define([
 				var tplShowPrice  = options.attributes.tplShowPrice;
 
 				console.log('settings', options);
+
 				// tooltip
 				$('a').tooltip();
 
@@ -619,12 +645,6 @@ define([
 						console.info('click bg-' + $scope.banner.background.set)
 						$('#Background .bg-' + $scope.banner.background.set).click();
 					}, 400);
-
-					var $setBgTpl = $('#set-bg-tpl');
-					$('.btn', $setBgTpl).each(function(){ 
-						$(this).removeClass('active') 
-					});
-					$('.tpl-normal', $setBgTpl).addClass('active');
 				}
 
 				// canvas dimensions
@@ -637,13 +657,13 @@ define([
 				var tplIndex = tplDimension.match(/(\d)/)[0];
 				var $svg  = self.getSVGCompiled($tplContent, 'like', tplIndex);
 				var $svg2 = self.getSVGCompiled($tplContent, 'enter', tplIndex);
-				$tpl.hide(400, function(){
+				$tpl.hide('fast', function(){
 					$(this).hide();
 					$tplContent.hide();
 					$btnCancel.hide();
 					$btnTemplate.html('<i class="icon-list"></i> Choose Template');
 
-					$settingField.show(400,function(){
+					$settingField.show('fast',function(){
 						$displayTpl.show();
 						// clear editor
 						$editorSVG.html('');
@@ -668,8 +688,8 @@ define([
 							.spinner({
 								min:0, max:self.fbMax.w,
 								spin: function( event, ui ) {
-									$scope.$apply(function(scope){
-										scope.banner.fb.w = ui.value;
+									$scope.safeApply(function(scope){
+										$scope.banner.fb.w = ui.value;
 									});
 								}
 							});
@@ -677,8 +697,8 @@ define([
 							.spinner({
 								min:0, max:logoDimension.image.width,
 								spin: function( event, ui ) {
-									$scope.$apply(function(scope){
-										scope.banner.logo.w = ui.value;
+									$scope.safeApply(function(scope){
+										$scope.banner.logo.w = ui.value;
 									});
 								}
 							});
@@ -820,9 +840,9 @@ define([
 													crop  : false
 												}).success(function(response){
 													console.log('response:upload background fit', response);
-													$scope.$apply(function(scope){
-														scope.banner.background.uploaded = true;
-														scope.banner.background.image = response.dataURI;
+													$scope.safeApply(function(scope){
+														$scope.banner.background.uploaded = true;
+														$scope.banner.background.image = response.dataURI;
 													});
 													// console.log('changeEl', changeEl);
 													// for(var i in changeEl){
@@ -894,17 +914,17 @@ define([
 										logo.parent.append($compile(logo.image)($scope));
 									});
 
-									$scope.$apply(function(scope){
-										scope.banner.logo.uploaded = true;
-										scope.banner.logo.image = response.dataURI;
-										scope.banner.logo.w = logoDimension.image.width;
-										scope.banner.logo.h = logoDimension.image.height;
-										scope.banner.logo.x = logoDimension.pos.image.x;
-										scope.banner.logo.y = logoDimension.pos.image.y;
+									$scope.safeApply(function(scope){
+										$scope.banner.logo.uploaded = true;
+										$scope.banner.logo.image = response.dataURI;
+										$scope.banner.logo.w = logoDimension.image.width;
+										$scope.banner.logo.h = logoDimension.image.height;
+										$scope.banner.logo.x = logoDimension.pos.image.x;
+										$scope.banner.logo.y = logoDimension.pos.image.y;
 									});
 
 									// applying scope
-									// $scope.$apply(function(scope){
+									// $scope.safeApply(function(scope){
 									// 	scope.banner.logo.w = logoDimension.image.width;
 									// 	scope.banner.logo.h = logoDimension.image.height;
 									// 	scope.banner.logo.x = logoDimension.pos.image.x;
@@ -1060,9 +1080,9 @@ define([
 											}).success(function(response){
 												console.log('response:upload prize fit', response);
 												console.log('en', en);
-												$scope.$apply(function(scope){
-													scope.banner.prize[en].uploaded = true;
-													scope.banner.prize[en].image = response.dataURI;
+												$scope.safeApply(function(scope){
+													$scope.banner.prize[en].uploaded = true;
+													$scope.banner.prize[en].image = response.dataURI;
 												});
 												// for(var j in changeEl){
 												// 	changeEl[j].setAttribute('xlink:href',response.dataURI);
@@ -1102,7 +1122,6 @@ define([
 					});
 				});
 			};
-
 			self.getSVGCompiled = function ($tplContent, type, tplIndex){
 				var $svg = $('.active > svg', $tplContent).clone();
 				$svg.attr('id', 'svg-editor-'+type);
@@ -1180,32 +1199,25 @@ define([
 					var _index = 1;
 					$('#price', $svg).children().map(function(i,e){
 						if($(e).attr('id') === undefined) return;
-						/* 
-						var x = [586,542,345,96,168,198];
-						if(type == 'enter') {
-							var x = [586,542,345,96,168,198];
-							$('#price > text > tspan', $svg).text('Enter to Win!');
-							$('#price > text > tspan', $svg).attr('x', x[tplIndex-1]);
-						}
-						*/
+
 						if(type == 'enter') {
 							$('#price .prize-description', $svg).text('Enter to Win!');
 						}
 
-						var en = ['one', 'two', 'three'][_index];
+						var bind = [
+							'{{banner.prize.one.image}}',
+							'{{banner.prize.two.image}}',
+							'{{banner.prize.three.image}}'
+						][_index-1];
+
 						$(e).attr('id', function(index, id){
 							return id.replace(/(\d+)/, function(fullMatch, n) {
 								return 'editor-'+ type + '-' + _index;
 							});
-						});
+						}).find('image').attr('xlink:href', bind);
 
 						_index++;
 					});
-
-					// prize images
-					if($('svg:eq(0)', $svg).length) $('svg:eq(0) > image', $svg).attr('xlink:href', '{{banner.prize.one.image}}').attr('data-en', 'one');
-					if($('svg:eq(1)', $svg).length) $('svg:eq(1) > image', $svg).attr('xlink:href', '{{banner.prize.two.image}}').attr('data-en', 'two');
-					if($('svg:eq(2)', $svg).length) $('svg:eq(2) > image', $svg).attr('xlink:href', '{{banner.prize.three.image}}').attr('data-en', 'three');
 				}
 
 				return $compile($svg)($scope);
@@ -1333,12 +1345,12 @@ define([
 								console.log('response upload banner enter', response);
 								
 								// applying scope
-								$scope.$apply(function(scope){ 
-									scope.allowDownloadable = true;       // enable download
-									scope.banner.preview    = imgPreview; // set banner like as image preview
+								$scope.safeApply(function(scope){ 
+									$scope.allowDownloadable = true;       // enable download
+									$scope.banner.preview    = imgPreview; // set banner like as image preview
 									// set title n same as meta title & description
-									scope.banner.title       = $scope.banner.mtitle.text;
-									scope.banner.description = $scope.banner.mdescription.text;
+									$scope.banner.title       = $scope.banner.mtitle.text;
+									$scope.banner.description = $scope.banner.mdescription.text;
 								});
 							
 								$progress.text('Adding banner images into ZIP...');
@@ -1383,11 +1395,11 @@ define([
 											}
 										} else {
 											// applying scope banner uploaded & download
-											$scope.$apply(function(scope){
-												scope.banner.uploaded.like       = imgDataURILike;
-												scope.banner.uploaded.enter      = imgDataURIEnter;
-												scope.banner.download.like.href  = 'images/upload/' + scope.banner.ID + '/' + imgNameLike + '.jpg';
-												scope.banner.download.enter.href = 'images/upload/' + scope.banner.ID + '/' + imgNameEnter + '.jpg';
+											$scope.safeApply(function(scope){
+												$scope.banner.uploaded.like       = imgDataURILike;
+												$scope.banner.uploaded.enter      = imgDataURIEnter;
+												$scope.banner.download.like.href  = 'images/upload/' + $scope.banner.ID + '/' + imgNameLike + '.jpg';
+												$scope.banner.download.enter.href = 'images/upload/' + $scope.banner.ID + '/' + imgNameEnter + '.jpg';
 											});
 										}
 
@@ -1423,12 +1435,12 @@ define([
 				// add scope banner download
 				$scope.banner['download'] = {
 					like: {
-						title:'Download Banner Like',
+						title:'Download the Like Banner',
 						href: 'images/upload/'+ $scope.banner.ID + '/banner_like.jpg',
 						download:'banner-like_'+ downloadName +'.jpg'
 					},
 					enter: {
-						title:'Download Banner Enter',
+						title:'Download the Enter Banner',
 						href: 'images/upload/'+ $scope.banner.ID + '/banner_enter.jpg',
 						download:'banner-enter_'+ downloadName +'.jpg'
 					}
