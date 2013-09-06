@@ -868,6 +868,7 @@ define([
 							inputFileText : 'Select an image',
 							section       : 'logo',
 							compile       : function(buttonEl, changeEl, blob, image){
+
 								// change text label input file
 								var labelEl = $(buttonEl).parent().siblings('label')[0];
 								// change the button text to 'Edit'
@@ -890,7 +891,7 @@ define([
 									name  : 'logo',
 									width : logoDimension.image.width,
 									height: logoDimension.image.height,
-									resize: 0
+									resize: image.height > logoDimension.image.height ? 1 : 0
 								}).success(function(response){
 									console.log('response:upload logo', response);
 
