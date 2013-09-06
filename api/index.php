@@ -1,10 +1,14 @@
 <?php
+session_start();
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); 
 ini_set('display_errors','on');
 
 include '../config.php';
+include 'vendor/nocsrf/nocsrf.php';
 // Autoload
 include 'vendor/autoload.php';
+require 'vendor/slim/slim/Slim/Middleware.php';
+require 'vendor/slim/slim/Slim/Middleware/CSRFAuth.php';
 // class Exception
 include 'Exception.php';
 // class DB NotORM
@@ -16,8 +20,14 @@ include 'functions.php';
 
 Slim\Slim::registerAutoLoader();
 $app = new Slim\Slim();
+// $app->add(new \CSRFAuth());
 
 /* ================================ Test ================================ */
+
+$app->get('/ping', function() use($app){
+	$hash = $app->request()->headers('AuthToken');
+	echo json_encode($hash);
+});
 
 $app->get('/test', function() use($app){
 	$app->response()->header('Content-Type', 'application/json');
@@ -74,6 +84,7 @@ $banner_templates = array(
 
 $app->get('/banner/template', function() use($app, $banner_templates){
 	$app->response()->header('Content-Type', 'application/json');
+	sleep(1);
 	echo json_encode($banner_templates);
 });
 
@@ -95,7 +106,6 @@ $app->get('/banner', function() use ($app, $db){
 				'autosave'	  => (boolean) $creator['autosave']
 			);
 		}
-		sleep(2);
 		echo json_encode($data);
 	}
 	catch(Exception $e){
@@ -416,7 +426,7 @@ $app->post('/upload', function() use ($app) {
 	$width  = isset($_REQUEST['width']) ? $_REQUEST['width'] : null ;
 	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null ;
 	$sizes  = isset($_REQUEST['size']) ? $_REQUEST['size'] : false ;
-	$isCrop = isset($_REQUEST['crop']) ? $_REQUEST['crop'] : false ;
+	$resize = isset($_REQUEST['resize']) ? (boolean) $_REQUEST['resize'] : true ;
 
 	$fileImg  = $_FILES['file']['tmp_name'];
 	$fileName = $_FILES['file']['name'];
@@ -456,10 +466,13 @@ $app->post('/upload', function() use ($app) {
 					$response[$key] = data_uri($image->file_dst_pathname, $fileType);
 				}
 			} else {
-				$image = do_upload($fileImg, $ext, $name, $width, $height, $isCrop, $upload_path);
+				$image = do_upload($fileImg, $ext, $name, $width, $height, $resize, $upload_path);
 				// create response
 				$response = array(
+					'resize'  => $resize,
 					'image'   => $image->file_dst_name,
+					'height'  => $image->image_dst_y,
+					'width'   => $image->image_dst_x,
 					'url'     => $upload_url . '/' . $image->file_dst_name,
 					'dataURI' => data_uri($image->file_dst_pathname, $fileType)
 				);

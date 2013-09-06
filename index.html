@@ -34,7 +34,7 @@
 	<![endif]-->
 	<script data-main="app/scripts/main" src="app/scripts/vendor/require.js"></script>
 </head>
-<body>
+<body class="auth-application">
 
 	<!-- Panel Left -->
 	<div id="panel-left" ng-bind-html-unsafe="$root.panel.left.template"></div>
@@ -114,6 +114,33 @@
 		<div class="message">
 		    <p>This browser, has some issues to generate images. Please use the latest Firefox to run this application.</p>
 		</div>
+	</div>
+	<div id="popup-login" class="hide">
+		<form class="form-horizontal" ng-submit="login.connect()">
+			<legend><i class="icon-signin"></i> Login</legend>
+				<div class="alert" 
+					 ng-class="login.error.class"
+					 ng-show="login.error.status"
+					 ng-bind-html-unsafe="login.error.message">
+            	</div>
+			  	<div class="control-group">
+			    	<label class="control-label" for="inputEmail">Username</label>
+			    	<div class="controls">
+			      		<input type="text" id="inputEmail" placeholder="Username" required ng-model="login.credentials.username">
+			    	</div>
+			  	</div>
+			 	<div class="control-group">
+				    <label class="control-label" for="inputPassword">Password</label>
+				    <div class="controls">
+				      <input type="password" id="inputPassword" placeholder="Password" required ng-model="login.credentials.password">
+				    </div>
+			  	</div>
+			  	<div class="control-group">
+			    	<div class="controls">
+			      		<button type="submit" class="btn btn-primary">Sign in</button>
+			    	</div>
+			  	</div>
+		</form>
 	</div>
 </body>
 </html>

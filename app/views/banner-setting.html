@@ -88,12 +88,12 @@
 								<label class="control-label" style="width: 100px; text-align:left;">Resize</label>
 								<div class="controls" style="margin-left: 0;">
 									<input id="input-logo-width" ng-model="banner.logo.w"  style="width:50px; margin: 5px; border:none" /> X 
-									<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.logo.h" disabled="true" style="width:35px" />
+									<input type="text" id="input-logo-height" placeholder="0" ng-model="banner.logo.h" disabled="disabled" style="width:35px" />
 								</div>
 							</div>
 							<div class="control-group" ng-hide="banner.logo.hide">
 								<div class="controls" style="margin-left: 0;">
-									<input type="checkbox" id="placeholder" class="margin-top-zero" ng-model="banner.logo.placeholder" /> 
+									<input type="checkbox" id="placeholder" class="margin-top-zero" ng-model="banner.logo.placeholder.show" /> 
 									<label class="inline" for="placeholder">Add Placeholder</label>
 								</div>
 							</div>

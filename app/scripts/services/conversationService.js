@@ -84,16 +84,21 @@ define(['services/services'], function(services){
 				selected : 1
 			};
 		})
-		.factory('ConversationService', ['$resource',
-			function($resource){
-				return $resource('api/conversation/:id', {}, {
-					update : {
-						method: 'PUT'
-					},
-					remove: {
-						method: 'DELETE'
-					}
-				});
+		// .factory('ConversationService', ['$resource',
+		// 	function($resource){
+		// 		return $resource('api/conversation/:id', {}, {
+		// 			update : {
+		// 				method: 'PUT'
+		// 			},
+		// 			remove: {
+		// 				method: 'DELETE'
+		// 			}
+		// 		});
+		// 	}
+		// ])
+		.factory('ConversationService', ['authResource',
+			function(authResource){
+				return authResource.request('api/conversation/:id');
 			}
 		])
 		.factory('ConversationTemplates', ['ConversationService', '$q', '$rootScope',

@@ -15,7 +15,7 @@ define([
 			var isNew = $scope.isNew = true, 
 				cBanner = false;
 
-				console.log('banners', banners)
+			console.log('banners', banners)
 
 			self.onbeforeunloadNeeded = true;
 
@@ -334,22 +334,26 @@ define([
 				// calculate aspect ratio image height
 				var tplType = 'tpl-' + $scope.banner.selected;
 				var logoDimension = BannerConfig.dimensions[tplType].logo;
+				var defaultDimension = {
+					width  : ($scope.banner.logo.placeholder.w == 0) ? $scope.banner.logo.w : $scope.banner.logo.placeholder.w - 10,
+					height : ($scope.banner.logo.placeholder.h == 0) ? $scope.banner.logo.h : $scope.banner.logo.placeholder.h - 10
+				};
 
-				if(parseInt(input) <= logoDimension.image.width){
+				if(parseInt(input) <= defaultDimension.width){
 					// dimension
-					var ratio = [input / logoDimension.image.width, logoDimension.image.height / logoDimension.image.height];
+					var ratio = [input / defaultDimension.width, defaultDimension.height / defaultDimension.height];
 					var aspectRatio = Math.min(ratio[0], ratio[1]);
-					$scope.banner.logo.h = parseInt(logoDimension.image.height * aspectRatio);
+					$scope.banner.logo.h = parseInt(defaultDimension.height * aspectRatio);
 					// position
-					var dx = (logoDimension.image.width + 10) - parseInt(input);
-					var dy = (logoDimension.image.height + 10) - parseInt($scope.banner.logo.h);
+					var dx = (defaultDimension.width + 10) - parseInt(input);
+					var dy = (defaultDimension.height + 10) - parseInt($scope.banner.logo.h);
 					var x = (dx <= 0) ? logoDimension.pos.image.x : (dx / 2) + logoDimension.pos.placeholder.x;
 					$scope.banner.logo.x = ($scope.banner.background.type == 3) ? x + 20 : x ;
 					$scope.banner.logo.y = (dy <= 0) ? logoDimension.pos.image.y : (dy / 2) + logoDimension.pos.placeholder.y;
 				}
 				else {
-					$scope.banner.logo.w = logoDimension.image.width;
-					$scope.banner.logo.h = logoDimension.image.height;
+					$scope.banner.logo.w = defaultDimension.width;
+					$scope.banner.logo.h = defaultDimension.height;
 				}
 			});
 			$scope.$watch('banner.mtitle.text', function(input){
@@ -393,7 +397,7 @@ define([
 			$scope.$watch('banner.logo.hide', function(checked){
 				self.hideLogo(checked);
 			});
-			$scope.$watch('banner.logo.placeholder', function(checked){
+			$scope.$watch('banner.logo.placeholder.show', function(checked){
 				self.addWhitePlaceholder(checked);
 			});
 			
@@ -695,7 +699,7 @@ define([
 							});
 						$('#input-logo-width').unbind('spinner')
 							.spinner({
-								min:0, max:logoDimension.image.width,
+								min:0, max: ($scope.banner.logo.placeholder.w == 0) ? logoDimension.image.width : $scope.banner.logo.placeholder.w - 10 ,
 								spin: function( event, ui ) {
 									$scope.safeApply(function(scope){
 										$scope.banner.logo.w = ui.value;
@@ -837,7 +841,7 @@ define([
 													name  : 'background',
 													width : backgroundDimension.width,
 													height: backgroundDimension.height,
-													crop  : false
+													resize: 1
 												}).success(function(response){
 													console.log('response:upload background fit', response);
 													$scope.safeApply(function(scope){
@@ -886,10 +890,13 @@ define([
 									name  : 'logo',
 									width : logoDimension.image.width,
 									height: logoDimension.image.height,
-									crop  : false
+									resize: 0
 								}).success(function(response){
-									// console.log('response:upload logo', response);
+									console.log('response:upload logo', response);
 
+									logoDimension.image.width  = parseInt(response.width);
+									logoDimension.image.height = parseInt(response.height);
+									
 									// change image src only
 									angular.forEach(changeEl, function(e,i){
 										var logo = {
@@ -917,11 +924,27 @@ define([
 									$scope.safeApply(function(scope){
 										$scope.banner.logo.uploaded = true;
 										$scope.banner.logo.image = response.dataURI;
+										$scope.banner.logo.placeholder.w = logoDimension.image.width + 10;
+										$scope.banner.logo.placeholder.h = logoDimension.image.height + 10;
 										$scope.banner.logo.w = logoDimension.image.width;
 										$scope.banner.logo.h = logoDimension.image.height;
 										$scope.banner.logo.x = logoDimension.pos.image.x;
 										$scope.banner.logo.y = logoDimension.pos.image.y;
 									});
+
+									console.log($scope.banner.logo)
+
+									$('#input-logo-width').unbind('spinner')
+										.spinner({
+											min:0, max: $scope.banner.logo.w ,
+											spin: function( event, ui ) {
+												$scope.safeApply(function(scope){
+													$scope.banner.logo.w = ui.value;
+												});
+											}
+										});
+
+									$.unblockUI();
 
 									// applying scope
 									// $scope.safeApply(function(scope){
@@ -951,7 +974,6 @@ define([
 										// 	}
 										// });
 									// });
-									$.unblockUI();
 								});
 							}
 						});
@@ -1057,6 +1079,10 @@ define([
 											// change image src only
 											for(var j in changeEl){
 												changeEl[j].setAttribute('xlink:href',image.src);
+												$scope.safeApply(function(scope){
+													// $scope.banner.prize[en].uploaded = true;
+													$scope.banner.prize[en].image = image.src;
+												});
 											}
 										}
 										// auto fit
@@ -1076,7 +1102,7 @@ define([
 												name  : 'prize-' + prizeIndex,
 												width : priceDimension.width,
 												height: priceDimension.height,
-												crop  : false
+												resize: 1
 											}).success(function(response){
 												console.log('response:upload prize fit', response);
 												console.log('en', en);
@@ -1168,7 +1194,7 @@ define([
 							});
 						}).attr('xlink:href','{{banner.logo.image}}');
 						// set logo position
-						if( $scope.banner.logo.w != 0 && $scope.banner.logo.hh != 0 && 
+						if( $scope.banner.logo.w != 0 && $scope.banner.logo.h != 0 && 
 							$scope.banner.logo.x !== undefined && $scope.banner.logo.y !== undefined ){
 							$(e).attr({
 								width:'{{banner.logo.w}}',
@@ -1186,8 +1212,13 @@ define([
 							return id.replace(/(\d+)/, function(fullMatch, n) {
 								return 'editor';
 							});
-						}).attr('fill', function(){
-							return $scope.banner.logo.placeholder ? 'white' : 'transparent';
+						})
+						.attr({
+							width : '{{banner.logo.placeholder.w}}',
+							height: '{{banner.logo.placeholder.h}}'
+						})
+						.attr('fill', function(){
+							return $scope.banner.logo.placeholder.show ? 'white' : 'transparent';
 						});
 					}
 					else return;
@@ -1219,6 +1250,8 @@ define([
 						_index++;
 					});
 				}
+
+				console.log('BANNER', $scope.banner)
 
 				return $compile($svg)($scope);
 			};
@@ -1304,14 +1337,15 @@ define([
 				
 					$progress.text('Uploading banner like...');
 
-					var imgNameLike = isSaved ? 'banner_like' : 'g_banner_like';
+					var imgNameLike = 'banner_like';
+					var imgNameLike = isNew ? imgNameLike : 'g_banner_like';
 					// do upload banner like
 					self.uploadFile({
 						file  : blobLike,
 						name  : imgNameLike,
 						width : 'original',
 						height: 'original',
-						crop  : false
+						resize: 1
 					}).success(function(response){
 						console.log('response upload banner like', response);
 
@@ -1333,14 +1367,15 @@ define([
 							console.log('blob banner enter', blobEnter);
 							console.info('start uploading banner enter screenshot..');
 
-							var imgNameEnter = isSaved ? 'banner_enter' : 'g_banner_enter';
+							var imgNameEnter = 'banner_enter';
+							var imgNameEnter = isNew ? imgNameEnter : 'g_banner_enter';
 							// do upload banner enter
 							self.uploadFile({
 								file  : blobEnter,
 								name  : imgNameEnter,
 								width : 'original',
 								height: 'original',
-								crop  : false
+								resize: 1
 							}).success(function(response){
 								console.log('response upload banner enter', response);
 								
@@ -1361,7 +1396,7 @@ define([
 								var generateCallback = self.generateTplZIP({
 									like  : imgDataURILike,
 									enter : imgDataURIEnter
-								}, function(){
+								}, isNew, function(){
 
 									// set empty progress text
 									$progress.text('');
@@ -1428,21 +1463,25 @@ define([
 				});
 			};
 
-			self.generateTplZIP = function( imgURI, callback ){
+			self.generateTplZIP = function( imgURI, isNew, callback ){
+				
 				// var downloadName = 'banner-'+ $scope.banner.ID +'.zip';
-				var downloadName = 'banner_'+ self.slugify($scope.banner.title); 
+				var downloadName = 'banner_'+ self.slugify($scope.banner.title);
+
+				var prefixName = 'banner';
+				var prefixName = isNew ? prefixName : 'g_banner';
 
 				// add scope banner download
 				$scope.banner['download'] = {
 					like: {
 						title:'Download the Like Banner',
-						href: 'images/upload/'+ $scope.banner.ID + '/banner_like.jpg',
-						download:'banner-like_'+ downloadName +'.jpg'
+						href : 'images/upload/' + $scope.banner.ID + '/' + prefixName + '_like.jpg'
+						// download:'banner-like_'+ downloadName +'.jpg'
 					},
 					enter: {
-						title:'Download the Enter Banner',
-						href: 'images/upload/'+ $scope.banner.ID + '/banner_enter.jpg',
-						download:'banner-enter_'+ downloadName +'.jpg'
+						title: 'Download the Enter Banner',
+						href: 'images/upload/' + $scope.banner.ID + '/' + prefixName + '_enter.jpg'
+						// download:'banner-enter_'+ downloadName +'.jpg'
 					}
 				};
 
@@ -1490,7 +1529,7 @@ define([
 				formData.append('name', data.name);
 				formData.append('width', data.width);
 				formData.append('height', data.height);
-				formData.append('crop', data.crop);
+				formData.append('resize', data.resize);
 				// ajax upload
 				return $.ajax({
 					// processData and contentType must be false to prevent jQuery
@@ -1546,7 +1585,16 @@ define([
 				console.log('save banner', banner);
 
 				if( isNew ){
-					banner.$save(function(response){
+					// banner.$save(function(response){
+					// 	console.log('Save response', response);
+					// 	// update old/copy banner
+					// 	cBanner = angular.copy($scope.banner);
+					// 	$scope.banners.push($scope.banner);
+					// 	console.log('banners', $scope.banners);
+					// 	if(callback) callback();
+					// });
+
+					BannerService.authentifiedRequest('POST', 'api/banner', $scope.banner, function(response){
 						console.log('Save response', response);
 						// update old/copy banner
 						cBanner = angular.copy($scope.banner);
@@ -1554,17 +1602,27 @@ define([
 						console.log('banners', $scope.banners);
 						if(callback) callback();
 					});
+
 				} else {
 					var bannerId = ($route.current.params.bannerId) ? $route.current.params.bannerId : $scope.banner.ID ;
-					banner.$update({id : bannerId}, function(response){
-						console.log('Update response', response);
+					// banner.$update({id : bannerId}, function(response){
+					// 	console.log('Update response', response);
+					// 	// update old/copy banner
+					// 	cBanner = angular.copy($scope.banner);
+					// 	var index = self.getIndexSelectedBanner();
+					// 	var b     = $scope.banners[index];
+					// 	b.title       = cBanner.title;
+					// 	b.description = cBanner.description;
+					// 	b.preview     = cBanner.preview;
+					// 	if(callback) callback();
+					// });
+
+					BannerService.authentifiedRequest('PUT', 'api/banner/' + bannerId, $scope.banner, function(response){
+						console.log('Save response', response);
 						// update old/copy banner
 						cBanner = angular.copy($scope.banner);
-						var index = self.getIndexSelectedBanner();
-						var b     = $scope.banners[index];
-						b.title       = cBanner.title;
-						b.description = cBanner.description;
-						b.preview     = cBanner.preview;
+						$scope.banners.push($scope.banner);
+						console.log('banners', $scope.banners);
 						if(callback) callback();
 					});
 				}

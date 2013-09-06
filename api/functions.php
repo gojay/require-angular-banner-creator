@@ -114,14 +114,14 @@ function convert_image_uri($value)
 	return $value;
 }
 
-function do_upload($fileImg, $ext, $name, $width, $height, $is_crop, $upload_path)
+function do_upload($fileImg, $ext, $name, $width, $height, $resize, $upload_path)
 {
 	// do upload n resize
 	$imagehand = new upload( $fileImg );
 	$imagehand->file_dst_name_ext  = $ext;
 	$imagehand->file_new_name_body = $name;
 	$imagehand->file_overwrite     = true;
-	$imagehand->image_resize       = true;
+	$imagehand->image_resize       = $resize;
 	// if( $is_crop ) {
 	// 	$imagehand->image_ratio_crop = true;
 	// 	$imagehand->image_ratio_fill = true;	

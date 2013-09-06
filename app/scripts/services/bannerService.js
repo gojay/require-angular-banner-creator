@@ -44,11 +44,15 @@ define(['services/services'], function(services){
 					},
 					logo : {
 						hide: false,
-						placeholder: false,
+						placeholder : {
+							show: false,
+							w: 0,
+							h: 0
+						},
 						w : 0,
 						h : 0,
 						uploaded : false,
-						image : BannerImages.logo[0]
+						image  : BannerImages.logo[0],
 					},
 					prize : {
 						title: 'This Month\'s Prizes',
@@ -264,23 +268,87 @@ define(['services/services'], function(services){
 				}
 			};
 		}])
-		.factory('BannerService', ['$resource',
-			function($resource){
-				return $resource('api/banner/:id', {}, {
-					update : {
-						method: 'PUT'
-					},
-					remove: {
-						method: 'DELETE'
-					}
-				});
+		// .factory('BannerService', ['$resource',
+		// 	function($resource){
+		// 		return $resource('api/banner/:id', {}, {
+		// 			update : {
+		// 				method: 'PUT'
+		// 			},
+		// 			remove: {
+		// 				method: 'DELETE'
+		// 			}
+		// 		});
+		// 	}
+		// ])
+		// .factory('BannerTemplates', ['BannerService', '$q', '$rootScope',
+		// 	function(BannerService, $q, $rootScope){
+		// 		return function(){
+		// 			var deferred = $q.defer();
+		// 			BannerService.get({id : 'template'}, function(data){
+		// 				deferred.resolve(data);
+		// 			}, function(err){
+		// 				$rootScope.pageService = {
+		// 					start  : false,
+		// 					reject : true,
+		// 					status : err.status,
+		// 					message: err.data
+		// 				};
+		// 				deferred.reject('Unable to fetch banner templates ' + err);
+		// 			});
+		// 			return deferred.promise;
+		// 		};
+		// 	}
+		// ])
+		// .factory('RecentBanners', ['BannerService', '$q', '$rootScope',
+		// 	function(BannerService, $q, $rootScope){
+		// 		return function(){
+		// 			var deferred = $q.defer();
+		// 			BannerService.query(function(data){
+		// 				deferred.resolve(data);
+		// 			}, function(err){
+		// 				$rootScope.pageService = {
+		// 					start  : false,
+		// 					reject : true,
+		// 					status : err.status,
+		// 					message: err.data
+		// 				};
+		// 				deferred.reject('Unable to fetch banners' + err);
+		// 			});
+		// 			return deferred.promise;
+		// 		};
+		// 	}
+		// ])
+		// .factory('DetailBanner', ['BannerService', '$route', '$q', '$rootScope',
+		// 	function(BannerService, $route, $q, $rootScope){
+		// 		return function(){
+		// 			var deferred = $q.defer();
+		// 			BannerService.get({id : $route.current.params.bannerId}, function(data){
+		// 				deferred.resolve(data);
+		// 			}, function(err){
+		// 				$rootScope.pageService = {
+		// 					start  : false,
+		// 					reject : true,
+		// 					status : err.status,
+		// 					message: err.data
+		// 				};
+		// 				deferred.reject('Unable to fetch banner '  + $route.current.params.bannerId + err);
+		// 			});
+		// 			return deferred.promise;
+		// 		};
+		// 	}
+		// ]);
+		.factory('BannerService', ['authResource',
+			function(authResource){
+				return authResource.request('api/banner/:id');
 			}
 		])
-		.factory('BannerTemplates', ['BannerService', '$q', '$rootScope',
-			function(BannerService, $q, $rootScope){
+		.factory('BannerTemplates', ['authResource', '$q', '$rootScope',
+			function(authResource, $q, $rootScope){
 				return function(){
+
 					var deferred = $q.defer();
-					BannerService.get({id : 'template'}, function(data){
+
+					authResource.authentifiedRequest('GET', 'api/banner/template', {}, function(data){
 						deferred.resolve(data);
 					}, function(err){
 						$rootScope.pageService = {
@@ -290,16 +358,18 @@ define(['services/services'], function(services){
 							message: err.data
 						};
 						deferred.reject('Unable to fetch banner templates ' + err);
-					});
+					})
 					return deferred.promise;
 				};
 			}
 		])
-		.factory('RecentBanners', ['BannerService', '$q', '$rootScope',
-			function(BannerService, $q, $rootScope){
+		.factory('RecentBanners', ['authResource', '$q', '$rootScope',
+			function(authResource, $q, $rootScope){
 				return function(){
+
 					var deferred = $q.defer();
-					BannerService.query(function(data){
+
+					authResource.authentifiedRequest('GET', 'api/banner', {}, function(data){
 						deferred.resolve(data);
 					}, function(err){
 						$rootScope.pageService = {
@@ -308,17 +378,19 @@ define(['services/services'], function(services){
 							status : err.status,
 							message: err.data
 						};
-						deferred.reject('Unable to fetch banners' + err);
-					});
+						deferred.reject('Unable to fetch recent banners ' + err);
+					})
 					return deferred.promise;
 				};
 			}
 		])
-		.factory('DetailBanner', ['BannerService', '$route', '$q', '$rootScope',
-			function(BannerService, $route, $q, $rootScope){
+		.factory('DetailBanner', ['authResource', '$route', '$q', '$rootScope',
+			function(authResource, $route, $q, $rootScope){
 				return function(){
+
 					var deferred = $q.defer();
-					BannerService.get({id : $route.current.params.bannerId}, function(data){
+
+					authResource.authentifiedRequest('GET', 'api/banner/' + $route.current.params.bannerId, {}, function(data){
 						deferred.resolve(data);
 					}, function(err){
 						$rootScope.pageService = {
@@ -327,8 +399,8 @@ define(['services/services'], function(services){
 							status : err.status,
 							message: err.data
 						};
-						deferred.reject('Unable to fetch banner '  + $route.current.params.bannerId + err);
-					});
+						deferred.reject('Unable to fetch detail banner ' + err);
+					})
 					return deferred.promise;
 				};
 			}

@@ -14,6 +14,7 @@ require.config({
 		angular      : 'vendor/angular/angular.min',
 		angularResource : 'vendor/angular/angular-resource.min',
 		angularCookies  : 'vendor/angular/angular-cookies.min',
+		angularHttpAuthInterceptor  : 'vendor/angular/http-auth-interceptor',
 		jquery       : 'vendor/jquery/jquery.min',
 		bootstrap    : 'vendor/bootstrap/bootstrap.min',
 		// jQuery UI & Plugins
@@ -45,7 +46,8 @@ require.config({
 			exports: 'angular'
 		},
 		angularResource : ['angular'],
-		angularCookies : ['angular']
+		angularCookies : ['angular'],
+		angularHttpAuthInterceptor : ['angular']
 	}
 });
 
@@ -64,6 +66,7 @@ require([
 	'filters/newLineToDblBr',
 	'filters/ifFilter',
 	// directives
+	'directives/authApplication',
 	'directives/bannerCreator',
 	'directives/conversationCreator',
 	'directives/splashCreator',
@@ -86,14 +89,11 @@ require([
 function(angular, app, domReady){
 	'use strict';
 
-	app.config(['$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
-		function($routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider){
-			// enable/disable debuging
-			debugProvider.setDebug(true);
-			// transition config  
-			transitionProvider.setStartTransition('expandIn');
-			transitionProvider.setPageTransition('slide');
-			transitionProvider.setPage('#wrap-content > .container');
+	app.config(['$compileProvider', '$httpProvider', '$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
+		function($compileProvider, $httpProvider, $routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider){
+
+	        $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto|file):/);
+
 			// router
 			$routeProvider
 				.when('/', {
@@ -262,17 +262,21 @@ function(angular, app, domReady){
 				})
 				.otherwise({ redirectTo:'/' });
 
+				// enable/disable debuging
+				debugProvider.setDebug(true);
+				// transition config  
+				transitionProvider.setStartTransition('expandIn');
+				transitionProvider.setPageTransition('slide');
+				transitionProvider.setPage('#wrap-content > .container');
+
 			// Hashbang Mode
    			$locationProvider
    				.html5Mode(false)
   				.hashPrefix('!');
 		}
 	])
-	.config(['$compileProvider' , function ($compileProvider) {
-          $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto):/);
-    }])
-	.run(function($rootScope, $timeout, $location, transition) {
-		window._unsupported = { allow : true, status: false };
+	.run(function($rootScope, $http, $timeout, $location, transition) {
+		window._unsupported = { allow : false, status: false };
 		window._onbeforeunload = true;
 		// show popup for unsopported browsers
 		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow){
@@ -310,10 +314,14 @@ function(angular, app, domReady){
 		// change transition when start route 
 		$rootScope.$on('$routeChangeStart', function(scope, next, current) {
 			// console.log('Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
+
+			$rootScope.$broadcast('event:auth-ping');
+
 			$rootScope.showBreadcrumb = false;
 			// transition
 			if(current === undefined) transition.start();
 			else transition.change();
+			// pageService
 			$rootScope.pageService = {
 				loaded: false,
 				start : true,
@@ -323,10 +331,10 @@ function(angular, app, domReady){
 			};
 		});
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
-			// inject page_title form current route
-			$rootScope.pageTitle = current.$$route.title;
+			// inject page title & breadecrumbs form current route
+			$rootScope.pageTitle      = current.$$route.title;
 			$rootScope.showBreadcrumb = (current.$$route.breadcrumb === undefined) ? false : true ;
-			$rootScope.breadcrumb = current.$$route.breadcrumb;
+			$rootScope.breadcrumb     = current.$$route.breadcrumb;
 			// set start pageService false, if page static, or doesn't needed services
 			if(current.$$route.static !== undefined) $rootScope.pageService.start = false;
 		});
