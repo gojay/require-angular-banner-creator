@@ -89,8 +89,8 @@ require([
 function(angular, app, domReady){
 	'use strict';
 
-	app.config(['$compileProvider', '$httpProvider', '$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
-		function($compileProvider, $httpProvider, $routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider){
+	app.config(['$compileProvider', '$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
+		function($compileProvider, $routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider){
 
 	        $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto|file):/);
 
@@ -279,7 +279,8 @@ function(angular, app, domReady){
 		window._unsupported = { allow : false, status: false };
 		window._onbeforeunload = true;
 		// show popup for unsopported browsers
-		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow){
+		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow)
+		{
 			window._unsupported.status = true;
 			$timeout(function(){
 				$.blockUI({
@@ -311,16 +312,18 @@ function(angular, app, domReady){
 				template: null
 			}
 		};
-		// change transition when start route 
+		// change transition when starting routes 
 		$rootScope.$on('$routeChangeStart', function(scope, next, current) {
 			// console.log('Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
 
+			// authorization ping 
 			$rootScope.$broadcast('event:auth-ping');
 
-			$rootScope.showBreadcrumb = false;
 			// transition
 			if(current === undefined) transition.start();
 			else transition.change();
+			// hide Breadcrumb
+			$rootScope.showBreadcrumb = false;
 			// pageService
 			$rootScope.pageService = {
 				loaded: false,
@@ -339,7 +342,7 @@ function(angular, app, domReady){
 			if(current.$$route.static !== undefined) $rootScope.pageService.start = false;
 		});
 		$rootScope.$on('$locationChangeStart', function(event, next, current) {
-			console.log(next);
+			// console.log(next);
 			if(window._unsupported.status){
 				$location.path('/');
 			}

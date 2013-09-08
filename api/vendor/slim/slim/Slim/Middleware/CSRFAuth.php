@@ -4,16 +4,24 @@ class CSRFAuth extends \Slim\Middleware
 {
 	protected $_allowedRoutes;
 
-	const SALT = 'S3c123T';
+	static $max_time = 600; // 10 minutes
+
+	static $tokenName = 'auth_token';
 
 	public function __construct()
 	{
 		$this->_allowedRoutes = array(
-    	    'GET/ping',
+    	    // 'GET/ping',
     	    'GET/test',
     	    'POST/login',
     	    'POST/logout'
     	);  
+	}
+
+	public static function create_token()
+	{
+		// NoCSRF::enableOriginCheck();
+		return NoCSRF::generate( self::$tokenName );
 	}
 
 	public function deny_access( $message )
@@ -32,53 +40,40 @@ class CSRFAuth extends \Slim\Middleware
     	return false;
 	}
 
-	public function check_timestamp()
-	{
-		
-	}
-
-	public function authenticate()
-	{
-		NoCSRF::check( 'csrf_token', $_POST, true, 10, false );
-	}
-
-	public function create_token()
-	{
-		return NoCSRF::generate( 'csrf_token' );
-	}
-
 	public function call()
 	{
 		$req = $this->app->request();
 	
     	if($this->check_allowed_routes($req->headers('REQUEST_METHOD').$req->getResourceUri()))	
     	    $this->next->call();
-    	else {
-
+    	else 
+    	{
     		$token = $req->headers('AuthToken');
-    		if ( $token ) {
+    		if ( $token ) 
+    		{
 	    		try {
 	    			
-	    			$token = array('csrf_token' => $token);
-	    			NoCSRF::check( 'csrf_token', $token, true, 60*10, false );
+	    			$origin = array(self::$tokenName => $token);
+	    			$authorized = NoCSRF::check( self::$tokenName, $origin, true, self::$max_time, true );
+    		   		if( !$authorized ) throw new Exception( 'You are not authorized' );
+    		   		
     		   		$this->next->call();
 
 	    		} catch (Exception $e) {
 
 	    			$this->deny_access(array(
-				        'class'   => 'alert-warning',
-				        'message' => '<strong>You are Authorizztion has expired</strong>. ' . $e->getMessage() . ' Please logged in'
+				        'type'    => 0,
+				        'message' => '<strong>' . $e->getMessage() . ' </strong>. Please logged in'
 				    ));
 	    			
 	    		}	
     		} 
     		else {
     		    $this->deny_access(array(
-			        'class'   => 'alert-warning',
-			        'message' => '<strong>You are Unauthorized</strong> Please logged in'
+			        'type'    => 0,
+			        'message' => '<strong>You are not authorized</strong> Please logged in'
 			    ));
 		    }
-
 	    }
 	}
 }

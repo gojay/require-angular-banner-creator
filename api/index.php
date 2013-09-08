@@ -20,30 +20,42 @@ include 'functions.php';
 
 Slim\Slim::registerAutoLoader();
 $app = new Slim\Slim();
-// $app->add(new \CSRFAuth());
+$app->add(new \CSRFAuth());
 
 /* ================================ Test ================================ */
+
+$app->get('/test', function() use($app){
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode($_SESSION);
+});
+
+/* ================================ Authorization ================================ */
 
 $app->get('/ping', function() use($app){
 	$hash = $app->request()->headers('AuthToken');
 	echo json_encode($hash);
 });
 
-$app->get('/test', function() use($app){
-	$app->response()->header('Content-Type', 'application/json');
-	$imageURL = ABS_URL . "/images/upload/1375827178614/logo.png";
-	$image = BASE_PATH . "/images/upload/1375827178614/logo.png";
-	$ext = pathinfo($image, PATHINFO_EXTENSION);
-	$mime = "image/$ext";
-	$g = glob( BASE_PATH . "/images/upload/1377166547843/logo.*");
-	echo json_encode(array(
-		'match' => preg_match('!http://[^?#]+\.(?:jpe?g|png|gif)!Ui', $imageURL),
-		// 'data_uri' => create_data_uri('images/upload/1375827178614/logo.png'),
-		'glob' => array(
-			'exists' => $g ? $g[0] : false,
-			'info' => $g ? pathinfo($g[0]) : null
-		)
-	));
+$app->post('/login', function() use($app){
+	$request = json_decode($app->request()->getBody());
+	if($request->username == 'admin' && $request->password == 'admin')
+	{
+		echo json_encode(array(
+			'username' => $request->username,
+			'token' => CSRFAuth::create_token()
+		));
+	}
+	else {
+		$app->response()->status(401);
+	    echo json_encode(array(
+	        'type'    => 1,
+	        'message' => '<strong>Login Failure !!</strong> User not found'
+	    ));
+	}
+});
+
+$app->post('/logout', function() use($app){
+	
 });
 
 /* ================================ Config ================================ */

@@ -44,7 +44,7 @@
 	<div id="panel-right" ng-bind-html-unsafe="$root.panel.right.template"></div>
 	<!-- /Panel Right -->
 
-	<div id="wrapper">
+	<div id="wrapper" ng-hide="auth.error">
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="navbar-container">
@@ -116,23 +116,22 @@
 		</div>
 	</div>
 	<div id="popup-login" class="hide">
-		<form class="form-horizontal" ng-submit="login.connect()">
+		<form class="form-horizontal" ng-submit="auth.connect()">
 			<legend><i class="icon-signin"></i> Login</legend>
-				<div class="alert" 
-					 ng-class="login.error.class"
-					 ng-show="login.error.status"
-					 ng-bind-html-unsafe="login.error.message">
+				<div class="alert text-center" 
+					 ng-class="{1:'alert-error', 0:'alert-warning'}[auth.error.type]"
+					 ng-bind-html-unsafe="auth.error.message">
             	</div>
 			  	<div class="control-group">
 			    	<label class="control-label" for="inputEmail">Username</label>
 			    	<div class="controls">
-			      		<input type="text" id="inputEmail" placeholder="Username" required ng-model="login.credentials.username">
+			      		<input type="text" id="inputEmail" placeholder="Username" required ng-model="auth.credentials.username">
 			    	</div>
 			  	</div>
 			 	<div class="control-group">
 				    <label class="control-label" for="inputPassword">Password</label>
 				    <div class="controls">
-				      <input type="password" id="inputPassword" placeholder="Password" required ng-model="login.credentials.password">
+				      <input type="password" id="inputPassword" placeholder="Password" required ng-model="auth.credentials.password">
 				    </div>
 			  	</div>
 			  	<div class="control-group">

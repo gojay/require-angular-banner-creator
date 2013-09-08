@@ -15,7 +15,7 @@
             return {
                 loginConfirmed: function() {
                     $rootScope.$broadcast('event:auth-loginConfirmed');
-                    httpBuffer.retryAll();
+                    // httpBuffer.retryAll();
                 }
             };
         }

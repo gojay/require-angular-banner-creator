@@ -11,29 +11,28 @@ define([
 					$scope.$on('event:auth-loginRequired', function(event, data) {
 			        	console.log('event:auth-loginRequired');
 
-						$scope.login.error.status  = true;
-						$scope.login.error.class   = data.class;
-						$scope.login.error.message = data.message;
+			        	// remove token
+				        $cookieStore.remove('token');
+
+				        $scope.auth.error = data;
 
 			        	var $login = $('#popup-login');
-			        	$('#wrapper').addClass('hide');
-			        	if(!$('.blockUI').length){
+			        	if( $scope.auth.error != null && !data.type ){
 				          	$.blockUI({
 								message: $login,
 								overlayCSS: {
 									backgroundColor: '#000',
 									opacity: 0.9,
-									cursor: 'default'
+									cursor : 'default'
 								},
 								css: {
 									top   	: ($(window).height() - $login.height()) / 2 + 'px',
 									width 	: '35%',
 									border 	: 'none',
 									background: 'white',
-									// color: '#3685C6',
-									padding: '10px',
-									cursor : 'default',
-									textAlign: 'left',
+									padding   : '10px',
+									cursor    : 'default',
+									textAlign : 'left',
 									borderRadius: '15px'
 								}
 							});
@@ -41,7 +40,7 @@ define([
 			        });
 			        $scope.$on('event:auth-loginConfirmed', function() {
 			        	console.log('event:auth-loginConfirmed');
-			        	$('#wrapper').removeClass('hide');
+			        	$scope.auth.error = null;
 		         		$.unblockUI();
 		        	});
 			        $scope.$on('event:auth-ping', function() {
@@ -49,37 +48,37 @@ define([
 			      		authResource.authentifiedRequest('GET', 'api/ping', {}, function(){
 					      	$scope.$broadcast('event:loginConfirmed');
 					    });
-			      		// $http.get('api/ping').success(function() {
-					    //   	$scope.$broadcast('event:loginConfirmed');
-					    // });
 		        	});
 
-				    $scope.login = {
+				    $scope.auth = {
 				    	credentials: {
 					    	username : null,
 					    	password : null
 				    	},
 				    	user  : null,
-				    	error : {
-					    	status: false,
-					    	title: null,
-					    	message: null
-					    }
+				    	error : null
 				    };
-				    $scope.login.connect = function() {
-				        $http.post('/_auth_/api.php').success(function(data, status) {
-				            if (status < 200 || status >= 300)
-				                return;
-				            $cookieStore.set();
-				            authService.loginConfirmed();
-				        });
+				    $scope.auth.connect = function() {
+						authResource.authentifiedRequest('POST', 'api/login', $scope.auth.credentials, 
+							function(data, status){
+								console.log('login response', data, status);
+
+						      	if (status < 200 || status >= 300) return;
+
+						      	$scope.auth.credentials.username = null;
+						      	$scope.auth.credentials.password = null;
+					            // set user n token cookie
+					            $scope.auth.user = data.username;
+					            $cookieStore.put('token', data.token);
+					            // login confirmed
+					            authService.loginConfirmed();
+						    }
+						);
 				    };
-				    $scope.login.disconnect = function() {
-				        $scope.login.user = null;
+				    $scope.auth.disconnect = function() {
+				        $scope.auth.user = null;
+				        $cookieStore.remove('token');
 				    };
-				    // $scope.$watch('login.credentials.username + login.credentials.password', function() {
-				    //     $http.defaults.headers.common['Authorization'] = 'Basic ' + btoa($scope.login.credentials.username + ':' + $scope.login.credentials.password);
-				    // });
 				}
 			};
 		}]

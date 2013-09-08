@@ -35,7 +35,7 @@ class NoCSRF
             
         if ( !isset( $origin[ $key ] ) )
             if($throwException)
-                throw new Exception( 'Missing CSRF form token.' );
+                throw new Exception( 'Your Authentication token has expired.' );
             else
                 return false;
 
@@ -58,14 +58,16 @@ class NoCSRF
         // Check if session token matches form token
         if ( $origin[ $key ] != $hash )
             if($throwException)
-                throw new Exception( 'Invalid CSRF token.' );
+                throw new Exception( 'Invalid Authentication token.' );
             else
                 return false;
 
         // Check for token expiration
         if ( $timespan != null && is_int( $timespan ) && intval( substr( base64_decode( $hash ), 0, 10 ) ) + $timespan < time() )
-            if($throwException)
-                throw new Exception( 'CSRF token has expired.' );
+            if($throwException){
+                $_SESSION[ 'csrf_' . $key ] = null;
+                throw new Exception( 'Your Authentication token has expired.' );
+            }
             else
                 return false;
 

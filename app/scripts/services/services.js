@@ -9,8 +9,8 @@ define([
 						this.url = null;
 						return {
 							authentifiedRequest: function(method, url, data, okCallback, errCallback){
-								// var headers = {'Authorization': 'basic ' + $cookieStore.get('token')};
-								var headers = {'AuthToken': 'basic ' + btoa('admin:admin')};
+								var headers = {'AuthToken' : $cookieStore.get('token')};
+								// var headers = {'AuthToken': 'basic ' + btoa('admin:admin')};
 								if($.inArray(angular.uppercase(method), ['POST', 'PUT']) >= 0){
 									headers['Content-Type'] = 'application/x-www-form-urlencoded';
 								}
