@@ -55,7 +55,13 @@ define(['services/services'], function(services){
 						image  : BannerImages.logo[0],
 					},
 					prize : {
-						title: 'This Month\'s Prizes',
+						header: {
+							title:'This Month\'s Prizes',
+							description: {
+								like : 'Like our page to win!',
+								enter: 'Enter to Win!'
+							}
+						},
 						one: {
 							text   : 'Enter prize 1 description',
 							limit  : 75,
@@ -268,18 +274,18 @@ define(['services/services'], function(services){
 				}
 			};
 		}])
-		// .factory('BannerService', ['$resource',
-		// 	function($resource){
-		// 		return $resource('api/banner/:id', {}, {
-		// 			update : {
-		// 				method: 'PUT'
-		// 			},
-		// 			remove: {
-		// 				method: 'DELETE'
-		// 			}
-		// 		});
-		// 	}
-		// ])
+		.factory('BannerService', ['$resource',
+			function($resource){
+				return $resource('api/banner/:id', {}, {
+					update : {
+						method: 'PUT'
+					},
+					remove: {
+						method: 'DELETE'
+					}
+				});
+			}
+		])
 		// .factory('BannerTemplates', ['BannerService', '$q', '$rootScope',
 		// 	function(BannerService, $q, $rootScope){
 		// 		return function(){
@@ -336,8 +342,11 @@ define(['services/services'], function(services){
 		// 			return deferred.promise;
 		// 		};
 		// 	}
-		// ]);
-		.factory('BannerService', ['authResource',
+		// ])
+
+		/* authorization request */
+
+		.factory('BannerServiceAuth', ['authResource',
 			function(authResource){
 				return authResource.request('api/banner/:id');
 			}

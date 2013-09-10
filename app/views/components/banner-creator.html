@@ -99,7 +99,7 @@
 						}
 						.foreign-object-prize-1 h2 {
 							margin: 0;
-							padding: 0 5px;
+							padding: 3px 5px 0;
 							line-height: 18px;
 							text-align: center;
 							color: #FFFFFF;
@@ -114,6 +114,7 @@
 							color: #FFFFFF;
 							font-family: 'Arial';
 							font-size: 12px;
+							line-height: 16px;
 						}
 						.foreign-object-prize-1 p {
 							width: 335px;
@@ -172,8 +173,8 @@
 						<rect x="504" y="0" width="231" height="38" fill="black" fill-opacity="0.75" ng-show="banner.background.overlay" />
 						<foreignObject x="504" y="0" width="231" height="38" class="foreign-object-prize-1">
 							<body xmlns="http://www.w3.org/1999/xhtml">
-								<h2 ng-bind-html-unsafe="banner.prize.title" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]"></h2>
-								<span class="prize-description" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]">Like our page to win!</span>
+								<h2 ng-bind-html-unsafe="banner.prize.header.title" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]"></h2>
+								<span class="prize-description" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 							</body>
 						</foreignObject>
 						<svg id="price-image-1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="450" y="42" width="350" height="193">
@@ -201,8 +202,8 @@
 					<rect x="504" y="128" width="231" height="38" fill="black" fill-opacity="0.75" />
 					<foreignObject x="504" y="128" width="231" height="38" class="foreign-object-prize-1">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.prize.title"></h3>
-							<span class="prize-description">Like our page to win!</span>
+							<h3 ng-bind-html-unsafe="banner.prize.header.title"></h3>
+							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 						</body>
 					</foreignObject>
 
@@ -322,8 +323,8 @@
 						<rect x="447" y="1" width="272" height="50" fill="black" fill-opacity="0.75" ng-show="banner.background.overlay" />
 						<foreignObject x="447" y="1" width="272" height="50" class="foreign-object-prize-2">
 							<body xmlns="http://www.w3.org/1999/xhtml">
-								<h2 ng-bind-html-unsafe="banner.prize.title" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]"></h2>
-								<span class="prize-description" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]">Like our page to win!</span>
+								<h2 ng-bind-html-unsafe="banner.prize.header.title" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]"></h2>
+								<span class="prize-description" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 							</body>
 						</foreignObject>
 
@@ -363,8 +364,8 @@
 					<rect x="447" y="129" width="272" height="50" fill="black" fill-opacity="0.75" />
 					<foreignObject x="447" y="129" width="272" height="50" class="foreign-object-prize-2">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
-							<span class="prize-description">Like our page to win!</span>
+							<h2 ng-bind-html-unsafe="banner.prize.header.title"></h2>
+							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 						</body>
 					</foreignObject>
 
@@ -504,8 +505,8 @@
 						<g id="price">
 							<foreignObject x="20" y="0" width="770" height="55" class="foreign-object-prize-3">
 								<body xmlns="http://www.w3.org/1999/xhtml">
-									<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
-									<span class="prize-description">Like our page to win!</span>
+									<h2 ng-bind-html-unsafe="banner.prize.header.title"></h2>
+									<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 								</body>
 							</foreignObject>
 
@@ -556,8 +557,8 @@
 				<g id="price">
 					<foreignObject x="20" y="335" width="770" height="55" class="foreign-object-prize-3">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
-							<span class="prize-description">Like our page to win!</span>
+							<h2 ng-bind-html-unsafe="banner.prize.header.title"></h2>
+							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 						</body>
 					</foreignObject>
 
@@ -633,13 +634,13 @@
 						.foreign-object-prize-4 h2 {
 							margin: 0;
 							padding: 0 5px;
-							line-height: 37px;
-							text-align: center;
-							color: #FFFFFF;
+							border-bottom: none;
 							font-family: 'Rockwell';
 							font-weight: normal;
-							font-size: 21px;
-							border-bottom: none;
+							font-size: 18px;
+							line-height: 36px;
+							color: #FFFFFF;
+							text-align: center;
 						}
 						.foreign-object-prize-4 span {
 							display: block;
@@ -706,8 +707,8 @@
 					<rect x="30" y="209" width="207" height="65" fill="black" fill-opacity="0.75" />
 					<foreignObject x="30" y="209" width="207" height="65" class="foreign-object-prize-4">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
-							<span class="prize-description">Like our page to win!</span>
+							<h2 ng-bind-html-unsafe="banner.prize.header.title"></h2>
+							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 						</body>
 					</foreignObject>
 
@@ -828,8 +829,8 @@
 					<rect x="30" y="209" width="350" height="50" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="30" y="209" width="350" height="50" class="foreign-object-prize-5">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
-							<span class="prize-description">Like our page to win!</span>
+							<h2 ng-bind-html-unsafe="banner.prize.header.title"></h2>
+							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 						</body>
 					</foreignObject>
 
@@ -963,8 +964,8 @@
 					<rect x="30" y="210" width="430" height="50" fill="black" fill-opacity="0.75"></rect>
 					<foreignObject x="30" y="210" width="430" height="50" class="foreign-object-prize-6">
 						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.prize.title"></h2>
-							<span class="prize-description">Like our page to win!</span>
+							<h2 ng-bind-html-unsafe="banner.prize.header.title"></h2>
+							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 						</body>
 					</foreignObject>
 

@@ -4,8 +4,8 @@ define([
 	'jquery',
 	'jqueryui'
 ], function(controllers){
-	controllers.controller('BannerController', ['$rootScope', '$scope', '$route', '$location', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService', 'banners',
-		function($rootScope, $scope, $route, $location, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService, banners){
+	controllers.controller('BannerController', ['$rootScope', '$scope', '$route', '$location', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService', 'BannerServiceAuth', 'banners',
+		function($rootScope, $scope, $route, $location, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService, BannerServiceAuth, banners){
 			var self = this;
 			// banner dimensions
 			var dimensions = BannerConfig.dimensions;
@@ -370,8 +370,8 @@ define([
 					$scope.banner.mdescription.text = $scope.banner.mdescription.text.substring(0, $scope.banner.mdescription.text.counter);
 				}
 			});
-			$scope.$watch('banner.prize.title', function(input){
-				$scope.banner.prize.title = input;
+			$scope.$watch('banner.prize.header.title', function(input){
+				$scope.banner.prize.header.title = input;
 			});
 			$scope.$watch('banner.prize.one.text', function(input){
 				$scope.banner.prize.one.counter = $scope.banner.prize.one.limit - input.length;
@@ -1233,7 +1233,7 @@ define([
 						if($(e).attr('id') === undefined) return;
 
 						if(type == 'enter') {
-							$('#price .prize-description', $svg).text('Enter to Win!');
+							$('#price .prize-description', $svg).attr('ng-bind-html-unsafe', 'banner.prize.header.description.enter');
 						}
 
 						var bind = [
@@ -1583,19 +1583,12 @@ define([
 
 				var banner = new BannerService($scope.banner);
 
-				console.log('save banner', banner);
+				console.log('doSave:BannerService', banner);
 
 				if( isNew ){
-					// banner.$save(function(response){
-					// 	console.log('Save response', response);
-					// 	// update old/copy banner
-					// 	cBanner = angular.copy($scope.banner);
-					// 	$scope.banners.push($scope.banner);
-					// 	console.log('banners', $scope.banners);
-					// 	if(callback) callback();
-					// });
 
-					BannerService.authentifiedRequest('POST', 'api/banner', $scope.banner, function(response){
+					/* 
+					banner.$save(function(response){
 						console.log('Save response', response);
 						// update old/copy banner
 						cBanner = angular.copy($scope.banner);
@@ -1603,27 +1596,40 @@ define([
 						console.log('banners', $scope.banners);
 						if(callback) callback();
 					});
+					*/
 
-				} else {
-					var bannerId = ($route.current.params.bannerId) ? $route.current.params.bannerId : $scope.banner.ID ;
-					// banner.$update({id : bannerId}, function(response){
-					// 	console.log('Update response', response);
-					// 	// update old/copy banner
-					// 	cBanner = angular.copy($scope.banner);
-					// 	var index = self.getIndexSelectedBanner();
-					// 	var b     = $scope.banners[index];
-					// 	b.title       = cBanner.title;
-					// 	b.description = cBanner.description;
-					// 	b.preview     = cBanner.preview;
-					// 	if(callback) callback();
-					// });
-
-					BannerService.authentifiedRequest('PUT', 'api/banner/' + bannerId, $scope.banner, function(response){
-						console.log('Save response', response);
+					BannerServiceAuth.authentifiedRequest('POST', 'api/banner', $scope.banner, function(response){
+						console.log('response:afer insert', response);
 						// update old/copy banner
 						cBanner = angular.copy($scope.banner);
 						$scope.banners.push($scope.banner);
-						console.log('banners', $scope.banners);
+						console.log('banners:afer insert', $scope.banners);
+						if(callback) callback();
+					});
+
+				} else {
+					var bannerId = ($route.current.params.bannerId) ? $route.current.params.bannerId : $scope.banner.ID ;
+					
+					/*
+					banner.$update({id : bannerId}, function(response){
+						console.log('Update response', response);
+						// update old/copy banner
+						cBanner = angular.copy($scope.banner);
+						var index = self.getIndexSelectedBanner();
+						var b     = $scope.banners[index];
+						b.title       = cBanner.title;
+						b.description = cBanner.description;
+						b.preview     = cBanner.preview;
+						if(callback) callback();
+					});
+					*/
+
+					BannerServiceAuth.authentifiedRequest('PUT', 'api/banner/' + bannerId, $scope.banner, function(response){
+						console.log('response:afer update', response);
+						// update old/copy banner
+						cBanner = angular.copy($scope.banner);
+						$scope.banners.push($scope.banner);
+						console.log('banners:afer update', $scope.banners);
 						if(callback) callback();
 					});
 				}

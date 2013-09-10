@@ -20,7 +20,7 @@ include 'functions.php';
 
 Slim\Slim::registerAutoLoader();
 $app = new Slim\Slim();
-$app->add(new \CSRFAuth());
+// $app->add(new \CSRFAuth());
 
 /* ================================ Test ================================ */
 

@@ -158,9 +158,30 @@
 								</div>
 							</div>
 							<div class="control-group" ng-hide="tplShowPrice == 0">
-								<label>Prize Header</label>
+								<label>Prize Header Title</label>
 								<div class="controls" style="margin-left: 0;">
-									<input type="text" class="input-large" ng-model="banner.prize.title" />
+									<input type="text" class="input-large" ng-model="banner.prize.header.title" />
+								</div>
+							</div>
+							<div class="control-group" ng-hide="tplShowPrice == 0">
+								<label>Prize Header Description</label>
+								<div class="controls" style="margin-left: 0;">
+									<input type="text" class="input-large" ng-model="banner.prize.header.description.like" placeholder="Banner like prize description" />
+								</div>
+								<div class="controls" style="margin-left: 0; margin-top: 5px">
+									<input type="text" class="input-large" ng-model="banner.prize.header.description.enter" placeholder="Banner enter prize description" />
+									<!-- <ul class="nav nav-tabs" id="prize-desc">
+										<li class="active"><a href="#prize-desc-like">Like</a></li>
+										<li><a href="#prize-desc-enter">Enter</a></li>
+									</ul>
+									<div class="tab-content">
+										<div class="tab-pane active" id="prize-desc-like">
+											<input type="text" class="input-large" ng-model="banner.prize.header.description.like" />
+										</div>
+										<div class="tab-pane" id="prize-desc-enter">
+											<input type="text" class="input-large" ng-model="banner.prize.header.description.enter" />
+										</div>
+									</div> -->
 								</div>
 							</div>
 							<div class="control-group" ng-show="tplShowPrice >= 1">
