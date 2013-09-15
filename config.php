@@ -1,10 +1,11 @@
 <?php
+define('ENABLE_AUTHORIZATION', false);
 
 // PATH
 define('BASE_PATH', dirname(__FILE__));
 define('UPLOAD_PATH', BASE_PATH . '/images/upload');
 // URL
-define('ABS_URL', 'http://dev.angularjs/require-angular-banner-creator');
+define('ABS_URL', 'http://angularjs/require-angular-banner-creator');
 // define('UPLOAD_URL', ABS_URL . '/images/upload');
 define('UPLOAD_URL', 'images/upload');
 // DB Config

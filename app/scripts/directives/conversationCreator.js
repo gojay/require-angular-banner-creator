@@ -5,8 +5,8 @@ define([
 	'jquery',
 	'jqueryui'
 ], function(directives){
-	directives.directive('conversationCreator', ['$rootScope', '$route', '$location', '$compile', '$timeout', 'ConversationTpl', 'ConversationConfig', 'ConversationService', 'imageReader',
-		function($rootScope, $route, $location, $compile, $timeout, ConversationTpl, ConversationConfig, ConversationService, imageReader){
+	directives.directive('conversationCreator', ['$rootScope', '$route', '$location', '$compile', '$timeout', 'ConversationTpl', 'ConversationConfig', 'ConversationService', 'authResource', 'imageReader',
+		function($rootScope, $route, $location, $compile, $timeout, ConversationTpl, ConversationConfig, ConversationService, authResource, imageReader){
 			// Runs during compile
 			return {
 				scope : {
@@ -33,8 +33,12 @@ define([
 					if( $scope.conversation === null ){
 						$scope.isNew           = self.isNew = true;
 						$scope.conversation    = angular.copy(ConversationConfig);
-						$scope.conversation.ID = new Date().getTime();
+						// $scope.conversation.ID = new Date().getTime();
+						$scope.conversation.ID = $scope.data.ID;
 					}
+
+					console.log('conversation', $scope.conversation);
+
 					$scope.isDownloadDisabled = true;
 					$scope.template = (self.isNew) ? self.templates[1] : self.templates[$scope.conversation.selected];
 
@@ -281,13 +285,25 @@ define([
 					self.save = function( callback ){
 						var conversation = new ConversationService($scope.conversation);
 						if( self.isNew ){
-							conversation.$save(function(response){
-								console.log('Insert response', response);
+
+							// conversation.$save(function(response){
+							// 	console.log('Insert response', response);
+							// 	if(callback) callback(true);
+							// });
+
+							authResource.authentifiedRequest('POST', 'api/conversation', $scope.conversation, function(response){
+								console.log('response:afer insert', response);
 								if(callback) callback(true);
 							});
 						} else {
-							conversation.$update({id : $route.current.params.conversationId}, function(response){
-								console.log('Update response', response);
+
+							// conversation.$update({id : $route.current.params.conversationId}, function(response){
+							// 	console.log('Update response', response);
+							// 	if(callback) callback(false);
+							// });
+
+							authResource.authentifiedRequest('PUT', 'api/conversation/' + $route.current.params.conversationId, $scope.banner, function(response){
+								console.log('response:afer update', response);
 								if(callback) callback(false);
 							});
 						}

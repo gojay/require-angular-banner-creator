@@ -4,8 +4,8 @@ define([
 	'jquery',
 	'jqueryui'
 ], function(controllers){
-	controllers.controller('BannerController', ['$rootScope', '$scope', '$route', '$location', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService', 'BannerServiceAuth', 'banners',
-		function($rootScope, $scope, $route, $location, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService, BannerServiceAuth, banners){
+	controllers.controller('BannerController', ['$rootScope', '$scope', '$route', '$location', '$timeout', '$q', '$compile', 'imageReader', 'BannerImages', 'BannerConfig', 'BannerService', 'authResource', 'banners',
+		function($rootScope, $scope, $route, $location, $timeout, $q, $compile, imageReader, BannerImages, BannerConfig, BannerService, authResource, banners){
 			var self = this;
 			// banner dimensions
 			var dimensions = BannerConfig.dimensions;
@@ -37,7 +37,8 @@ define([
 			// model banner
 			if(banners.banner === null){
 				$scope.banner 	 = angular.copy(BannerConfig.data);
-				$scope.banner.ID = new Date().getTime();
+				// $scope.banner.ID = new Date().getTime();
+				$scope.banner.ID = banners.ID;
 				$scope.allowDownloadable = false;
 			} else {
 				isNew = $scope.isNew = false;
@@ -841,7 +842,7 @@ define([
 													name  : 'background',
 													width : backgroundDimension.width,
 													height: backgroundDimension.height,
-													resize: 1
+													auto: 1
 												}).success(function(response){
 													console.log('response:upload background fit', response);
 													$scope.safeApply(function(scope){
@@ -891,7 +892,7 @@ define([
 									name  : 'logo',
 									width : logoDimension.image.width,
 									height: logoDimension.image.height,
-									resize: image.height > logoDimension.image.height ? 1 : 0
+									auto  : 0
 								}).success(function(response){
 									console.log('response:upload logo', response);
 
@@ -1103,7 +1104,7 @@ define([
 												name  : 'prize-' + prizeIndex,
 												width : priceDimension.width,
 												height: priceDimension.height,
-												resize: 1
+												auto: 1
 											}).success(function(response){
 												console.log('response:upload prize fit', response);
 												console.log('en', en);
@@ -1346,7 +1347,7 @@ define([
 						name  : imgNameLike,
 						width : 'original',
 						height: 'original',
-						resize: 1
+						auto: 1
 					}).success(function(response){
 						console.log('response upload banner like', response);
 
@@ -1376,7 +1377,7 @@ define([
 								name  : imgNameEnter,
 								width : 'original',
 								height: 'original',
-								resize: 1
+								auto  : 1
 							}).success(function(response){
 								console.log('response upload banner enter', response);
 								
@@ -1530,7 +1531,7 @@ define([
 				formData.append('name', data.name);
 				formData.append('width', data.width);
 				formData.append('height', data.height);
-				formData.append('resize', data.resize);
+				formData.append('auto_width', data.auto);
 				// ajax upload
 				return $.ajax({
 					// processData and contentType must be false to prevent jQuery
@@ -1598,7 +1599,7 @@ define([
 					});
 					*/
 
-					BannerServiceAuth.authentifiedRequest('POST', 'api/banner', $scope.banner, function(response){
+					authResource.authentifiedRequest('POST', 'api/banner', $scope.banner, function(response){
 						console.log('response:afer insert', response);
 						// update old/copy banner
 						cBanner = angular.copy($scope.banner);
@@ -1624,7 +1625,7 @@ define([
 					});
 					*/
 
-					BannerServiceAuth.authentifiedRequest('PUT', 'api/banner/' + bannerId, $scope.banner, function(response){
+					authResource.authentifiedRequest('PUT', 'api/banner/' + bannerId, $scope.banner, function(response){
 						console.log('response:afer update', response);
 						// update old/copy banner
 						cBanner = angular.copy($scope.banner);

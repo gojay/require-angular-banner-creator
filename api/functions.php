@@ -114,23 +114,28 @@ function convert_image_uri($value)
 	return $value;
 }
 
-function do_upload($fileImg, $ext, $name, $width, $height, $resize, $upload_path)
+function do_upload($files, $upload_path, $name, $width, $height, $auto_width)
 {
+	$ext  = pathinfo($files['name'], PATHINFO_EXTENSION);
 	// do upload n resize
-	$imagehand = new upload( $fileImg );
-	$imagehand->file_dst_name_ext  = $ext;
-	$imagehand->file_new_name_body = $name;
-	$imagehand->file_overwrite     = true;
-	$imagehand->image_resize       = $resize;
-	// if( $is_crop ) {
-	// 	$imagehand->image_ratio_crop = true;
-	// 	$imagehand->image_ratio_fill = true;	
-	// }
-	$imagehand->image_x            = $width;
-	$imagehand->image_y            = $height;
-	$imagehand->image_convert      = $ext;
-	$imagehand->Process($upload_path);
-	$imagehand->processed;
+	$imagehand = new upload( $files );
+	if ( $imagehand->uploaded ) {
+		$imagehand->file_dst_name_ext  = $ext;
+		$imagehand->file_new_name_body = $name;
+		$imagehand->file_overwrite     = true;
+		$imagehand->image_resize       = true;
+		// $imagehand->image_ratio_fill   = true;
+		if( $auto_width ){
+			$imagehand->image_x = $width;
+		}
+		$imagehand->image_y = $height;
+		$imagehand->Process($upload_path);
+		if (!$imagehand->processed) {
+	      	throw new Exception('error : ' . $imagehand->error);
+	  	}
 
-	return $imagehand;
+		return $imagehand;
+	} else {
+  		throw new Exception('Image not uploaded : ' . $imagehand->error);
+  	}
 }

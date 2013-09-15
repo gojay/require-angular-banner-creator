@@ -346,11 +346,6 @@ define(['services/services'], function(services){
 
 		/* authorization request */
 
-		.factory('BannerServiceAuth', ['authResource',
-			function(authResource){
-				return authResource.request('api/banner/:id');
-			}
-		])
 		.factory('BannerTemplates', ['authResource', '$q', '$rootScope',
 			function(authResource, $q, $rootScope){
 				return function(){

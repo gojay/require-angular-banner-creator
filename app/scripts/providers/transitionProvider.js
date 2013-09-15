@@ -38,7 +38,7 @@ define(['providers/providers'], function(providers){
 			}
 		};
 
-		this.$get = function(){
+		this.$get = function($injector){
 			var selector        = this.selector;
 			var startTransition = this.startTransition;
 			var pageTransition  = this.pageTransition;
@@ -71,6 +71,8 @@ define(['providers/providers'], function(providers){
 					}, 1000);
 				},
 				change: function(){
+					// get $rootScope from injector
+					var $rootScope = $injector.get('$rootScope');
 					var self  = this;
 					var $page = this.getElement();
 
@@ -86,12 +88,19 @@ define(['providers/providers'], function(providers){
 						// centering page services
 						self.centerPageMessage();
 
-						setTimeout(function() {
-							if( self.isPerspective() ){
+						console.log('rootScope on change transition', $rootScope )
+
+						// set false start pageService to static page, or doesn't needed services
+						if( !$rootScope.pageService.static )
+							$rootScope.pageService.start = true;
+
+						// set full height, if is Perspective
+						if( self.isPerspective() ){
+							setTimeout(function() {
 								$page.css('height', '100%');
 								$page.removeClass(classIn);
-							}
-						}, 1000);
+							}, 1000);
+						}
 
 						next();
 					});

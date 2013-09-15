@@ -20,13 +20,17 @@ include 'functions.php';
 
 Slim\Slim::registerAutoLoader();
 $app = new Slim\Slim();
-// $app->add(new \CSRFAuth());
+if( ENABLE_AUTHORIZATION ){
+	$app->add(new \CSRFAuth());
+}
 
 /* ================================ Test ================================ */
 
-$app->get('/test', function() use($app){
-	$app->response()->header('Content-Type', 'application/json');
-	echo json_encode($_SESSION);
+$app->get('/test', function() use($app, $pdo){
+	// $app->response()->header('Content-Type', 'application/json');
+
+	$table = $pdo->query("SHOW TABLE STATUS LIKE 'creators'")->fetch();
+	echo str_pad($table['Auto_increment'], 9, '0', STR_PAD_LEFT);
 });
 
 /* ================================ Authorization ================================ */
@@ -71,6 +75,14 @@ $app->get('/config', function() use($app, $db_config){
 	));
 });
 
+$app->get('/ID', function() use($app, $pdo){
+	$app->response()->header('Content-Type', 'application/json');
+	$table = $pdo->query("SHOW TABLE STATUS LIKE 'creators'")->fetch();
+	echo json_encode(array(
+		'ID' => str_pad($table['Auto_increment'], 9, '0', STR_PAD_LEFT)
+	));
+});
+
 // define creator columns
 $creator_columns = array('ID', 'title', 'description', 'preview', 'autosave');
 
@@ -96,7 +108,7 @@ $banner_templates = array(
 
 $app->get('/banner/template', function() use($app, $banner_templates){
 	$app->response()->header('Content-Type', 'application/json');
-	sleep(1);
+	sleep(2);
 	echo json_encode($banner_templates);
 });
 
@@ -433,20 +445,20 @@ $app->delete('/conversation/:conversationId', function($conversationId) use ($ap
 $app->post('/upload', function() use ($app) {
 	$app->response()->header('Content-Type', 'application/json');
 
+	$upload_path = UPLOAD_PATH;
+	$upload_url  = UPLOAD_URL;
+
 	$name   = $_REQUEST['name'];
 	$id     = isset($_REQUEST['id']) ? $_REQUEST['id'] : null ;
 	$width  = isset($_REQUEST['width']) ? $_REQUEST['width'] : null ;
 	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null ;
 	$sizes  = isset($_REQUEST['size']) ? $_REQUEST['size'] : false ;
-	$resize = isset($_REQUEST['resize']) ? (boolean) $_REQUEST['resize'] : true ;
+	$autoWidth = isset($_REQUEST['auto_width']) ? (boolean) $_REQUEST['auto_width'] : false ;
 
-	$fileImg  = $_FILES['file']['tmp_name'];
-	$fileName = $_FILES['file']['name'];
-	$fileType = $_FILES['file']['type'];
-	$ext      = pathinfo($fileName, PATHINFO_EXTENSION);
-
-	$upload_path = UPLOAD_PATH;
-	$upload_url  = UPLOAD_URL;
+	$files = $_FILES['file'];
+	$fileImg  = $files['tmp_name'];
+	// $fileName = $files['name'];
+	$fileType = $files['type'];
 
 	try{
 		if( $id !== null ){
@@ -474,14 +486,15 @@ $app->post('/upload', function() use ($app) {
 			// upload splash screen
 			if( $sizes !== false ){
 				foreach ($sizes as $key => $dimension) {
-					$image = do_upload($fileImg, $ext, $name . '_' . $key , $dimension['w'], $dimension['h'], $isCrop, $upload_path);
+					$image = do_upload($files, $upload_path, $name . '_' . $key , $dimension['w'], $dimension['h'], $autoWidth);
 					$response[$key] = data_uri($image->file_dst_pathname, $fileType);
 				}
 			} else {
-				$image = do_upload($fileImg, $ext, $name, $width, $height, $resize, $upload_path);
+				$image = do_upload($files, $upload_path, $name, $width, $height, $autoWidth);
 				// create response
 				$response = array(
-					'resize'  => $resize,
+					// 'autoWidth'   => $autoWidth,
+					// 'log'     => $image->log,
 					'image'   => $image->file_dst_name,
 					'height'  => $image->image_dst_y,
 					'width'   => $image->image_dst_x,

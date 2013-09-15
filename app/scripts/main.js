@@ -97,10 +97,15 @@ function(angular, app, domReady){
 			// router
 			$routeProvider
 				.when('/', {
-					title : '| Home',
+					page: {
+						static: true,
+						title : '| Home',
+						breadcrumb: {
+							show: false
+						}
+					},
 					templateUrl : 'app/views/home.html',
 					controller  : 'HomeController',
-					static      : true,
 					resolve: {
 						delay: function($q, $timeout) {
 							var delay = $q.defer();
@@ -110,27 +115,42 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/facebook/banner', {
-					title : '| Facebook Banner',
-					breadcrumb : {
-						current:  'Facebook Banner Template',
-						currentLink : '',
-						active :  'Template Empty Prize'
+					page: {
+						static: false,
+						title: '| Facebook Banner',
+						breadcrumb: {
+							show: true,
+							link: {
+								title: 'Facebook Banner Template',
+								href : '',
+								active: 'Template Empty Prize',
+							}
+						}
 					},
 					// static      : true,
 					templateUrl : 'app/views/banner.html',
 					controller : 'BannerController',
 					resolve: {
-						banners: function($rootScope, BannerTemplates, RecentBanners){
+						banners: function($rootScope, BannerTemplates, RecentBanners, CreatorID){
 							$rootScope.pageService.message = 'Preparing banner templates..';
 							return BannerTemplates().then(function(templates){
 								$rootScope.pageService.message = 'Preparing recent banners..';
 								return RecentBanners().then(function(recents){
-									$rootScope.pageService.start = false;
-									return {
-										templates : templates,
-										recents   : recents,
-										banner    : null
-									};
+									return CreatorID().then(function(creator){
+										$rootScope.pageService.start = false;
+										return {
+											templates : templates,
+											recents   : recents,
+											banner    : null,
+											ID : creator.ID
+										};
+									});
+									// $rootScope.pageService.start = false;
+									// return {
+									// 	templates : templates,
+									// 	recents   : recents,
+									// 	banner    : null
+									// };
 								});
 							});
 						},
@@ -142,16 +162,22 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/facebook/banner/:bannerId', {
-					title : '| Facebook Banner',
-					breadcrumb : {
-						current:  'Facebook Banner Template',
-						currentLink : '#!/facebook/banner',
-						active :  'Template Empty Prize'
+					page: {
+						static: false,
+						title: '| Facebook Banner',
+						breadcrumb: {
+							show: true,
+							link: {
+								title: 'Facebook Banner Template',
+								href : '#!/facebook/banner',
+								active: 'Template Empty Prize',
+							}
+						}
 					},
 					templateUrl : 'app/views/banner.html',
 					controller  : 'BannerController',
 					resolve: {
-						banners: function($rootScope, $route, BannerTemplates, RecentBanners, DetailBanner){
+						banners: function($rootScope, $route, $timeout, BannerTemplates, RecentBanners, DetailBanner){
 							$rootScope.pageService.message = 'Requesting banner id '+ $route.current.params.bannerId +'..';
 							return DetailBanner().then(function(banner){
 								$rootScope.pageService.message = 'Preparing banner templates..';
@@ -176,11 +202,17 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/facebook/conversation', {
-					title : '| Facebook Conversation',
-					breadcrumb : {
-						current:  'Facebook Conversation Template',
-						currentLink : '',
-						active :  'Template 1'
+					page: {
+						static: false,
+						title: '| Facebook Conversation',
+						breadcrumb: {
+							show: true,
+							link: {
+								title: 'Facebook Conversation Template',
+								href : '',
+								active: 'Template 1',
+							}
+						}
 					},
 					template   : '<conversation-creator ng-model="data"></conversation-creator>',
 					controller : 'ConversationController',
@@ -190,12 +222,21 @@ function(angular, app, domReady){
 							return ConversationTemplates().then(function(templates){
 								$rootScope.pageService.message = 'Preparing recent conversations..';
 								return RecentConversations().then(function(recents){
-									$rootScope.pageService.start = false;
-									return {
-										templates: templates,
-										recents: recents,
-										detail: null
-									};
+									return CreatorID().then(function(creator){
+										$rootScope.pageService.start = false;
+										return {
+											templates: templates,
+											recents: recents,
+											detail: null
+											ID : creator.ID
+										};
+									});
+									// $rootScope.pageService.start = false;
+									// return {
+									// 	templates: templates,
+									// 	recents: recents,
+									// 	detail: null
+									// };
 								});
 							});
 							
@@ -208,11 +249,17 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/facebook/conversation/:conversationId', {
-					title : '| Facebook Conversation',
-					breadcrumb : {
-						current:  'Facebook Conversation Template',
-						currentLink : '#!/facebook/conversation',
-						active :  'Template 1'
+					page: {
+						static: false,
+						title : '| Facebook Conversation',
+						breadcrumb: {
+							show: true,
+							link: {
+								title: 'Facebook Conversation Template',
+								href : '#!/facebook/conversation',
+								active: 'Template 1',
+							}
+						}
 					},
 					template    : '<conversation-creator ng-model="data"></conversation-creator>',
 					controller  : 'ConversationController',
@@ -242,12 +289,18 @@ function(angular, app, domReady){
 					}
 				})
 				.when('/mobile', {
-					title : '| Mobile SplashScreen',
-					breadcrumb : {
-						current:  'Mobile SplashScreen & Background',
-						active :  'Splash Screen'
+					page: {
+						static: true,
+						title : '| Mobile SplashScreen',
+						breadcrumb: {
+							show: true,
+							link: {
+								title: 'Mobile SplashScreen & Background',
+								href : '',
+								active: 'Splash Screen',
+							}
+						}
 					},
-					static      : true,
 					templateUrl : 'app/views/mobile.html',
 					controller  : 'MobileController',
 					resolve: {
@@ -312,34 +365,35 @@ function(angular, app, domReady){
 				template: null
 			}
 		};
+		// pageService
+		$rootScope.pageService = {
+			loaded: false,
+			start : false,
+			reject: false,
+			status: null,
+			message: ''
+		};
 		// change transition when starting routes 
 		$rootScope.$on('$routeChangeStart', function(scope, next, current) {
 			// console.log('Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
 
 			// authorization ping 
-			$rootScope.$broadcast('event:auth-ping');
+			// $rootScope.$broadcast('event:auth-ping');
 
 			// transition
-			if(current === undefined) transition.start();
-			else transition.change();
-			// hide Breadcrumb
-			$rootScope.showBreadcrumb = false;
-			// pageService
-			$rootScope.pageService = {
-				loaded: false,
-				start : true,
-				reject: false,
-				status: null,
-				message: ''
-			};
+			if(current === undefined) {
+				$rootScope.pageService.static = true;
+				// transition.start();
+			} else {
+				// set false start pageService to static page, or doesn't needed services
+				$rootScope.pageService.static = next.$$route.page.static == undefined ? false : next.$$route.page.static;
+				transition.change();
+			}
 		});
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
-			// inject page title & breadecrumbs form current route
-			$rootScope.pageTitle      = current.$$route.title;
-			$rootScope.showBreadcrumb = (current.$$route.breadcrumb === undefined) ? false : true ;
-			$rootScope.breadcrumb     = current.$$route.breadcrumb;
-			// set start pageService false, if page static, or doesn't needed services
-			if(current.$$route.static !== undefined) $rootScope.pageService.start = false;
+			// console.log('current route', current.$$route)
+			// inject page form current route
+			$rootScope.page = current.$$route.page;
 		});
 		$rootScope.$on('$locationChangeStart', function(event, next, current) {
 			// console.log(next);
