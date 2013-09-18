@@ -64,8 +64,7 @@
 			<!-- content : sticky footer bootstrap -->
 			<div id="wrap-content">
 				<div class="container">
-					<header class="row-fluid">
-						<!--Breadcrumb-->
+					<!--<header class="row-fluid">
 						<nav ng-class="{true:'show', false:'hide'}[$root.page.breadcrumb.show]">
 							<ul class="breadcrumb">
 								<li>
@@ -79,11 +78,15 @@
 								</li>
 							</ul>
 						</nav>
-					</header><!--/row-->
+					</header> /header-->
+					<div class="ng-view" ng-animate="'animate-ease-in-out-back'"></div>
+					<!-- <div class="row-fluid">
+						<div class="ng-view" ng-animate="'animate-ease-in-out-back'"></div>
+					</div> -->
+					<!-- page loader & message -->
 					<div class="row-fluid">
-						<div class="ng-view"></div>
-						<!-- page loader & message -->
-						<div id="page-loader" ng-class="{true:'show', null:'show', false:'hide'}[$root.pageService.start]">
+						<div id="page-loader" class="loader-service"
+							 ng-class="{true:'show', null:'show', false:'hide'}[$root.pageService.start]">
 							<img src="assets/img/ajax-loader.gif"/>
 							<p class="message">{{$root.pageService.message}}</p>
 						</div>
@@ -93,8 +96,8 @@
 								{{$root.pageService.message}}
 							</div>
 						</div>
-						<!-- /page -->
 					</div>
+					<!-- /page -->
 				</div>
 				<div id="push"></div>
 			</div>

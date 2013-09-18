@@ -11,7 +11,8 @@
 require.config({
 	paths: {
 		// core
-		angular      : 'vendor/angular/angular.min',
+		// angular      : 'vendor/angular/angular.min',
+		angular      : 'vendor/angular/angular.1.1.5.min',
 		angularResource : 'vendor/angular/angular-resource.min',
 		angularCookies  : 'vendor/angular/angular-cookies.min',
 		angularHttpAuthInterceptor  : 'vendor/angular/http-auth-interceptor',
@@ -107,9 +108,13 @@ function(angular, app, domReady){
 					templateUrl : 'app/views/home.html',
 					controller  : 'HomeController',
 					resolve: {
-						delay: function($q, $timeout) {
+						delay: function($q, $timeout, $rootScope) {
 							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
+							$timeout(function(){
+								delay.resolve();
+								$rootScope.pageService.start = false;
+								$rootScope.pageService.message = '';
+							}, 1000);
 							return delay.promise;
 						}
 					}
@@ -138,6 +143,7 @@ function(angular, app, domReady){
 								return RecentBanners().then(function(recents){
 									return CreatorID().then(function(creator){
 										$rootScope.pageService.start = false;
+										$rootScope.pageService.message = '';
 										return {
 											templates : templates,
 											recents   : recents,
@@ -227,7 +233,7 @@ function(angular, app, domReady){
 										return {
 											templates: templates,
 											recents: recents,
-											detail: null
+											detail: null,
 											ID : creator.ID
 										};
 									});
@@ -329,10 +335,10 @@ function(angular, app, domReady){
 		}
 	])
 	.run(function($rootScope, $http, $timeout, $location, transition) {
-		window._unsupported = { allow : true, status: false };
+		window._unsupported = { allowedBrowser: false, status: false };
 		window._onbeforeunload = true;
-		// show popup for unsopported browsers
-		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow)
+		// show popup for unsopported browsers (Firefox only)
+		if( window._unsupported.allowedBrowser && !/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent))
 		{
 			window._unsupported.status = true;
 			$timeout(function(){
@@ -380,7 +386,7 @@ function(angular, app, domReady){
 			// authorization ping 
 			// $rootScope.$broadcast('event:auth-ping');
 
-			// transition
+			/* page transition
 			if(current === undefined) {
 				$rootScope.pageService.static = true;
 				// transition.start();
@@ -388,6 +394,16 @@ function(angular, app, domReady){
 				// set false start pageService to static page, or doesn't needed services
 				$rootScope.pageService.static = next.$$route.page.static == undefined ? false : next.$$route.page.static;
 				transition.change();
+			}
+			*/
+
+			/* ng-animate transition */
+			if(current !== undefined) {
+				// set false start pageService to static page, or doesn't needed services
+				if( next.$$route.page.static !== undefined ){
+					// $rootScope.pageService.start = !next.$$route.page.static;
+					$rootScope.pageService.start = true;
+				}
 			}
 		});
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {

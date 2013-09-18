@@ -109,3 +109,141 @@ html {
 	-o-animation: tumbleOut 1s linear 0s 1 forwards;
 	animation: tumbleOut 1s linear 0s 1 forwards;
 }
+
+/* angular animate */
+
+/* slide linear */
+
+.animate-enter, 
+.animate-leave
+{ 
+    -webkit-transition: 1s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -moz-transition: 1s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -ms-transition: 1s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -o-transition: 1s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    transition: 1s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    position: relative;
+    display: block;
+} 
+
+.animate-enter
+{ 
+	transition-delay:1s;
+	-webkit-transition-delay:1s; /* Safari and Chrome */
+} 
+ 
+.animate-enter.animate-enter-active, 
+.animate-leave {
+    opacity: 1;
+    right: 0;
+    height: 100%;
+}
+ 
+.animate-leave.animate-leave-active,
+.animate-enter {
+    opacity: 0;
+    right: -50%;
+    height: 0;
+}
+
+/* slide ease in back */
+
+.animate-ease-in-back-enter, 
+.animate-ease-in-back-leave
+{ 
+    -webkit-transition: 1s cubic-bezier(0.600, -0.280, 0.735, 0.045) all;
+    -moz-transition: 1s cubic-bezier(0.600, -0.280, 0.735, 0.045) all;
+    -ms-transition: 1s cubic-bezier(0.600, -0.280, 0.735, 0.045) all;
+    -o-transition: 1s cubic-bezier(0.600, -0.280, 0.735, 0.045) all;
+    transition: 1s cubic-bezier(0.600, -0.280, 0.735, 0.045) all;
+    position: relative;
+    display: block;
+} 
+
+.animate-ease-in-back-enter
+{ 
+	transition-delay:1s;
+	-webkit-transition-delay:1s; /* Safari and Chrome */
+} 
+ 
+.animate-ease-in-back-enter.animate-ease-in-back-enter-active, 
+.animate-ease-in-back-leave {
+    opacity: 1;
+    right: 0;
+    height: 100%;
+}
+ 
+.animate-ease-in-back-leave.animate-ease-in-back-leave-active,
+.animate-ease-in-back-enter {
+    opacity: 0;
+    right: -50%;
+    height: 0;
+}
+
+/* slide ease out back */ 
+
+.animate-ease-out-back-enter, 
+.animate-ease-out-back-leave
+{ 
+    -webkit-transition: 1s cubic-bezier(0.175, 0.885, 0.320, 1.275) all;
+    -moz-transition: 1s cubic-bezier(0.175, 0.885, 0.320, 1.275) all;
+    -ms-transition: 1s cubic-bezier(0.175, 0.885, 0.320, 1.275) all;
+    -o-transition: 1s cubic-bezier(0.175, 0.885, 0.320, 1.275) all;
+    transition: 1s cubic-bezier(0.175, 0.885, 0.320, 1.275) all;
+    position: relative;
+    display: block;
+}
+
+.animate-ease-out-back-enter
+{ 
+	transition-delay:1s;
+	-webkit-transition-delay:1s; /* Safari and Chrome */
+} 
+ 
+.animate-ease-out-back-enter.animate-ease-out-back-enter-active, 
+.animate-ease-out-back-leave {
+    opacity: 1;
+    right: 0;
+    height: 100%;
+}
+ 
+.animate-ease-out-back-leave.animate-ease-out-back-leave-active,
+.animate-ease-out-back-enter {
+    opacity: 0;
+    right: -50%;
+    height: 0;
+}
+
+/* slide ease in out back */
+
+.animate-ease-in-out-back-enter, 
+.animate-ease-in-out-back-leave
+{ 
+    -webkit-transition: 1s cubic-bezier(0.680, -0.550, 0.265, 1.550) all;
+    -moz-transition: 1s cubic-bezier(0.680, -0.550, 0.265, 1.550) all;
+    -ms-transition: 1s cubic-bezier(0.680, -0.550, 0.265, 1.550) all;
+    -o-transition: 1s cubic-bezier(0.680, -0.550, 0.265, 1.550) all;
+    transition: 1s cubic-bezier(0.680, -0.550, 0.265, 1.550) all;
+    position: relative;
+    display: block;
+} 
+
+.animate-ease-in-out-back-enter
+{ 
+	transition-delay:1s;
+	-webkit-transition-delay:1s; /* Safari and Chrome */
+} 
+ 
+.animate-ease-in-out-back-enter.animate-ease-in-out-back-enter-active, 
+.animate-ease-in-out-back-leave {
+    opacity: 1;
+    right: 0;
+    height: 100%;
+}
+ 
+.animate-ease-in-out-back-leave.animate-ease-in-out-back-leave-active,
+.animate-ease-in-out-back-enter {
+    opacity: 0;
+    right: -50%;
+    height: 0;
+}

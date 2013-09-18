@@ -213,12 +213,21 @@ footer {
 	left: 38%;
 	text-align: center;
 	display: none;
+
+	background: rgba(0,0,0,0.7);
+	padding: 15px 0;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+
+	color: whitesmoke;
 }
 #page-loader img {
 	margin: 0 auto;
 }
 #page-loader .message {
-	margin: 10px 0;
+	margin: 0;
+	padding-top: 10px;
 }
 #page-message > .alert {
 	border: 1px solid #c09853;
