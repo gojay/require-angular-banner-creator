@@ -110,6 +110,7 @@ function(angular, app, domReady){
 					resolve: {
 						delay: function($q, $timeout, $rootScope) {
 							var delay = $q.defer();
+							$rootScope.pageService.message = 'Loading..';
 							$timeout(function(){
 								delay.resolve();
 								$rootScope.pageService.start = false;
@@ -223,7 +224,7 @@ function(angular, app, domReady){
 					template   : '<conversation-creator ng-model="data"></conversation-creator>',
 					controller : 'ConversationController',
 					resolve: {
-						conversations: function($rootScope, ConversationTemplates, RecentConversations){
+						conversations: function($rootScope, ConversationTemplates, RecentConversations, CreatorID){
 							$rootScope.pageService.message = 'Preparing conversation templates..';
 							return ConversationTemplates().then(function(templates){
 								$rootScope.pageService.message = 'Preparing recent conversations..';

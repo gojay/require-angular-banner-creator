@@ -217,8 +217,7 @@ html {
 /* slide ease in out back */
 
 .animate-ease-in-out-back-enter, 
-.animate-ease-in-out-back-leave
-{ 
+.animate-ease-in-out-back-leave { 
     -webkit-transition: 1s cubic-bezier(0.680, -0.550, 0.265, 1.550) all;
     -moz-transition: 1s cubic-bezier(0.680, -0.550, 0.265, 1.550) all;
     -ms-transition: 1s cubic-bezier(0.680, -0.550, 0.265, 1.550) all;
@@ -228,8 +227,7 @@ html {
     display: block;
 } 
 
-.animate-ease-in-out-back-enter
-{ 
+.animate-ease-in-out-back-enter { 
 	transition-delay:1s;
 	-webkit-transition-delay:1s; /* Safari and Chrome */
 } 
@@ -237,13 +235,13 @@ html {
 .animate-ease-in-out-back-enter.animate-ease-in-out-back-enter-active, 
 .animate-ease-in-out-back-leave {
     opacity: 1;
-    right: 0;
-    height: 100%;
+    left: 0;
+    /*height: 100%;*/
 }
  
 .animate-ease-in-out-back-leave.animate-ease-in-out-back-leave-active,
 .animate-ease-in-out-back-enter {
     opacity: 0;
-    right: -50%;
-    height: 0;
+    left: -50%;
+    /*height: 0;*/
 }

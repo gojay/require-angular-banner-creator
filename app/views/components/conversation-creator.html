@@ -1,4 +1,20 @@
-<div id="conversation" style="overflow:hidden;">
+<div class="row-fluid">
+	<nav>
+		<ul class="breadcrumb">
+			<li>
+				<a href="#!/">Home</a><span class="divider">/</span>
+			</li>
+			<li>
+				<a ng-href="{{$root.page.breadcrumb.link.href}}">
+				{{$root.page.breadcrumb.link.title}}</a><span class="divider">/</span>
+			</li>
+			<li class="active">
+				{{$root.page.breadcrumb.link.active}}
+			</li>
+		</ul>
+	</nav>
+</div> 
+<div id="conversation" class="row-fluid" style="overflow:hidden;">
 
 	<div id="content" class="span12 prefix conversation">
 		<!-- Sidebar templates -->
