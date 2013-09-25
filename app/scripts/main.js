@@ -97,7 +97,7 @@ function(angular, app, domReady){
 
 			// router
 			$routeProvider
-				.when('/', {
+				.when('/', {	
 					page: {
 						static: true,
 						title : '| Home',
@@ -110,12 +110,12 @@ function(angular, app, domReady){
 					resolve: {
 						delay: function($q, $timeout, $rootScope) {
 							var delay = $q.defer();
-							$rootScope.pageService.message = 'Loading..';
+							$rootScope.pageService.start = false;
+							// $rootScope.pageService.message = 'Loading..';
 							$timeout(function(){
 								delay.resolve();
-								$rootScope.pageService.start = false;
-								$rootScope.pageService.message = '';
-							}, 1000);
+								// $rootScope.pageService.message = '';
+							});
 							return delay.promise;
 						}
 					}
@@ -311,11 +311,14 @@ function(angular, app, domReady){
 					templateUrl : 'app/views/mobile.html',
 					controller  : 'MobileController',
 					resolve: {
-						delay: function($q, $timeout) {
+						delay: function($q, $timeout, $rootScope) {
 							var delay = $q.defer();
+							$rootScope.pageService.start = false;
+							// $rootScope.pageService.message = 'Loading..';
 							$timeout(function(){
 								delay.resolve();
-							}, 1000);
+								// $rootScope.pageService.message = '';
+							});
 							return delay.promise;
 						}
 					}
@@ -393,11 +396,10 @@ function(angular, app, domReady){
 				// transition.start();
 			} else {
 				// set false start pageService to static page, or doesn't needed services
-				$rootScope.pageService.static = next.$$route.page.static == undefined ? false : next.$$route.page.static;
+				$rootScope.pageService.static = next.$$route.page.static;
 				transition.change();
 			}
-			*/
-
+ 			*/
 			/* ng-animate transition */
 			if(current !== undefined) {
 				// set false start pageService to static page, or doesn't needed services

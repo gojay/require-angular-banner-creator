@@ -42,6 +42,8 @@ define([
 					$scope.isDownloadDisabled = true;
 					$scope.template = (self.isNew) ? self.templates[1] : self.templates[$scope.conversation.selected];
 
+					$scope.bgColors = ConversationTpl.bgColors;
+
 					/* ================ init variables ================ */
 
 					var index    = 1,
@@ -50,11 +52,13 @@ define([
 
 					// define elements
 					self.navbarPanel = $('.navbar-container');
+					self.btnLogoDefault = $('#btn-input-logo-default');
 					self.btnLogo    = $('#btn-input-logo');
 					self.btnSpot1   = $('#btn-input-spot1');
 					self.btnSpot2   = $('#btn-input-spot2');
 					self.btnBg      = $('#btn-upload-backgrounds');
 					self.sectionBg  = $('#drop-backgrounds');
+					self.inputBgColor  = $('#input-bg-color');
 					// define dimensions
 					self.dimensions = ConversationTpl.dimensions;
 					// define jsZip
@@ -260,6 +264,9 @@ define([
 						$timeout(function() {
 							self.deferredMultipleUpload(requests, sizes).done(function(response){
 								console.log(response);
+
+								$('a[href="#tab-svg"]').text('Generated');
+								
 								// generated zip 
 								var DOMURL = window.URL || window.mozURL;
 								var link   = DOMURL.createObjectURL(self.ZIP.generate({type:"blob"}));
@@ -374,7 +381,7 @@ define([
 									name  : name,
 									width : dimension.w,
 									height: dimension.h,
-									crop  : true
+									auto  : 1
 								}).then(function(response){
 									console.log(response);
 									$('#editor .template').unblock();
@@ -412,6 +419,7 @@ define([
 							}, 1000);
 						});
 					};
+
 					// add queue request n lists
 					self.taskList = function(files, _index){
 						var defer = $.Deferred();
@@ -423,14 +431,16 @@ define([
 						var fileReader = new FileReader();
 						fileReader.onload = (function(blob){
 							return function(e){
-								console.log(index, blob);
+								// console.log(index, blob);
 
 								var image = new Image();
 								image.src = e.target.result;
 								image.onload = function(){
 									var img = this.src;
+
 									var ratio = parseInt(this.width)/parseInt(this.height);
-									console.log('ratio', ratio);
+									// console.log('ratio', ratio);
+
 									var direction;
 									if ( ratio == 1 ) { 
 										direction = 'square';
@@ -439,26 +449,40 @@ define([
 									} else {
 										direction = 'portrait';
 									}
-									// add queues
-									sizes += blob.size;
-									requests.push({
-										image: img,
-										blob: blob,
-										size: sizes,
-										index: index,
-										direction:direction
-									});
-									// params
-									var data = {
+
+									// set resized dimension
+									var resize = ConversationTpl.directions[direction];
+
+									// elements
+									var elements = {
 										id: index, 
 										imguri: img,
 										direction: direction
 									};
-									// add to list
-									self.addImgList(data);
-									self.addSVGList(data);
+									// add attribute ratio & change resized dimension for default template
+									if( $scope.conversation.selected == 0 ){
+										var calcHeight = self.getHeightRatio(direction, parseInt(this.width), parseInt(this.height));
+										elements['ratio'] = resize = calcHeight;
+									}
+
+									// add elements to lists
+									// self.addImgList(elements);
+									self.addSVGList(elements);
+
+									// add queues
+									sizes += blob.size;
+									requests.push({
+										image : img,
+										blob  : blob,
+										size  : sizes,
+										index : index,
+										resize: resize
+									});
+
+									console.log('request', requests);
 
 									index++;
+
 									// resolve
 									var next = _index + 1;
 									var res  = files.length == next ? requests : next ;
@@ -471,6 +495,13 @@ define([
 						// return promise
 						return defer.promise();
 					};
+					self.getHeightRatio = function(direction, srcWidth, srcHeight) {
+						var width = 403;
+						if(direction == 'landscape') width = 550;
+
+					    var ratio = width / srcWidth;
+					    return { w:parseInt(srcWidth*ratio), h:parseInt(srcHeight*ratio) };
+					}
 					// image validation
 					self.imageValidation = function(file, showAlert){
 						// validation file image selected
@@ -520,22 +551,40 @@ define([
 					};
 					// compile SVG 
 					self.getSVGCompiled = function(data){
-						var $svg = $('svg#svg-conversation').clone();
+						var $svg;
+						// get direction (square/landscape/portrait)
+						var dimension = ConversationTpl.directions[data.direction];
+						if( $scope.conversation.selected == 0 ){
+							$svg = $('svg#svg-conversation-default').clone();
+							if(angular.isDefined(data.ratio)){
+								console.log('change svg height to ' + data.ratio.h)
+								$svg.attr({
+									width : dimension.w,
+									height: data.ratio.h
+								});
+							}
+							// change svg figure
+							var $figure = $('#figure', $svg).attr('fill', '{{conversation.templateColor}}');
+							if( data.direction == 'landscape' ){
+								$('#figure', $svg).attr('class','landscape');
+							} else {
+								$('#figure', $svg).find('.bottom').attr('y', data.ratio.h - 20);
+							}
+						} else {
+							$svg = $('svg#svg-conversation').clone();
+							// set SVG dimesion by direction 
+							$svg.attr({
+								width : dimension.w,
+								height: dimension.h
+							});
+						}
+						
 						$svg.removeAttr('id');
 
 						var bg    = $('#bg', $svg);
 						var logo  = $('#logo', $svg);
 						var spot1 = $('#spot1', $svg);
 						var spot2 = $('#spot2', $svg);
-
-						// get direction (square/landscape/portrait)
-						var direction = ConversationTpl.directions[data.direction];
-						console.log('direction', direction)
-						// set SVG dimesion by direction 
-						$svg.attr({
-							width: direction.w,
-							height: direction.h
-						});
 
 						// poistions
 						var tplDirection = ConversationTpl.directions[data.direction];
@@ -651,34 +700,36 @@ define([
 							var index = request.index;
 							return promise.pipe(function(){
 								// get elements
-								var $liImg = $('#li-img-' + index);
+								// var $liImg = $('#li-img-' + index);
 								var $liSVG = $('#li-svg-' + index);
 								var $svg   = $('.thumbnail > svg', $liSVG);
 
 								console.log(index, $svg[0]);
 
 								// change upload views
-								$liImg.switchClass('wait', 'upload', 0);
+								// $liImg.switchClass('wait', 'upload', 0);
 								$liSVG.switchClass('wait', 'upload', 0);
 
 								// get image direction
-								var direction = ConversationTpl.directions[request.direction];
+								// var direction = ConversationTpl.directions[request.direction];
+
+								console.log('upload file', request)
 
 								// upload to resize
 								return self.uploadFile({
 									file  : request.blob,
 									name  : 'conversation-bg-' + index,
-									width : direction.w,
-									height: direction.h,
-									crop  : true
+									width : request.resize.w,
+									height: request.resize.h,
+									auto  : 1
 								}).pipe(function(response){
 									console.log('response', index, response);
 									console.log($('#bg > image.image', $svg)[0]);
 									// change bg image
-									$('img', $liImg).attr('src', response.dataURI);
+									// $('img', $liImg).attr('src', response.dataURI);
 									$('#bg > image.image', $svg).attr('xlink:href',response.dataURI);
 									// change generate views
-									$liImg.switchClass('upload', 'generate', 0);
+									// $liImg.switchClass('upload', 'generate', 0);
 									$liSVG.switchClass('upload', 'generate', 0);
 									// generate image
 									return self.generateImage($svg[0]).done(function(imgDataURI){
@@ -689,7 +740,7 @@ define([
 											scope.conversation.queue.finished = index;
 										});
 										// change success views
-										$liImg.switchClass('generate', 'success', 0);
+										// $liImg.switchClass('generate', 'success', 0);
 										$liSVG.switchClass('generate', 'success', 0);
 										// create percentage
 										var percent = Math.round((request.size / sizes) * 100);
@@ -719,7 +770,7 @@ define([
 						formData.append('name', data.name);
 						formData.append('width', data.width);
 						formData.append('height', data.height);
-						formData.append('crop', data.crop);
+						formData.append('auto_width', data.auto);
 						// ajax upload
 						return $.ajax({
 							// processData and contentType must be false to prevent jQuery
@@ -751,11 +802,11 @@ define([
 							// draw image
 							ctx.drawImage(img, 0, 0);
 							// convert to image png
-							var imgDataURI = canvas.toDataURL('image/jpg');
+							var imgDataURI = canvas.toDataURL('image/jpeg');
 							// send response
 							setTimeout(function() {
 								if( isURI || isURI === undefined ) {
-									var imgURI = imgDataURI.replace(/^data:image\/(png|jpg);base64,/, "");
+									var imgURI = imgDataURI.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
 									deferred.resolve(imgURI);
 								} else
 									deferred.resolve(imgDataURI);
@@ -788,6 +839,8 @@ define([
 				},
 				link: function($scope, iElm, iAttrs, controller) {
 
+					console.log('init')
+
 					/* ================ handling collapse ================ */
 
 					var $editorTpl = $('#editor .template');
@@ -801,8 +854,19 @@ define([
 						var template = controller.templates[index];
 						// applying template
 						$scope.$apply(function(scope){
-							scope.template = template;
 							scope.conversation.selected = index;
+							// scope.template = (index < 4) ? template : template['blue'];
+							if(index == 0){
+								scope.conversation.templateColor = '#AAAAAA';
+							} else if(index > 0 && index < 4){
+								scope.template = template;
+								scope.conversation.templateColor = null;
+							} else {
+								var color = (scope.conversation.templateColor) ? scope.conversation.templateColor : 'blue' ;
+								scope.template = template[color];
+							}
+
+							console.log(index, scope)
 						});
 						// change breadcumb active title
 						var title = $link.data('title');
@@ -814,8 +878,39 @@ define([
 					// make clicked, set template selected
 					$timeout(function() {
 						$('a[href="#tpl-'+ $scope.conversation.selected +'"]').click();
+						// use jPicker, firefox doesn't support input color
+						$('#input-bg-color')
+							.jPicker({
+								window : {
+									effects :  { type: 'fade' }
+								},
+								images : {
+									clientPath : 'assets/css/jpicker/images/'
+								}
+							}, self.cbPickColor, self.cbPickColor);
+						// page service has been loaded
 						$rootScope.pageService.loaded = true;
-					}, 1000);
+					}, 3000);
+
+					// callback jqpicker
+					self.cbPickColor = function(color, context){
+						var all = color.val('all');
+						var hex = '#' + all.hex ;
+						console.log('color', hex);
+						$scope.$apply(function(scope){
+							$scope.conversation.templateColor = hex;
+						});
+					};
+					$scope.tplPickColor = function(color){
+						$scope.conversation.templateColor = color;
+						angular.forEach($scope.bgColors, function(value, key){
+							$scope.bgColors[key]['selected'] = false;
+						});
+						$scope.bgColors[color]['selected'] = true;
+
+						$scope.template = controller.templates[$scope.conversation.selected][color];
+						console.log($scope.template);
+					};
 
 					/* ================ Handling Panel ================ */
 
@@ -980,6 +1075,24 @@ define([
 					/* ================ Initialize event listener ================ */
 
 					// unbind event live() with die()
+
+					// event listener button logo input file
+					controller.btnLogoDefault.die('click').live('click', function() {
+						var handlerLogo = function(evt){
+							var file = evt.target.files[0];
+							controller.handleSingleFile(file, 'logo', function(response){
+								// console.log('response logo', response);
+								$scope.$apply(function(scope){
+									scope.conversation.logo.uploaded = true;
+									scope.conversation.logo.image = response.dataURI;
+								});
+							});
+						};
+						$(this).next()
+							.unbind('change')
+							.bind('change', handlerLogo)
+							.click();
+					});
 
 					// event listener button logo input file
 					controller.btnLogo.die('click').live('click', function() {

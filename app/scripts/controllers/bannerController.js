@@ -68,6 +68,8 @@ define([
 			console.log('detail is new ?', isNew)
 			console.log('banner', $scope.banner)
 
+			$scope.banner['range'] = 0;
+
 			/* ================ Handling Panel ================ */
 
 			// set active left panel
@@ -1194,7 +1196,10 @@ define([
 							return id.replace(/(\d+)/, function(fullMatch, n) {
 								return 'editor-'+type;
 							});
-						}).attr('xlink:href','{{banner.logo.image}}');
+						}).attr({
+							'xlink:href': '{{banner.logo.image}}',
+							// x:'{{banner.range}}',
+						});
 						// set logo position
 						if( $scope.banner.logo.w != 0 && $scope.banner.logo.h != 0 && 
 							$scope.banner.logo.x !== undefined && $scope.banner.logo.y !== undefined ){

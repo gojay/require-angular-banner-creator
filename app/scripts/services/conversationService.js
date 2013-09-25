@@ -29,6 +29,63 @@ define(['services/services'], function(services){
 						w: 403,
 						h: 403
 					}
+				},
+				bgColors : {
+					'blue' : {
+						title: 'Blue',
+						color: 'blue',
+						selected: true,
+					},
+					'bluedark' : {
+						title: 'Dark Blue',
+						color: 'darkblue',
+						selected: false,
+					},
+					'orange' : {
+						title: 'Light Orange',
+						color: 'orange',
+						selected: false,
+					}, 
+					'orangedark' : {
+						title: 'Dark Orange',
+						color: 'darkorange',
+						selected: false,
+					},
+					'greenlight' : {
+						title: 'Light Green',
+						color: 'lightgreen',
+						selected: false,
+					}, 
+					'green' : {
+						title: 'Green',
+						color: 'green',
+						selected: false,
+					},
+					'yellow' : {
+						title: 'Yellow',
+						color: 'yellow',
+						selected: false,
+					}, 
+					'yellowdark' : {
+						title: 'Dark Yellow',
+						color: '#CCCC00',
+						selected: false,
+					},
+					'purple' : {
+						title: 'Purple',
+						color: 'purple',
+						selected: false,
+					}, 
+					'pink' : {
+						title: 'Pink',
+						color: 'pink',
+						selected: false,
+					},
+					'red' : {
+						title: 'Red',
+						color: 'red',
+						selected: false,
+					}
 				}
 			};
 		})
@@ -81,7 +138,8 @@ define(['services/services'], function(services){
 					count    : 0,
 					finished : 0
 				},
-				selected : 1
+				selected : 0,
+				templateColor : null
 			};
 		})
 		// .factory('ConversationService', ['$resource',
