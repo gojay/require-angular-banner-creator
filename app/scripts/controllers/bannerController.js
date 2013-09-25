@@ -80,7 +80,7 @@ define([
 			// set root model (left panel), if is new
 			if( $rootScope.panel.left.model === null ){
 				$rootScope.panel.left.model = {
-					showForm : true,
+					showForm : false,
 					isCaption: true,
 					orderProp: 'ID',
 					orderReserve : true,

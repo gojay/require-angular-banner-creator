@@ -1,62 +1,72 @@
-<div id="conversation-panel-left" style="margin: 0 10px;">
+<div id="conversation-panel-left" class="panel">
 	<div class="row-fluid">
-		<h3>Recent Conversations</h3>
+		<div class="navbar">
+			<div class="navbar-inner">
+				<div class="navbar-container">
+					<form class="form-search" style="margin:14px 14px 15px 14px;">
+					  <div class="input-append" style="width:90%">
+					    <input type="text" class="span12 search-query" placeholder="Search conversations.."
+					    		ng-model="$root.panel.left.model.search">
+					    <button type="submit" class="btn" style="width:10%" 
+					    	ng-click="$root.panel.left.model.showForm = !$root.panel.left.model.showForm"><i class="icon-cog"></i></button>
+					  </div>
+					</form>
+					<form class="form-horizontal panel-padding" 
+						  ng-class="{true:'show', false:'hide'}[$root.panel.left.model.showForm]">
+						<div class="span4">
+							<div class="control-group">
+								<label class="control-label" for="select01" style="text-align:left; width:100px">Order by</label>
+								<div class="controls" style="margin-left:100px">
+									<select id="select01" class="input-small" ng-model="$root.panel.left.model.orderProp">
+										<option value="ID">Date</option>
+										<option value="title">Name</option>
+									</select>
+									<select id="select01" class="input-small" ng-model="$root.panel.left.model.orderReserve">
+										<option value=false>ASC</option>
+										<option value=true>DESC</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="span4">
+							<div class="control-group">
+								<label class="control-label" for="optionsCheckbox" style="text-align:left; width:100px">Columns</label>
+								<div class="controls" style="margin-left:100px">
+									<label class="radio inline">
+									  <input type="radio" ng-model="$root.panel.left.model.cols" value="cols2"> 2
+									</label>
+									<label class="radio inline">
+									  <input type="radio" ng-model="$root.panel.left.model.cols" value="cols3" ng-disabled="conversations.length < 3"> 3
+									</label>
+									<label class="radio inline">
+									  <input type="radio" ng-model="$root.panel.left.model.cols" value="cols4" ng-disabled="conversations.length < 4"> 4
+									</label>
+									<label class="radio inline">
+									  <input type="radio" ng-model="$root.panel.left.model.cols" value="cols6" ng-disabled="conversations.length < 6"> 6
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="span4">
+							<div class="control-group">
+								<label class="control-label" for="optionsCheckbox" style="text-align:left; width:100px">Caption</label>
+								<div class="controls" style="margin-left:100px">
+									<label class="checkbox">
+										<input type="checkbox" id="optionsCheckbox" ng-model="$root.panel.left.model.isCaption">
+									</label>
+								</div>
+							</div>
+						</div>
+					</form>	
+				</div>
+			</div><!-- /navbar-inner -->
+		</div>
 		<div class="relative" style="margin-top: 40px;">
-			<div class="form-toggle">
+			<!-- <div class="form-toggle">
 				<a href ng-click="$root.panel.left.model.showForm = !$root.panel.left.model.showForm">
 					<i class="icon-2x" ng-class="{false:'icon-double-angle-down', true:'icon-double-angle-up'}[$root.panel.left.model.showForm]"></i>
 				</a>
-			</div>
-			<form class="form-horizontal panel-padding" ng-show="$root.panel.left.model.showForm">
-				<div class="span6">
-					<div class="control-group">
-						<label class="control-label" for="input01" style="text-align:left; width:100px">Search</label>
-						<div class="controls" style="margin-left:100px">
-							<input type="text" class="input-xlarge" ng-model="$root.panel.left.model.search">
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="select01" style="text-align:left; width:100px">Order by</label>
-						<div class="controls" style="margin-left:100px">
-							<select id="select01" class="input-small" ng-model="$root.panel.left.model.orderProp">
-								<option value="ID">Date</option>
-								<option value="title">Name</option>
-							</select>
-							<select id="select01" class="input-small" ng-model="$root.panel.left.model.orderReserve">
-								<option value=false>ASC</option>
-								<option value=true>DESC</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="span6">
-					<div class="control-group">
-						<label class="control-label" for="optionsCheckbox" style="text-align:left; width:100px">Caption</label>
-						<div class="controls" style="margin-left:100px">
-							<label class="checkbox">
-								<input type="checkbox" id="optionsCheckbox" ng-model="$root.panel.left.model.isCaption">
-							</label>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="optionsCheckbox" style="text-align:left; width:100px">Columns</label>
-						<div class="controls" style="margin-left:100px">
-							<label class="radio inline">
-							  <input type="radio" ng-model="$root.panel.left.model.cols" value="cols2"> 2
-							</label>
-							<label class="radio inline">
-							  <input type="radio" ng-model="$root.panel.left.model.cols" value="cols3" ng-disabled="conversations.length < 3"> 3
-							</label>
-							<label class="radio inline">
-							  <input type="radio" ng-model="$root.panel.left.model.cols" value="cols4" ng-disabled="conversations.length < 4"> 4
-							</label>
-							<label class="radio inline">
-							  <input type="radio" ng-model="$root.panel.left.model.cols" value="cols6" ng-disabled="conversations.length < 6"> 6
-							</label>
-						</div>
-					</div>
-				</div>
-			</form>	
+			</div> -->
 			<ul class="thumbnails panel-padding" ng-class="$root.panel.left.model.cols">
 				<li id="thumb-conversation-{{$index}}"
 					ng-class="{cols2:'span6', cols3:'span4', cols4:'span3', cols6:'span2'}[$root.panel.left.model.cols]"

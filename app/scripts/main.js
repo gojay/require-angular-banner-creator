@@ -93,7 +93,15 @@ function(angular, app, domReady){
 	app.config(['$compileProvider', '$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
 		function($compileProvider, $routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider){
 
+			// enable/disable debuging
+			debugProvider.setDebug(true);	
+
 	        $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto|file):/);
+
+			// Hashbang Mode
+   			$locationProvider
+   				.html5Mode(false)
+  				.hashPrefix('!');
 
 			// router
 			$routeProvider
@@ -160,11 +168,6 @@ function(angular, app, domReady){
 									// };
 								});
 							});
-						},
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
 						}
 					}
 				})
@@ -200,11 +203,6 @@ function(angular, app, domReady){
 									});
 								});
 							});
-						},
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
 						}
 					}
 				})
@@ -246,12 +244,6 @@ function(angular, app, domReady){
 									// };
 								});
 							});
-							
-						},
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
 						}
 					}
 				})
@@ -287,11 +279,6 @@ function(angular, app, domReady){
 									});
 								});
 							});
-						},
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
 						}
 					}
 				})
@@ -325,17 +312,10 @@ function(angular, app, domReady){
 				})
 				.otherwise({ redirectTo:'/' });
 
-				// enable/disable debuging
-				debugProvider.setDebug(true);
 				// transition config  
-				transitionProvider.setStartTransition('expandIn');
-				transitionProvider.setPageTransition('slide');
-				transitionProvider.setPage('#wrap-content > .container');
-
-			// Hashbang Mode
-   			$locationProvider
-   				.html5Mode(false)
-  				.hashPrefix('!');
+				// transitionProvider.setStartTransition('expandIn');
+				// transitionProvider.setPageTransition('slide');
+				// transitionProvider.setPage('#wrap-content > .container');
 		}
 	])
 	.run(function($rootScope, $http, $timeout, $location, transition) {
@@ -400,14 +380,17 @@ function(angular, app, domReady){
 				transition.change();
 			}
  			*/
-			/* ng-animate transition */
+ 			
+ 			$rootScope.pageService.start = true;
+
+			/* ng-animate transition
 			if(current !== undefined) {
 				// set false start pageService to static page, or doesn't needed services
 				if( next.$$route.page.static !== undefined ){
 					// $rootScope.pageService.start = !next.$$route.page.static;
 					$rootScope.pageService.start = true;
 				}
-			}
+			} */
 		});
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
 			// console.log('current route', current.$$route)
@@ -429,5 +412,12 @@ function(angular, app, domReady){
 	domReady(function() {
 		angular.bootstrap(document, ['ImageApp']);
 		$('html').attr('ng-app', 'ImageApp');
+		$(function () {
+
+		    $('#wrap-content > .container').scroll(function () {
+		        console.log($(this).scrollTop());
+		    })
+
+		});
     });
 });

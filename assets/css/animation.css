@@ -229,7 +229,7 @@ html {
 
 .animate-ease-in-out-back-enter { 
 	transition-delay:1.5s;
-	-webkit-transition-delay:1.5s; /* Safari and Chrome */
+	-webkit-transition-delay:1.5s; 
 } 
  
 .animate-ease-in-out-back-enter.animate-ease-in-out-back-enter-active, 
