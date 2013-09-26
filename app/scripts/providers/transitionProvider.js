@@ -32,8 +32,8 @@ define(['providers/providers'], function(providers){
 
 				default     :
 				case 'slide':
-					this.transition._in = 'slideInSkew';
-					this.transition.out = 'slideOutSkew';
+					this.transition._in = 'slideIn';
+					this.transition.out = 'slideOut';
 					break;
 			}
 		};

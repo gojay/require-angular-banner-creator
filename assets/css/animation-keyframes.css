@@ -637,20 +637,20 @@ to {
   }
 }
 
- /* slideInSkew Animation */
+ /* slideIn Animation */
 
-@keyframes "slideInSkew" {
+@keyframes "slideIn" {
   from {
     -webkit-transform-origin: 0% 100%;
     -moz-transform-origin: 0% 100%;
     -o-transform-origin: 0% 100%;
     -ms-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: translateX(-200%) skewX(-45deg);
-    -moz-transform: translateX(-200%) skewX(-45deg);
-    -o-transform: translateX(-200%) skewX(-45deg);
-    -ms-transform: translateX(-200%) skewX(-45deg);
-    transform: translateX(-200%) skewX(-45deg);
+    -webkit-transform: translateX(-200%);
+    -moz-transform: translateX(-200%);
+    -o-transform: translateX(-200%);
+    -ms-transform: translateX(-200%);
+    transform: translateX(-200%);
   }
 
   50% {
@@ -659,11 +659,11 @@ to {
     -o-transform-origin: 0% 100%;
     -ms-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: translateX(0%) skewX(-45deg);
-    -moz-transform: translateX(0%) skewX(-45deg);
-    -o-transform: translateX(0%) skewX(-45deg);
-    -ms-transform: translateX(0%) skewX(-45deg);
-    transform: translateX(0%) skewX(-45deg);
+    -webkit-transform: translateX(0%);
+    -moz-transform: translateX(0%);
+    -o-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
   }
 
   90% {
@@ -672,11 +672,11 @@ to {
     -o-transform-origin: 0% 100%;
     -ms-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: translateX(0%) skewX(10deg);
-    -moz-transform: translateX(0%) skewX(10deg);
-    -o-transform: translateX(0%) skewX(10deg);
-    -ms-transform: translateX(0%) skewX(10deg);
-    transform: translateX(0%) skewX(10deg);
+    -webkit-transform: translateX(0%);
+    -moz-transform: translateX(0%);
+    -o-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
   }
 
   to {
@@ -685,137 +685,77 @@ to {
     -o-transform-origin: 0% 100%;
     -ms-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: translateX(0%) skewX(0deg);
-    -moz-transform: translateX(0%) skewX(0deg);
-    -o-transform: translateX(0%) skewX(0deg);
-    -ms-transform: translateX(0%) skewX(0deg);
-    transform: translateX(0%) skewX(0deg);
+    -webkit-transform: translateX(0%);
+    -moz-transform: translateX(0%);
+    -o-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
   }
 }
 
-@-moz-keyframes slideInSkew {
+@-moz-keyframes slideIn {
   from {
     -moz-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -moz-transform: translateX(-200%) skewX(-45deg);
-    transform: translateX(-200%) skewX(-45deg);
+    -moz-transform: translateX(-200%);
+    transform: translateX(-200%);
   }
 
   50% {
     -moz-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -moz-transform: translateX(0%) skewX(-45deg);
-    transform: translateX(0%) skewX(-45deg);
+    -moz-transform: translateX(0%);
+    transform: translateX(0%);
   }
 
   90% {
     -moz-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -moz-transform: translateX(0%) skewX(10deg);
-    transform: translateX(0%) skewX(10deg);
+    -moz-transform: translateX(0%);
+    transform: translateX(0%);
   }
 
   to {
     -moz-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -moz-transform: translateX(0%) skewX(0deg);
-    transform: translateX(0%) skewX(0deg);
+    -moz-transform: translateX(0%);
+    transform: translateX(0%);
   }
 }
 
-@-webkit-keyframes "slideInSkew" {
+@-webkit-keyframes "slideIn" {
   from {
     -webkit-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: translateX(-200%) skewX(-45deg);
-    transform: translateX(-200%) skewX(-45deg);
+    -webkit-transform: translateX(-200%);
+    transform: translateX(-200%);
   }
 
   50% {
     -webkit-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: translateX(0%) skewX(-45deg);
-    transform: translateX(0%) skewX(-45deg);
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
   }
 
   90% {
     -webkit-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: translateX(0%) skewX(10deg);
-    transform: translateX(0%) skewX(10deg);
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
   }
 
   to {
     -webkit-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: translateX(0%) skewX(0deg);
-    transform: translateX(0%) skewX(0deg);
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
   }
 }
 
-@-ms-keyframes "slideInSkew" {
-  from {
-    -ms-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -ms-transform: translateX(-200%) skewX(-45deg);
-    transform: translateX(-200%) skewX(-45deg);
-  }
+/* slideOut Animation */
 
-  50% {
-    -ms-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -ms-transform: translateX(0%) skewX(-45deg);
-    transform: translateX(0%) skewX(-45deg);
-  }
-
-  90% {
-    -ms-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -ms-transform: translateX(0%) skewX(10deg);
-    transform: translateX(0%) skewX(10deg);
-  }
-
-  to {
-    -ms-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -ms-transform: translateX(0%) skewX(0deg);
-    transform: translateX(0%) skewX(0deg);
-  }
-}
-
-@-o-keyframes "slideInSkew" {
-  from {
-    -o-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -o-transform: translateX(-200%) skewX(-45deg);
-    transform: translateX(-200%) skewX(-45deg);
-  }
-
-  50% {
-    -o-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -o-transform: translateX(0%) skewX(-45deg);
-    transform: translateX(0%) skewX(-45deg);
-  }
-
-  90% {
-    -o-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -o-transform: translateX(0%) skewX(10deg);
-    transform: translateX(0%) skewX(10deg);
-  }
-
-  to {
-    -o-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -o-transform: translateX(0%) skewX(0deg);
-    transform: translateX(0%) skewX(0deg);
-  }
-}
-
-/* slideOutSkew Animation */
-
-@keyframes "slideOutSkew" {
+@keyframes "slideOut" {
   from {
     -webkit-transform-origin: 0% 100%;
     -moz-transform-origin: 0% 100%;
@@ -835,15 +775,15 @@ to {
     -o-transform-origin: 0% 100%;
     -ms-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: skewX(-45deg) translateX(200%);
-    -moz-transform: skewX(-45deg) translateX(200%);
-    -o-transform: skewX(-45deg) translateX(200%);
-    -ms-transform: skewX(-45deg) translateX(200%);
-    transform: skewX(-45deg) translateX(200%);
+    -webkit-transform: translateX(200%);
+    -moz-transform: translateX(200%);
+    -o-transform: translateX(200%);
+    -ms-transform: translateX(200%);
+    transform: translateX(200%);
   }
 }
 
-@-moz-keyframes slideOutSkew {
+@-moz-keyframes slideOut {
   from {
     -moz-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
@@ -854,12 +794,12 @@ to {
   to {
     -moz-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -moz-transform: skewX(-45deg) translateX(200%);
-    transform: skewX(-45deg) translateX(200%);
+    -moz-transform: translateX(200%);
+    transform: translateX(200%);
   }
 }
 
-@-webkit-keyframes "slideOutSkew" {
+@-webkit-keyframes "slideOut" {
   from {
     -webkit-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
@@ -870,42 +810,12 @@ to {
   to {
     -webkit-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
-    -webkit-transform: skewX(-45deg) translateX(200%);
-    transform: skewX(-45deg) translateX(200%);
+    -webkit-transform: translateX(200%);
+    transform: translateX(200%);
   }
 }
 
-@-ms-keyframes "slideOutSkew" {
-  from {
-    -ms-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -ms-transform: translateX(0%);
-    transform: translateX(0%);
-  }
-
-  to {
-    -ms-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -ms-transform: skewX(-45deg) translateX(200%);
-    transform: skewX(-45deg) translateX(200%);
-  }
-}
-
-@-o-keyframes "slideOutSkew" {
-  from {
-    -o-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -o-transform: translateX(0%);
-    transform: translateX(0%);
-  }
-
-  to {
-    -o-transform-origin: 0% 100%;
-    transform-origin: 0% 100%;
-    -o-transform: skewX(-45deg) translateX(200%);
-    transform: skewX(-45deg) translateX(200%);
-  }
-}
+/* tumbleIn Animation */
 
 @keyframes "tumbleIn" {
   from {
@@ -929,8 +839,6 @@ to {
     transform-origin: 0% 100%;
   }
 }
-
-/* tumbleIn Animation */
 
 @-moz-keyframes tumbleIn {
   from {

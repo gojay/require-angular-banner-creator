@@ -11,8 +11,7 @@
 require.config({
 	paths: {
 		// core
-		// angular      : 'vendor/angular/angular.min',
-		angular      : 'vendor/angular/angular.1.1.5.min',
+		angular      : 'vendor/angular/angular.min',
 		angularResource : 'vendor/angular/angular-resource.min',
 		angularCookies  : 'vendor/angular/angular-cookies.min',
 		angularHttpAuthInterceptor  : 'vendor/angular/http-auth-interceptor',
@@ -93,19 +92,11 @@ function(angular, app, domReady){
 	app.config(['$compileProvider', '$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
 		function($compileProvider, $routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider){
 
-			// enable/disable debuging
-			debugProvider.setDebug(true);	
-
 	        $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto|file):/);
-
-			// Hashbang Mode
-   			$locationProvider
-   				.html5Mode(false)
-  				.hashPrefix('!');
 
 			// router
 			$routeProvider
-				.when('/', {	
+				.when('/', {
 					page: {
 						static: true,
 						title : '| Home',
@@ -116,14 +107,9 @@ function(angular, app, domReady){
 					templateUrl : 'app/views/home.html',
 					controller  : 'HomeController',
 					resolve: {
-						delay: function($q, $timeout, $rootScope) {
+						delay: function($q, $timeout) {
 							var delay = $q.defer();
-							$rootScope.pageService.start = false;
-							// $rootScope.pageService.message = 'Loading..';
-							$timeout(function(){
-								delay.resolve();
-								// $rootScope.pageService.message = '';
-							});
+							$timeout(delay.resolve, 1000);
 							return delay.promise;
 						}
 					}
@@ -141,9 +127,8 @@ function(angular, app, domReady){
 							}
 						}
 					},
-					// static      : true,
 					templateUrl : 'app/views/banner.html',
-					controller : 'BannerController',
+					controller  : 'BannerController',
 					resolve: {
 						banners: function($rootScope, BannerTemplates, RecentBanners, CreatorID){
 							$rootScope.pageService.message = 'Preparing banner templates..';
@@ -152,7 +137,6 @@ function(angular, app, domReady){
 								return RecentBanners().then(function(recents){
 									return CreatorID().then(function(creator){
 										$rootScope.pageService.start = false;
-										$rootScope.pageService.message = '';
 										return {
 											templates : templates,
 											recents   : recents,
@@ -160,14 +144,13 @@ function(angular, app, domReady){
 											ID : creator.ID
 										};
 									});
-									// $rootScope.pageService.start = false;
-									// return {
-									// 	templates : templates,
-									// 	recents   : recents,
-									// 	banner    : null
-									// };
 								});
 							});
+						},
+						delay: function($q, $timeout) {
+							var delay = $q.defer();
+							$timeout(delay.resolve, 1000);
+							return delay.promise;
 						}
 					}
 				})
@@ -203,6 +186,11 @@ function(angular, app, domReady){
 									});
 								});
 							});
+						},
+						delay: function($q, $timeout) {
+							var delay = $q.defer();
+							$timeout(delay.resolve, 1000);
+							return delay.promise;
 						}
 					}
 				})
@@ -229,6 +217,7 @@ function(angular, app, domReady){
 								return RecentConversations().then(function(recents){
 									return CreatorID().then(function(creator){
 										$rootScope.pageService.start = false;
+										console.log('pageService', $rootScope.pageService)
 										return {
 											templates: templates,
 											recents: recents,
@@ -236,14 +225,14 @@ function(angular, app, domReady){
 											ID : creator.ID
 										};
 									});
-									// $rootScope.pageService.start = false;
-									// return {
-									// 	templates: templates,
-									// 	recents: recents,
-									// 	detail: null
-									// };
 								});
 							});
+							
+						},
+						delay: function($q, $timeout) {
+							var delay = $q.defer();
+							$timeout(delay.resolve, 1000);
+							return delay.promise;
 						}
 					}
 				})
@@ -279,6 +268,11 @@ function(angular, app, domReady){
 									});
 								});
 							});
+						},
+						delay: function($q, $timeout) {
+							var delay = $q.defer();
+							$timeout(delay.resolve, 1000);
+							return delay.promise;
 						}
 					}
 				})
@@ -298,31 +292,35 @@ function(angular, app, domReady){
 					templateUrl : 'app/views/mobile.html',
 					controller  : 'MobileController',
 					resolve: {
-						delay: function($q, $timeout, $rootScope) {
+						delay: function($q, $timeout) {
 							var delay = $q.defer();
-							$rootScope.pageService.start = false;
-							// $rootScope.pageService.message = 'Loading..';
 							$timeout(function(){
 								delay.resolve();
-								// $rootScope.pageService.message = '';
-							});
+							}, 1000);
 							return delay.promise;
 						}
 					}
 				})
 				.otherwise({ redirectTo:'/' });
 
+				// enable/disable debuging
+				debugProvider.setDebug(true);
 				// transition config  
-				// transitionProvider.setStartTransition('expandIn');
-				// transitionProvider.setPageTransition('slide');
-				// transitionProvider.setPage('#wrap-content > .container');
+				transitionProvider.setStartTransition('expandIn');
+				transitionProvider.setPageTransition('slide');
+				transitionProvider.setPage('#wrap-content > .container');
+
+			// Hashbang Mode
+   			$locationProvider
+   				.html5Mode(false)
+  				.hashPrefix('!');
 		}
 	])
 	.run(function($rootScope, $http, $timeout, $location, transition) {
-		window._unsupported = { allowedBrowser: false, status: false };
+		window._unsupported = { allow : true, status: false };
 		window._onbeforeunload = true;
-		// show popup for unsopported browsers (Firefox only)
-		if( window._unsupported.allowedBrowser && !/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent))
+		// show popup for unsopported browsers
+		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow)
 		{
 			window._unsupported.status = true;
 			$timeout(function(){
@@ -370,27 +368,14 @@ function(angular, app, domReady){
 			// authorization ping 
 			// $rootScope.$broadcast('event:auth-ping');
 
-			/* page transition
+			// transition
 			if(current === undefined) {
-				$rootScope.pageService.static = true;
-				// transition.start();
+				$rootScope.pageService.static = false;
 			} else {
 				// set false start pageService to static page, or doesn't needed services
-				$rootScope.pageService.static = next.$$route.page.static;
+				$rootScope.pageService.static = next.$$route.page.static == undefined ? false : next.$$route.page.static;
 				transition.change();
 			}
- 			*/
- 			
- 			$rootScope.pageService.start = true;
-
-			/* ng-animate transition
-			if(current !== undefined) {
-				// set false start pageService to static page, or doesn't needed services
-				if( next.$$route.page.static !== undefined ){
-					// $rootScope.pageService.start = !next.$$route.page.static;
-					$rootScope.pageService.start = true;
-				}
-			} */
 		});
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
 			// console.log('current route', current.$$route)
@@ -412,12 +397,5 @@ function(angular, app, domReady){
 	domReady(function() {
 		angular.bootstrap(document, ['ImageApp']);
 		$('html').attr('ng-app', 'ImageApp');
-		$(function () {
-
-		    $('#wrap-content > .container').scroll(function () {
-		        console.log($(this).scrollTop());
-		    })
-
-		});
     });
 });

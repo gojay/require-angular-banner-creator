@@ -285,187 +285,179 @@ $conversation_templates = array(
 	'4' => array(
 		'blue' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-blue.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-blue-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-blue-portrait.png', 'image/png')
 		),
 		'bluedark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dblue.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dblue-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dblue-portrait.png', 'image/png')
 		),
 		'orange' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-lorange.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-lorange-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-lorange-portrait.png', 'image/png')
 		),
 		'orangedark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dorange.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dorange-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dorange-portrait.png', 'image/png')
 		),
 		'green' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-green.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-green-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-green-portrait.png', 'image/png')
 		),
 		'greenlight' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-lgreen.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-lgreen-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-lgreen-portrait.png', 'image/png')
 		),
 		'yellow' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-yellow.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-yellow-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-yellow-portrait.png', 'image/png')
 		),
 		'yellowdark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dyellow.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dyellow-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-dyellow-portrait.png', 'image/png')
 		),
 		'purple' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-purple.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-purple-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-purple-portrait.png', 'image/png')
 		),
 		'red' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-red.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-red-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-red-portrait.png', 'image/png')
 		),
 		'pink' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4-pink.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-pink-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-pink-portrait.png', 'image/png')
 		)
-		// 'square' => data_uri(BASE_PATH . '/images/conversation/tpl-4.png', 'image/png'),
-		// 'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-4-landscape.png', 'image/png'),
-		// 'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-4-portrait.png', 'image/png')
 	),
 	'5' => array(
 		'blue' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-blue.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-blue-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-blue-portrait.png', 'image/png')
 		),
 		'bluedark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dblue.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dblue-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dblue-portrait.png', 'image/png')
 		),
 		'orange' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-lorange.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-lorange-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-lorange-portrait.png', 'image/png')
 		),
 		'orangedark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dorange.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dorange-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dorange-portrait.png', 'image/png')
 		),
 		'green' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-green.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-green-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-green-portrait.png', 'image/png')
 		),
 		'greenlight' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-lgreen.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-lgreen-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-lgreen-portrait.png', 'image/png')
 		),
 		'yellow' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-yellow.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-yellow-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-yellow-portrait.png', 'image/png')
 		),
 		'yellowdark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dyellow.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dyellow-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-dyellow-portrait.png', 'image/png')
 		),
 		'purple' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-purple.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-purple-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-purple-portrait.png', 'image/png')
 		),
 		'red' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-red.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-red-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-red-portrait.png', 'image/png')
 		),
 		'pink' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5-pink.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-pink-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-pink-portrait.png', 'image/png')
 		)
-		// 'square' => data_uri(BASE_PATH . '/images/conversation/tpl-5.png', 'image/png'),
-		// 'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-5-landscape.png', 'image/png'),
-		// 'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-5-portrait.png', 'image/png')
 	),
 	'6' => array(
 		'blue' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-blue.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-blue-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-blue-portrait.png', 'image/png')
 		),
 		'bluedark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dblue.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dblue-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dblue-portrait.png', 'image/png')
 		),
 		'orange' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-lorange.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-lorange-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-lorange-portrait.png', 'image/png')
 		),
 		'orangedark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dorange.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dorange-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dorange-portrait.png', 'image/png')
 		),
 		'green' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-green.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-green-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-green-portrait.png', 'image/png')
 		),
 		'greenlight' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-lgreen.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-lgreen-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-lgreen-portrait.png', 'image/png')
 		),
 		'yellow' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-yellow.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-yellow-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-yellow-portrait.png', 'image/png')
 		),
 		'yellowdark' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dyellow.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dyellow-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-dyellow-portrait.png', 'image/png')
 		),
 		'purple' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-purple.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-purple-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-purple-portrait.png', 'image/png')
 		),
 		'red' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-red.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-red-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-red-portrait.png', 'image/png')
 		),
 		'pink' => array(
 			'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6-pink.png', 'image/png'),
-			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
+			'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-pink-landscape.png', 'image/png'),
+			'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-pink-portrait.png', 'image/png')
 		)
-		// 'square' => data_uri(BASE_PATH . '/images/conversation/tpl-6.png', 'image/png'),
-		// 'landscape' => data_uri(BASE_PATH . '/images/conversation/tpl-6-landscape.png', 'image/png'),
-		// 'portrait' => data_uri(BASE_PATH . '/images/conversation/tpl-6-portrait.png', 'image/png')
 	)
 );
 
 $app->get('/conversation/template', function() use($app, $conversation_templates){
 	$app->response()->header('Content-Type', 'application/json');
+	sleep(2);
 	echo json_encode($conversation_templates);
 });
 

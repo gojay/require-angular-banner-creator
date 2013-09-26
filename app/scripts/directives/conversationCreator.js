@@ -877,6 +877,9 @@ define([
 					});
 					// make clicked, set template selected
 					$timeout(function() {
+						// page service has been loaded
+						// $rootScope.pageService.start  = false;
+						$rootScope.pageService.loaded = true;
 						$('a[href="#tpl-'+ $scope.conversation.selected +'"]').click();
 						// use jPicker, firefox doesn't support input color
 						$('#input-bg-color')
@@ -888,9 +891,7 @@ define([
 									clientPath : 'assets/css/jpicker/images/'
 								}
 							}, self.cbPickColor, self.cbPickColor);
-						// page service has been loaded
-						$rootScope.pageService.loaded = true;
-					}, 3000);
+					}, 1000);
 
 					// callback jqpicker
 					self.cbPickColor = function(color, context){

@@ -65,19 +65,19 @@ html {
 	animation: whirlOut 1s linear 0s 1 forwards; 
 }
 
-.slideInSkew {
-	-webkit-animation: slideInSkew 1s linear 0s 1 forwards;
-	-moz-animation: slideInSkew 1s linear 0s 1 forwards;
-	-ms-animation: slideInSkew 1s linear 0s 1 forwards;
-	-o-animation: slideInSkew 1s linear 0s 1 forwards;
-	animation: slideInSkew 1s linear 0s 1 forwards;
+.slideIn {
+	-webkit-animation: slideIn 1.2s linear 0s 1 forwards;
+	-moz-animation: slideIn 1.2s linear 0s 1 forwards;
+	-ms-animation: slideIn 1.2s linear 0s 1 forwards;
+	-o-animation: slideIn 1.2s linear 0s 1 forwards;
+	animation: slideIn 1.2s linear 0s 1 forwards;
 }
-.slideOutSkew {
-	-webkit-animation: slideOutSkew 1s linear 0s 1 forwards;
-	-moz-animation: slideOutSkew 1s linear 0s 1 forwards;
-	-ms-animation: slideOutSkew 1s linear 0s 1 forwards;
-	-o-animation: slideOutSkew 1s linear 0s 1 forwards;
-	animation: slideOutSkew 1s linear 0s 1 forwards;
+.slideOut {
+	-webkit-animation: slideOut 1.2s linear 0s 1 forwards;
+	-moz-animation: slideOut 1.2s linear 0s 1 forwards;
+	-ms-animation: slideOut 1.2s linear 0s 1 forwards;
+	-o-animation: slideOut 1.2s linear 0s 1 forwards;
+	animation: slideOut 1.2s linear 0s 1 forwards;
 }
 
 .tumbleIn {
