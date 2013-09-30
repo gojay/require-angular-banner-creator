@@ -462,12 +462,15 @@ define([
 									// add attribute ratio & change resized dimension for default template
 									if( $scope.conversation.selected == 0 ){
 										var calcHeight = self.getHeightRatio(direction, parseInt(this.width), parseInt(this.height));
-										elements['ratio'] = resize = calcHeight;
+										elements['ratio'] = calcHeight;
+										if(direction == 'landscape'){
+											resize.w = calcHeight.w;
+											resize.h = calcHeight.h - 80;
+										} else if(direction == 'portrait') {
+											resize.w = calcHeight.w - 40;
+											resize.h = calcHeight.h - 100;
+										}
 									}
-
-									// add elements to lists
-									// self.addImgList(elements);
-									self.addSVGList(elements);
 
 									// add queues
 									sizes += blob.size;
@@ -479,14 +482,16 @@ define([
 										resize: resize
 									});
 
-									console.log('request', requests);
+									// console.log('request', requests);
 
-									index++;
-
-									// resolve
-									var next = _index + 1;
-									var res  = files.length == next ? requests : next ;
-									defer.resolve(res);
+									// add elements to lists
+									self.addSVGList(elements, function(){
+										index++;
+										var next = _index + 1;
+										var res  = files.length == next ? requests : next ;
+										// resolve
+										defer.resolve(res);
+									});
 								};
 							};
 						})(file);
@@ -500,7 +505,10 @@ define([
 						if(direction == 'landscape') width = 550;
 
 					    var ratio = width / srcWidth;
-					    return { w:parseInt(srcWidth*ratio), h:parseInt(srcHeight*ratio) };
+					    return { 
+					    	w: parseInt(srcWidth*ratio), 
+					    	h: parseInt(srcHeight*ratio)
+					    };
 					}
 					// image validation
 					self.imageValidation = function(file, showAlert){
@@ -535,7 +543,7 @@ define([
 						$('#panel-right ul.img-list').append($li);
 					};
 					// add SVG to list
-					self.addSVGList = function(data){
+					self.addSVGList = function(data, callback){
 						var $svg = self.getSVGCompiled(data);
 
 						var $thumb = $('<div class="thumbnail border-none text-center"></div>').append($svg);
@@ -548,27 +556,63 @@ define([
 							.append($thumb);
 
 						$('#panel-right ul.svg-list').append($li);
+
+						if(callback) callback()
 					};
 					// compile SVG 
 					self.getSVGCompiled = function(data){
 						var $svg;
 						// get direction (square/landscape/portrait)
+						console.log('ConversationTpl directions', ConversationTpl.directions)
 						var dimension = ConversationTpl.directions[data.direction];
 						if( $scope.conversation.selected == 0 ){
 							$svg = $('svg#svg-conversation-default').clone();
-							if(angular.isDefined(data.ratio)){
-								console.log('change svg height to ' + data.ratio.h)
+							if(angular.isDefined(data.ratio))
+							{
+								console.group();
+								console.log('ratio ', data.ratio)
+								console.log('change svg dimension ', dimension.w, data.ratio.h)
+								console.groupEnd();
 								$svg.attr({
-									width : dimension.w,
+									width : data.ratio.w,
 									height: data.ratio.h
 								});
-							}
-							// change svg figure
-							var $figure = $('#figure', $svg).attr('fill', '{{conversation.templateColor}}');
-							if( data.direction == 'landscape' ){
-								$('#figure', $svg).attr('class','landscape');
-							} else {
-								$('#figure', $svg).find('.bottom').attr('y', data.ratio.h - 20);
+								// change svg figure
+								var $figure = $('#figure', $svg).attr('fill', '{{conversation.templateColor}}');
+								if( data.direction == 'landscape' ){
+									var _calc = {
+										x: 0,
+										y: 80,
+										w: data.ratio.w,
+										h: data.ratio.h - 80
+									};
+									// console.log('change img height from ' + data.ratio.h, 'to', _calc.h);
+									$('image.image', $svg).attr({
+										x: _calc.x,
+										y: _calc.y,
+										width : _calc.w,
+										height: _calc.h
+									});
+									$('#figure', $svg).attr('class','landscape');
+								} else if(data.direction == 'portrait') {
+									var _calc = {
+										x: 20,
+										y: 80,
+										w: data.ratio.w - 40,
+										h: data.ratio.h - 100
+									};
+									// console.group();
+									// 	console.log('change img width from ' + data.ratio.w, 'to', _calc.w);
+									// 	console.log('change img height from ' + data.ratio.h, 'to', _calc.h);
+									// console.groupEnd();
+									$('image.image', $svg).attr({
+										x: _calc.x,
+										y: _calc.y,
+										width: _calc.w,
+										height: _calc.h
+									});
+									$('#figure > .bottom', $svg).attr('y', data.ratio.h - 20);
+								}
 							}
 						} else {
 							$svg = $('svg#svg-conversation').clone();
