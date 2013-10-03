@@ -439,8 +439,6 @@ define([
 									var img = this.src;
 
 									var ratio = parseInt(this.width)/parseInt(this.height);
-									// console.log('ratio', ratio);
-
 									var direction;
 									if ( ratio == 1 ) { 
 										direction = 'square';
@@ -462,14 +460,14 @@ define([
 									// add attribute ratio & change resized dimension for default template
 									if( $scope.conversation.selected == 0 ){
 										var calcHeight = self.getHeightRatio(direction, parseInt(this.width), parseInt(this.height));
-										elements['ratio'] = calcHeight;
-										if(direction == 'landscape'){
-											resize.w = calcHeight.w;
-											resize.h = calcHeight.h - 80;
-										} else if(direction == 'portrait') {
-											resize.w = calcHeight.w - 40;
-											resize.h = calcHeight.h - 100;
-										}
+										elements['ratio'] = resize = calcHeight;
+										// if(direction == 'landscape'){
+										// 	resize.w = calcHeight.w;
+										// 	resize.h = calcHeight.h - 80;
+										// } else if(direction == 'portrait') {
+										// 	resize.w = calcHeight.w - 40;
+										// 	resize.h = calcHeight.h - 100;
+										// }
 									}
 
 									// add queues
@@ -479,13 +477,13 @@ define([
 										blob  : blob,
 										size  : sizes,
 										index : index,
+										direction:direction, 
 										resize: resize
 									});
 
-									// console.log('request', requests);
-
 									// add elements to lists
 									self.addSVGList(elements, function(){
+
 										index++;
 										var next = _index + 1;
 										var res  = files.length == next ? requests : next ;
@@ -563,16 +561,16 @@ define([
 					self.getSVGCompiled = function(data){
 						var $svg;
 						// get direction (square/landscape/portrait)
-						console.log('ConversationTpl directions', ConversationTpl.directions)
+						// console.log('ConversationTpl directions', ConversationTpl.directions)
 						var dimension = ConversationTpl.directions[data.direction];
 						if( $scope.conversation.selected == 0 ){
 							$svg = $('svg#svg-conversation-default').clone();
 							if(angular.isDefined(data.ratio))
 							{
-								console.group();
-								console.log('ratio ', data.ratio)
-								console.log('change svg dimension ', dimension.w, data.ratio.h)
-								console.groupEnd();
+								// console.group();
+								// console.log('ratio ', data.ratio)
+								// console.log('change svg dimension ', dimension.w, data.ratio.h)
+								// console.groupEnd();
 								$svg.attr({
 									width : data.ratio.w,
 									height: data.ratio.h
@@ -584,8 +582,9 @@ define([
 										x: 0,
 										y: 80,
 										w: data.ratio.w,
-										h: data.ratio.h - 80
+										h: data.ratio.h
 									};
+									console.log('landscape '+data.id, _calc)
 									// console.log('change img height from ' + data.ratio.h, 'to', _calc.h);
 									$('image.image', $svg).attr({
 										x: _calc.x,
@@ -598,8 +597,8 @@ define([
 									var _calc = {
 										x: 20,
 										y: 80,
-										w: data.ratio.w - 40,
-										h: data.ratio.h - 100
+										w: data.ratio.w,
+										h: data.ratio.h
 									};
 									// console.group();
 									// 	console.log('change img width from ' + data.ratio.w, 'to', _calc.w);
@@ -611,6 +610,7 @@ define([
 										width: _calc.w,
 										height: _calc.h
 									});
+									console.log('portrait '+data.id, _calc)
 									$('#figure > .bottom', $svg).attr('y', data.ratio.h - 20);
 								}
 							}

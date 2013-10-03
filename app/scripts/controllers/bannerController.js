@@ -533,7 +533,7 @@ define([
 
 			$scope.setFB = function($index){
 				$scope.banner.fb.selected = $index + 1;
-			}
+			};
 
 			$scope.doSetting = function($event){
 
