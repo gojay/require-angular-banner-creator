@@ -53,10 +53,25 @@
 								</div>
 							</div>
 							<div class="control-group">
+								<label class="control-label" style="width: 100px; text-align:left;">FB Logo</label>
+								<div class="controls" style="margin-left: 0;">
+									<div class="controls" style="margin-left:0;">
+									    <div id="set-overlay" class="btn-group">
+										    <button class="btn" 
+										    		ng-repeat="f in fb"
+										    		ng-class="{'active':banner.fb.selected == $index+1}"
+										    		ng-click="setFB($index)">
+												<img ng-src="{{f}}" style="width:60px">
+										    </button>
+									    </div>
+									</div>
+								</div>
+							</div>
+							<div class="control-group">
 								<label class="control-label" style="width: 100px; text-align:left;">FB Resize</label>
 								<div class="controls" style="margin-left: 0;">
-									<input id="input-fb-width" ng-model="banner.fb.w"  style="width:50px; margin: 5px; border:none" /> X 
-									<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.fb.h" disabled="true" style="width:35px" />
+									<input id="input-fb-width" ng-model="banner.fb.dimension.w"  style="width:50px; margin: 5px; border:none" /> X 
+									<input type="text" id="input-logo-height" placeholder="height" ng-model="banner.fb.dimension.h" disabled="true" style="width:35px" />
 								</div>
 							</div>
 				      	</div>

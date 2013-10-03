@@ -85,8 +85,11 @@ define(['services/services'], function(services){
 						}
 					},
 					fb: {
-						w:283,
-						h:67
+						selected: 1,
+						dimension:{
+							w:207,
+							h:54
+						}
 					},
 					preview : null,
 					autosave : true,

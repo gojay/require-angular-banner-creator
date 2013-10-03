@@ -15,7 +15,8 @@ define([
 			var isNew = $scope.isNew = true, 
 				cBanner = false;
 
-			console.log('banners', banners)
+			console.group();
+			console.log('banners', banners);
 
 			self.onbeforeunloadNeeded = true;
 
@@ -31,7 +32,8 @@ define([
 			};
 
 			// model banner templates n recents
-			$scope.templates = banners.templates;
+			$scope.fb        = banners.templates.fb;
+			$scope.templates = banners.templates.tpl;
 			$scope.banners   = banners.recents;
 
 			// model banner
@@ -63,10 +65,12 @@ define([
 				}
 			}
 
-			console.log('templates', $scope.templates)
-			console.log('recents', $scope.banners)
-			console.log('detail is new ?', isNew)
-			console.log('banner', $scope.banner)
+			console.log('fb', $scope.fb);
+			console.log('templates', $scope.templates);
+			console.log('recents', $scope.banners);
+			console.log('detail is new ?', isNew);
+			console.log('banner', $scope.banner);
+			console.groupEnd();
 
 			$scope.banner['range'] = 0;
 
@@ -317,20 +321,22 @@ define([
 			/* ================ scope watchers ================ */
 
 			// max width banner fb 
-			self.fbMax = { w:283, h:67 };
+			self.fbMax = $scope.banner.fb.dimension;
 
 			$scope.getX = function(){
-				var calc = 810 - $scope.banner.fb.w;
+				var calc = 810 - $scope.banner.fb.dimension.w;
 				return $scope.banner.background.type == 3 ? calc - 20 : calc ;
 			}
-			$scope.$watch('banner.fb.w', function(input){
+			$scope.$watch('banner.fb.dimension.w', function(input){
 				if(input > self.fbMax.w) {
-					$scope.banner.fb.w = input = self.fbMax.w;
+					$scope.banner.fb.dimension.w = input = self.fbMax.w;
 				}
-				console.log('watch:fb', $scope.banner.fb.w, input);
+
+				console.log('watch:fb', $scope.banner.fb.dimension.w, input);
+
 				var ratio = [input / self.fbMax.w, 67 / self.fbMax.h];
 				var aspectRatio = Math.min(ratio[0], ratio[1]);
-				$scope.banner.fb.h = parseInt(self.fbMax.h * aspectRatio);
+				$scope.banner.fb.dimension.h = parseInt(self.fbMax.h * aspectRatio);
 			});
 			$scope.$watch('banner.logo.w', function(input) {
 				// calculate image position (center)
@@ -525,6 +531,10 @@ define([
 				$scope.safeApply(function(scope){ $scope.banner.background.overlay = overlay; });
 			};
 
+			$scope.setFB = function($index){
+				$scope.banner.fb.selected = $index + 1;
+			}
+
 			$scope.doSetting = function($event){
 
 				if( self.onbeforeunloadNeeded ) window._onbeforeunload = false;
@@ -696,7 +706,7 @@ define([
 								min:0, max:self.fbMax.w,
 								spin: function( event, ui ) {
 									$scope.safeApply(function(scope){
-										$scope.banner.fb.w = ui.value;
+										$scope.banner.fb.dimension.w = ui.value;
 									});
 								}
 							});
@@ -1172,6 +1182,7 @@ define([
 					});
 				});
 				$('#background', $svg).children().map(function(i,e){
+					// background
 					if($(e).attr('fill') !== undefined) {
 						$(e).attr('fill', function(index, id){
 							return id.replace(/(\d+)/, function(fullMatch, n) {
@@ -1179,15 +1190,17 @@ define([
 							});
 						});
 					}
+					// logo FB
 					else if(i == 1) {
 						if(type == 'enter') {
 							$(e).remove();
 							return;
 						}
 
-						e.setAttribute('width', '{{banner.fb.w}}');
-						e.setAttribute('height', '{{banner.fb.h}}');
 						e.setAttribute('x', '{{getX()}}');
+						e.setAttribute('xlink:href', '{{fb[banner.fb.selected]}}');
+						e.setAttribute('width', '{{banner.fb.dimension.w}}');
+						e.setAttribute('height', '{{banner.fb.dimension.h}}');
 					}
 				});
 				$('#logo', $svg).children().map(function(i,e){

@@ -27,10 +27,17 @@ if( ENABLE_AUTHORIZATION ){
 /* ================================ Test ================================ */
 
 $app->get('/test', function() use($app, $pdo){
-	// $app->response()->header('Content-Type', 'application/json');
+	$app->response()->header('Content-Type', 'application/json');
 
-	$table = $pdo->query("SHOW TABLE STATUS LIKE 'creators'")->fetch();
-	echo str_pad($table['Auto_increment'], 9, '0', STR_PAD_LEFT);
+	// $table = $pdo->query("SHOW TABLE STATUS LIKE 'creators'")->fetch();
+	// echo str_pad($table['Auto_increment'], 9, '0', STR_PAD_LEFT);
+
+	echo json_encode(array(
+		data_uri(BASE_PATH . '/images/facebook/fb-like1.png', 'image/png'),
+		data_uri(BASE_PATH . '/images/facebook/fb-like2.png', 'image/png'),
+		data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
+	));
+
 });
 
 /* ================================ Authorization ================================ */
@@ -88,6 +95,12 @@ $creator_columns = array('ID', 'title', 'description', 'preview', 'autosave');
 
 /* ================================ Banner ================================ */
 
+$banner_fb = array(
+	'1' => data_uri(BASE_PATH . '/images/facebook/fb-like1.png', 'image/png'),
+	'2' => data_uri(BASE_PATH . '/images/facebook/fb-like2.png', 'image/png'),
+	'3' => data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
+);
+
 $banner_templates = array(
 	'1' => array(
 		'grass' => data_uri(BASE_PATH . '/images/banner/1-Prize-Background-Grass.jpg', 'image/jpg'),
@@ -106,10 +119,13 @@ $banner_templates = array(
 	)
 );
 
-$app->get('/banner/template', function() use($app, $banner_templates){
+$app->get('/banner/template', function() use($app, $banner_fb, $banner_templates){
 	$app->response()->header('Content-Type', 'application/json');
 	sleep(2);
-	echo json_encode($banner_templates);
+	echo json_encode(array(
+		'fb' => $banner_fb,
+		'tpl' => $banner_templates
+	));
 });
 
 $app->get('/banner', function() use ($app, $db){

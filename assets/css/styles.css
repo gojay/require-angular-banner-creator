@@ -125,6 +125,12 @@ a:hover {
     left: auto;
     right: 0;
 }
+#panel-left .navbar > .navbar-inner {
+	border-radius: 0;
+	border-top-width: 0;
+	background: none;
+	padding-top: 1px;
+}
 
 #panel-right.open-panel,
 #panel-left.open-panel {
@@ -132,6 +138,8 @@ a:hover {
     -webkit-transition: opacity .5s 0s;
     -moz-transition: opacity .5s 0s;
 }
+
+
 /* index on top, to make scrollable/overflow */
 .panel-focused {
     z-index: 3 !important;
@@ -144,6 +152,10 @@ a:hover {
 #wrapper.open-wrapper-left {
     -webkit-transform: translate3D(92%, 0, 0);
     -moz-transform: translate3D(92%, 0, 0);
+
+    -webkit-box-shadow: -5px 0 5px rgba(0,0,0,.10);
+	-moz-box-shadow: -5px 0 5px rgba(0,0,0,.10);
+	box-shadow: -5px 0 5px rgba(0,0,0,.10);
 }
 #wrapper.open-wrapper-right #content-container,
 #wrapper.open-wrapper-left #content-container{

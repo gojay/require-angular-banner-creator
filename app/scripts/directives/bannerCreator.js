@@ -7,7 +7,8 @@ define([
 		// Runs during compile
 		return {
 			scope: {
-				banner : '=ngModel'
+				banner : '=ngModel',
+				fb : '='
 			}, // {} = isolate, true = child, false/undefined = no change
 			restrict: 'EAC', // E = Element, A = Attribute, C = Class, M = Comment
 			templateUrl: 'app/views/components/banner-creator.html',
