@@ -124,11 +124,13 @@ function do_upload($files, $upload_path, $name, $width, $height, $auto_width)
 		$imagehand->file_new_name_body = $name;
 		$imagehand->file_overwrite     = true;
 		$imagehand->image_resize       = true;
-		// $imagehand->image_ratio_fill   = true;
 		if( $auto_width ){
+			$imagehand->image_ratio_x = true;
+			$imagehand->image_y = $height;
+		} else {
 			$imagehand->image_x = $width;
+			$imagehand->image_y = $height;
 		}
-		$imagehand->image_y = $height;
 		$imagehand->Process($upload_path);
 		if (!$imagehand->processed) {
 	      	throw new Exception('error : ' . $imagehand->error);

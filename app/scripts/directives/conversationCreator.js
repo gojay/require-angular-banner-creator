@@ -381,7 +381,7 @@ define([
 									name  : name,
 									width : dimension.w,
 									height: dimension.h,
-									auto  : 1
+									auto  : 0
 								}).then(function(response){
 									console.log(response);
 									$('#editor .template').unblock();
@@ -745,7 +745,7 @@ define([
 									name  : 'conversation-bg-' + index,
 									width : request.resize.w,
 									height: request.resize.h,
-									auto  : 1
+									auto  : 0
 								}).pipe(function(response){
 									console.log('response', index, response);
 									// change bg image

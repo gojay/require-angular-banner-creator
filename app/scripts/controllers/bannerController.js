@@ -854,7 +854,7 @@ define([
 													name  : 'background',
 													width : backgroundDimension.width,
 													height: backgroundDimension.height,
-													auto: 1
+													auto  : 0
 												}).success(function(response){
 													console.log('response:upload background fit', response);
 													$scope.safeApply(function(scope){
@@ -904,7 +904,7 @@ define([
 									name  : 'logo',
 									width : logoDimension.image.width,
 									height: logoDimension.image.height,
-									auto  : 0
+									auto  : 1
 								}).success(function(response){
 									console.log('response:upload logo', response);
 
@@ -1116,7 +1116,7 @@ define([
 												name  : 'prize-' + prizeIndex,
 												width : priceDimension.width,
 												height: priceDimension.height,
-												auto: 1
+												auto  : 0
 											}).success(function(response){
 												console.log('response:upload prize fit', response);
 												console.log('en', en);
@@ -1395,7 +1395,7 @@ define([
 								name  : imgNameEnter,
 								width : 'original',
 								height: 'original',
-								auto  : 1
+								auto  : 0
 							}).success(function(response){
 								console.log('response upload banner enter', response);
 								

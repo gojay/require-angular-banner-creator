@@ -110,7 +110,7 @@ define(['services/services'], function(services){
 							},
 							image : {
 								width:122,
-								height:80
+								height:100
 							}
 						},
 						background : {
