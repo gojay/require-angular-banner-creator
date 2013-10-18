@@ -55,16 +55,14 @@
 							<div class="control-group">
 								<label class="control-label" style="width: 100px; text-align:left;">FB Logo</label>
 								<div class="controls" style="margin-left: 0;">
-									<div class="controls" style="margin-left:0;">
-									    <div id="set-overlay" class="btn-group">
-										    <button class="btn" 
-										    		ng-repeat="f in fb"
-										    		ng-class="{'active':banner.fb.selected == $index+1}"
-										    		ng-click="setFB($index)">
-												<img ng-src="{{f}}" style="width:60px">
-										    </button>
-									    </div>
-									</div>
+								    <div id="set-overlay" class="btn-group">
+									    <button class="btn" 
+									    		ng-repeat="f in fb"
+									    		ng-class="{'active':banner.fb.selected == $index+1}"
+									    		ng-click="setFB($index)">
+											<img ng-src="{{f}}" style="width:60px">
+									    </button>
+								    </div>
 								</div>
 							</div>
 							<div class="control-group">
@@ -112,6 +110,25 @@
 									<label class="inline" for="placeholder">Add Placeholder</label>
 								</div>
 							</div>
+				      	</div>
+				    </div>
+				</div>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+				      	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#badge">
+				        	Badge
+				      	</a>
+				    </div>
+				    <div id="badge" class="accordion-body collapse">
+				      	<div class="accordion-inner">
+							<div id="set-overlay" class="btn-group">
+							    <button class="btn" 
+							    		ng-repeat="b in badges"
+							    		ng-class="{'active':banner.badge.selected == $index+1}"
+							    		ng-click="setBadge($index)">
+									<img ng-src="{{b}}" style="width:40px">
+							    </button>
+						    </div>
 				      	</div>
 				    </div>
 				</div>
@@ -165,12 +182,12 @@
 									<p class="help-block text-right">Limit : {{banner.mtitle.counter}}/{{banner.mtitle.limit}}</p>
 								</div>
 							</div>
-							<div class="control-group">
+							<!-- <div class="control-group">
 								<label>Range</label>
 								<div class="controls" style="margin-left: 0;">
 									<input type="range" ng-model="banner.range" />
 								</div>
-							</div>
+							</div> -->
 							<div class="control-group">
 								<label>Description</label>
 								<div class="controls" style="margin-left: 0;">

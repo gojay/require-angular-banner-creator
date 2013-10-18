@@ -91,6 +91,17 @@ define(['services/services'], function(services){
 							h:54
 						}
 					},
+					badge: {
+						selected: 0,
+						dimension:{
+							w:270,
+							h:270
+						},
+						position: {
+							x:0,
+							y:0
+						}
+					},
 					preview : null,
 					autosave : true,
 					selected : 0

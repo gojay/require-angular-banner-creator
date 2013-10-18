@@ -101,6 +101,13 @@ $banner_fb = array(
 	'3' => data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
 );
 
+$banner_badges = array(
+	'1' => data_uri(BASE_PATH . '/images/badge/badge-1.png', 'image/png'),
+	'2' => data_uri(BASE_PATH . '/images/badge/badge-2.png', 'image/png'),
+	'3' => data_uri(BASE_PATH . '/images/badge/badge-3.png', 'image/png'),
+	'4' => data_uri(BASE_PATH . '/images/badge/badge-4.png', 'image/png')
+);
+
 $banner_templates = array(
 	'1' => array(
 		'grass' => data_uri(BASE_PATH . '/images/banner/1-Prize-Background-Grass.jpg', 'image/jpg'),
@@ -119,11 +126,12 @@ $banner_templates = array(
 	)
 );
 
-$app->get('/banner/template', function() use($app, $banner_fb, $banner_templates){
+$app->get('/banner/template', function() use($app, $banner_fb, $banner_badges, $banner_templates){
 	$app->response()->header('Content-Type', 'application/json');
 	sleep(2);
 	echo json_encode(array(
 		'fb' => $banner_fb,
+		'badges' => $banner_badges,
 		'tpl' => $banner_templates
 	));
 });

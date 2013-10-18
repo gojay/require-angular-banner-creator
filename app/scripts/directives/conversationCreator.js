@@ -886,9 +886,7 @@ define([
 				},
 				link: function($scope, iElm, iAttrs, controller) {
 
-					console.log('init')
-
-					/* ================ handling collapse ================ */
+					/* ================ handling setting collapse ================ */
 
 					var $editorTpl = $('#editor .template');
 					$('.collapse').live('show', function() {
@@ -1122,7 +1120,7 @@ define([
 
 					/* ================ Initialize event listener ================ */
 
-					// unbind event live() with die()
+					// note:unbind event live() with die()
 
 					// event listener button logo input file
 					controller.btnLogoDefault.die('click').live('click', function() {

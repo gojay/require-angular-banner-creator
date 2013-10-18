@@ -33,6 +33,7 @@ define([
 
 			// model banner templates n recents
 			$scope.fb        = banners.templates.fb;
+			$scope.badges    = banners.templates.badges;
 			$scope.templates = banners.templates.tpl;
 			$scope.banners   = banners.recents;
 
@@ -534,6 +535,66 @@ define([
 			$scope.setFB = function($index){
 				$scope.banner.fb.selected = $index + 1;
 			};
+			$scope.setBadge = function($index){
+				// create badge element, if selected is 0
+				if( $scope.banner.badge.selected == 0 ){
+					angular.element('#svg-editor > svg').each(function(i,e){
+						var svg = angular.element(e);
+						$scope.banner.badge.position.x = (svg.width() - $scope.banner.badge.dimension.w) / 2 ;
+						$scope.banner.badge.position.y = (svg.height() - $scope.banner.badge.dimension.h) / 2 ;
+						var bounds = {
+							x: (svg.width() - $scope.banner.badge.dimension.w),
+							y: (svg.height() - $scope.banner.badge.dimension.h)
+						}
+						var badgeEl = self.createBadgeElement(bounds);
+						svg.append(badgeEl);
+					});
+				}
+
+				var selected = $index + 1;
+				var badgeImg = $scope.badges[selected];
+				// update badge selected
+				$scope.banner.badge.selected = selected;
+			};
+
+			// create badge element
+			self.createBadgeElement = function(bounds){
+				// create svg image element
+				var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
+				svgimg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '{{badges[banner.badge.selected]}}');
+				svgimg.setAttributeNS(null, 'height', '{{banner.badge.dimension.w}}');
+				svgimg.setAttributeNS(null, 'width', '{{banner.badge.dimension.h}}');
+				// create svg badge group element
+				var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+				g.setAttribute('id', 'badge');
+				g.setAttribute('transform', 'translate({{banner.badge.position.x}}, {{banner.badge.position.y}})');
+				// set draggable
+				$(g).draggable({
+					cursor: "move",
+					containment: "#svg-editor svg",
+					start: function(event, ui){
+						console.log('start', event)
+					},
+					drag: function(event, ui) {
+						var offset = $('#svg-editor svg').offset();
+						// set X
+						var x = ui.offset.left - offset.left;
+						var y = ui.offset.top - offset.top;
+						var xVal = (x >= bounds.x) ? bounds.x : x ;
+						var yVal = (y >= bounds.y) ? bounds.y : y ;
+						$scope.banner.badge.position.x = xVal ;
+						$scope.banner.badge.position.y = yVal ;
+						$scope.$apply();
+					},
+					stop: function(event, ui) {
+						console.log('stop', event)
+					},
+				});
+				// append to badge group
+				angular.element(svgimg).appendTo(g);
+				// compile scope
+				return $compile(g)($scope);
+			}
 
 			$scope.doSetting = function($event){
 
