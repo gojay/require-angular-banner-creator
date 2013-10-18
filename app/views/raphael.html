@@ -1,0 +1,51 @@
+
+<!--Raphael-->
+<div class="row-fluid">
+	<div id="holder"></div>
+</div>
+<div id="setting-circle" class="row-fluid hide" style="position:relative">
+	<a href="#" class="close-tip" style="position:absolute; top:10px; right:10px"><i class="icon-remove-sign"></i></a>
+    <form style="margin-bottom:0">
+		<h4>Circle</h4>
+	    <div class="control-group setting-action">
+			<label class="control-label">Action</label>
+			<div class="controls">
+				<label class="radio inline">
+				  <input type="radio" name="action" value="transform" checked> Transform
+				</label>
+				<label class="radio inline">
+				  <input type="radio" name="action" value="rotate" disabled> Rotate
+				</label>
+			</div>
+		</div>
+	    <div class="control-group setting-ratio">
+			<label class="control-label">Keep Ratio</label>
+			<div class="controls">
+				<label class="radio inline">
+				  <input type="radio" name="keepRatio" value="yes" checked> Yes
+				</label>
+				<label class="radio inline">
+				  <input type="radio" name="keepRatio" value="no"> No
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="color">Background Color</label>
+			<div class="controls">
+				<input type="color" id="fill" value="#ff0000">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Background Transparent</label>
+			<div class="controls">
+				<input type="range" id="fill-opacity" max="1.0" min="0" step="0.1" value="1.0">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Line Color</label>
+			<div class="controls">
+			<input type="color" id="stroke" value="#000000">
+			</div>
+		</div>
+    </form>
+</div>

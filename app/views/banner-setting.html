@@ -121,7 +121,10 @@
 				    </div>
 				    <div id="badge" class="accordion-body collapse">
 				      	<div class="accordion-inner">
-							<div id="set-overlay" class="btn-group">
+				      		<a href class="pull-right" data-toggle="tooltip" data-placement="left" title="Remove badge" style="color:red" 
+				      		ng-click="banner.badge.selected = 0"
+				      		ng-hide="banner.badge.selected == 0"><i class="icon-remove-sign"></i></a>
+							<div class="control-group btn-group">
 							    <button class="btn" 
 							    		ng-repeat="b in badges"
 							    		ng-class="{'active':banner.badge.selected == $index+1}"
@@ -129,6 +132,12 @@
 									<img ng-src="{{b}}" style="width:40px">
 							    </button>
 						    </div>
+						    <div class="control-group" ng-hide="banner.badge.selected == 0">
+								<label class="control-label" style="width: 55px; text-align:left;">Resize</label>
+								<div class="controls" style="margin-left: 0;">
+									<input type="range" max="810" ng-model="banner.badge.dimension.w" />
+								</div>
+							</div>
 				      	</div>
 				    </div>
 				</div>

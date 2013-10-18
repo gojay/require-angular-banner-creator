@@ -15,9 +15,6 @@ define([
 			var isNew = $scope.isNew = true, 
 				cBanner = false;
 
-			console.group();
-			console.log('banners', banners);
-
 			self.onbeforeunloadNeeded = true;
 
 			$scope.safeApply = function(fn) {
@@ -66,6 +63,8 @@ define([
 				}
 			}
 
+			console.group();
+			console.log('banners', banners);
 			console.log('fb', $scope.fb);
 			console.log('templates', $scope.templates);
 			console.log('recents', $scope.banners);
@@ -149,24 +148,6 @@ define([
 			};
 			// set equals height banner lists 
 			$scope.setEqualHeight = function() {
-				// check every time, until thumbnail lists rendered
-				// var si = setInterval(function(){
-				// 	var columns = $("#banner-panel-left .thumbnails > li")
-				// 	if( columns.length ){
-				// 		clearInterval(si);
-				// 		var tallestcolumn = 0;
-				// 		columns.each(
-				// 			function() {
-				// 				currentHeight = $(this).height();
-				// 				if (currentHeight > tallestcolumn) {
-				// 					tallestcolumn = currentHeight;
-				// 				}
-				// 			}
-				// 		);
-				// 		columns.find('.thumbnail').height(tallestcolumn);
-				// 	} 
-				// });
-
 				$timeout(function(){
 					var columns = $("#banner-panel-left .thumbnails > li")
 					var tallestcolumn = 0;
@@ -235,20 +216,6 @@ define([
 					$scope.safeApply(function(){ $scope.banner.background.overlay = true; });
 				})
 				if( !isNew ){
-					// var loaded = setInterval(function(){
-					// 	if($('#settings').length){
-					// 		clearInterval(loaded);
-					// 		$('#doSetting').click();
-					// 		$rootScope.pageService.loaded = true;
-					// 		// generate download popup tpl n ZIP
-					// 		$timeout(function(){
-					// 			self.generateTplZIP({
-					// 				like  : $scope.banner.uploaded.like,
-					// 				enter : $scope.banner.uploaded.enter
-					// 			});
-					// 		}, 1000);
-					// 	}	
-					// });
 					$timeout(function(){
 						// open the setting menu
 						$('#doSetting').click();
@@ -410,6 +377,13 @@ define([
 			$scope.$watch('banner.logo.placeholder.show', function(checked){
 				self.addWhitePlaceholder(checked);
 			});
+			$scope.$watch('banner.badge.dimension.w', function(value){
+				var tplType = 'tpl-' + $scope.banner.selected;
+				var bg = dimensions[tplType].background;
+				$scope.banner.badge.dimension.h = value;
+				// $scope.banner.badge.position.x = (bg.width - value) / 2 ;
+				// $scope.banner.badge.position.y = (bg.height - value) / 2 ;
+			});
 			
 			self.hideLogo = function(checked){
 				console.info('hide logo', checked);
@@ -536,18 +510,22 @@ define([
 				$scope.banner.fb.selected = $index + 1;
 			};
 			$scope.setBadge = function($index){
-				// create badge element, if selected is 0
+				// create badge element, if selected is 0 / new
 				if( $scope.banner.badge.selected == 0 ){
 					angular.element('#svg-editor > svg').each(function(i,e){
-						var svg = angular.element(e);
-						$scope.banner.badge.position.x = (svg.width() - $scope.banner.badge.dimension.w) / 2 ;
-						$scope.banner.badge.position.y = (svg.height() - $scope.banner.badge.dimension.h) / 2 ;
+						var tplType = 'tpl-' + $scope.banner.selected;
+						var bg = dimensions[tplType].background;
+						if( $scope.banner.badge.position.x == 0 && $scope.banner.badge.position.y == 0 ){
+							$scope.banner.badge.position.x = (bg.width - $scope.banner.badge.dimension.w) / 2 ;
+							$scope.banner.badge.position.y = (bg.height - $scope.banner.badge.dimension.h) / 2 ;
+						}
 						var bounds = {
-							x: (svg.width() - $scope.banner.badge.dimension.w),
-							y: (svg.height() - $scope.banner.badge.dimension.h)
+							x: (bg.width - $scope.banner.badge.dimension.w),
+							y: (bg.height - $scope.banner.badge.dimension.h)
 						}
 						var badgeEl = self.createBadgeElement(bounds);
-						svg.append(badgeEl);
+						angular.element(e).append(badgeEl);
+						// self.createBadgeElement2(svg);
 					});
 				}
 
@@ -562,18 +540,19 @@ define([
 				// create svg image element
 				var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
 				svgimg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '{{badges[banner.badge.selected]}}');
-				svgimg.setAttributeNS(null, 'height', '{{banner.badge.dimension.w}}');
-				svgimg.setAttributeNS(null, 'width', '{{banner.badge.dimension.h}}');
+				svgimg.setAttributeNS(null, 'height', '{{banner.badge.dimension.h}}');
+				svgimg.setAttributeNS(null, 'width', '{{banner.badge.dimension.w}}');
 				// create svg badge group element
 				var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 				g.setAttribute('id', 'badge');
+				g.setAttribute('ng-hide', 'banner.badge.selected == 0');
 				g.setAttribute('transform', 'translate({{banner.badge.position.x}}, {{banner.badge.position.y}})');
 				// set draggable
 				$(g).draggable({
 					cursor: "move",
-					containment: "#svg-editor svg",
+					// containment: "#svg-editor svg",
 					start: function(event, ui){
-						console.log('start', event)
+						// console.log('start', event)
 					},
 					drag: function(event, ui) {
 						var offset = $('#svg-editor svg').offset();
@@ -582,8 +561,8 @@ define([
 						var y = ui.offset.top - offset.top;
 						var xVal = (x >= bounds.x) ? bounds.x : x ;
 						var yVal = (y >= bounds.y) ? bounds.y : y ;
-						$scope.banner.badge.position.x = xVal ;
-						$scope.banner.badge.position.y = yVal ;
+						$scope.banner.badge.position.x = x ;
+						$scope.banner.badge.position.y = y ;
 						$scope.$apply();
 					},
 					stop: function(event, ui) {
@@ -595,6 +574,24 @@ define([
 				// compile scope
 				return $compile(g)($scope);
 			}
+			self.createBadgeElement2 = function(svg){
+				var svg_xml = (new XMLSerializer()).serializeToString(svg[0]);
+				var paper = Raphael('svg-editor', 810, 381);
+				var set = paper.set();
+				paper.importSVG(svg_xml, set);
+
+				var badgeImg = $scope.badges[$scope.banner.badge.selected];
+				var b = paper.image(badgeImg, 
+					$scope.banner.badge.position.x, $scope.banner.badge.position.y, 
+					$scope.banner.badge.dimension.w, $scope.banner.badge.dimension.h);
+
+				var ftB = paper.freeTransform(b);
+		    	ftB.setOpts({ 
+			    	keepRatio: ['axisX', 'axisY', 'bboxCorners', 'bboxSides']
+		    	},function(el, events) {
+			        console.log(el, events);
+			    })
+			};
 
 			$scope.doSetting = function($event){
 

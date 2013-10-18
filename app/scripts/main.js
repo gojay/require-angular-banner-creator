@@ -23,24 +23,45 @@ require.config({
 		imgareaselect: 'vendor/jquery/plugins/jquery.imgareaselect.min',
 		jszip        : 'vendor/jquery/plugins/jszip',
 		jpicker      : 'vendor/jquery/plugins/jpicker.min',
+		qtip         : 'vendor/jquery/plugins/jquery.qtip',
 		// SVG
 		SVG          : 'vendor/svg/svg',
 		svgTextFlow  : 'vendor/svg/svg.textflow.min',
 		svgtoDataURL : 'vendor/svg/svg_todataurl',
+		// raphael
+		raphael		    : 'vendor/raphael/raphael',
+		raphaelShapes	: 'vendor/raphael/raphael.shapes',
+		raphaelGroup	: 'vendor/raphael/raphael.group',
+		raphaelTransform: 'vendor/raphael/raphael.transform',
+		raphaelSVGImport: 'vendor/raphael/raphael-svg-import',
 		domReady     : 'vendor/domReady'
 	},
 	shim: {
+		// jquery
 		jqueryui: ['jquery'],
 		blockUI: ['jquery'],
 		imgareaselect: ['jquery'],
 		jszip: ['jquery'],
 		jpicker: ['jquery'],
+		qtip: ['jquery'],
+		// bootstrap
 		bootstrap: ['jquery'],
+		// svg
 		SVG: {
 			deps: ['jquery'],
 			exports: 'SVG'
 		},
 		svgTextFlow: ['SVG'],
+		// raphael
+		raphael: {
+			deps: ['jquery'],
+			exports: 'raphael'
+		},
+		raphaelShapes   : ['raphael'],
+		raphaelGroup    : ['raphael'],
+		raphaelTransform: ['raphael'],
+		raphaelSVGImport: ['raphael'],
+		// angular
 		angular: {
 			deps: ['jquery'],
 			exports: 'angular'
@@ -76,15 +97,23 @@ require([
 	'controllers/conversationController',
 	'controllers/editConversationController',
 	'controllers/mobileController',
+	'controllers/raphaelController',
 	// plugins & helpers
 	'blockUI',
 	'imgareaselect',
 	'jszip',
 	'jpicker',
+	'qtip',
 	// svg
 	'SVG',
 	'svgtoDataURL',
-	'svgTextFlow'
+	'svgTextFlow',
+	// raphael
+	'raphael',
+	'raphaelShapes',
+	'raphaelGroup',
+	'raphaelTransform',
+	'raphaelSVGImport'
 ],
 function(angular, app, domReady){
 	'use strict';
@@ -106,13 +135,13 @@ function(angular, app, domReady){
 					},
 					templateUrl : 'app/views/home.html',
 					controller  : 'HomeController',
-					resolve: {
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
-						}
-					}
+					// resolve: {
+					// 	delay: function($q, $timeout) {
+					// 		var delay = $q.defer();
+					// 		$timeout(delay.resolve, 1000);
+					// 		return delay.promise;
+					// 	}
+					// }
 				})
 				.when('/facebook/banner', {
 					page: {
@@ -300,6 +329,17 @@ function(angular, app, domReady){
 							return delay.promise;
 						}
 					}
+				})
+				.when('/raphael', {
+					page: {
+						static: true,
+						title : '| Raphael',
+						breadcrumb: {
+							show: false
+						}
+					},
+					templateUrl : 'app/views/raphael.html',
+					controller  : 'RaphaelController'
 				})
 				.otherwise({ redirectTo:'/' });
 

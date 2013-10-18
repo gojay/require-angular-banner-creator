@@ -8,7 +8,7 @@ define('UPLOAD_PATH', BASE_PATH . '/images/upload');
 
 /* URL */
 // my ubuntu URL
-define('ABS_URL', 'http://dev.angularjs/require-angular-banner-creator');
+define('ABS_URL', 'http://angularjs/require-angular-banner-creator');
 // define('ABS_URL', 'http://dev.angularjs/_learn_/require-angular-banner-creator-master');
 define('UPLOAD_URL', 'images/upload');
 
