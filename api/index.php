@@ -627,6 +627,7 @@ $app->post('/upload', function() use ($app) {
 	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null ;
 	$sizes  = isset($_REQUEST['size']) ? $_REQUEST['size'] : false ;
 	$autoWidth = isset($_REQUEST['auto_width']) ? (boolean) $_REQUEST['auto_width'] : false ;
+	$direction = isset($_REQUEST['direction']) ? $_REQUEST['direction'] : null ;
 
 	$files = $_FILES['file'];
 	$fileImg  = $files['tmp_name'];
@@ -652,8 +653,8 @@ $app->post('/upload', function() use ($app) {
 			move_uploaded_file($fileImg, $target);
 			// create response
 			$response = array(
-				'image' => $name,
-				'url'   => $upload_url . '/' . $name
+				'image'     => $name,
+				'url'       => $upload_url . '/' . $name
 			);
 		} else {
 			// upload splash screen
@@ -666,13 +667,12 @@ $app->post('/upload', function() use ($app) {
 				$image = do_upload($files, $upload_path, $name, $width, $height, $autoWidth);
 				// create response
 				$response = array(
-					// 'autoWidth'   => $autoWidth,
-					// 'log'     => $image->log,
-					'image'   => $image->file_dst_name,
-					'height'  => $image->image_dst_y,
-					'width'   => $image->image_dst_x,
-					'url'     => $upload_url . '/' . $image->file_dst_name,
-					'dataURI' => data_uri($image->file_dst_pathname, $fileType)
+					'image'     => $image->file_dst_name,
+					'height'    => $image->image_dst_y,
+					'width'     => $image->image_dst_x,
+					'url'       => $upload_url . '/' . $image->file_dst_name,
+					'dataURI'   => data_uri($image->file_dst_pathname, $fileType),
+					'direction' => $direction
 				);
 			}
 		}

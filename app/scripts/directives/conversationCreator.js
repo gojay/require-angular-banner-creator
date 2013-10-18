@@ -263,8 +263,8 @@ define([
 
 						$timeout(function() {
 							self.deferredMultipleUpload(requests, sizes).done(function(response){
-								console.log(response);
 
+								// ganti text panel header "Generated"
 								$('a[href="#tab-svg"]').text('Generated');
 								
 								// generated zip 
@@ -343,7 +343,7 @@ define([
 								name  : 'conversation-tpl',
 								width : 'original',
 								height: 'original',
-								crop  : false
+								auto  : 0
 							}).then(function(response){
 								console.log('generatePreviewTpl', response);
 								// get selected conversations index
@@ -381,7 +381,7 @@ define([
 									name  : name,
 									width : dimension.w,
 									height: dimension.h,
-									auto  : 0
+									auto  : 1
 								}).then(function(response){
 									console.log(response);
 									$('#editor .template').unblock();
@@ -431,26 +431,30 @@ define([
 						var fileReader = new FileReader();
 						fileReader.onload = (function(blob){
 							return function(e){
-								// console.log(index, blob);
+								var name = blob.name;
+								var filename = name.substr(0, name.lastIndexOf('.')) || name;
+								var isSmall  = false;
+								var resize   = {};
 
 								var image = new Image();
 								image.src = e.target.result;
-
 								image.onload = function(){
 									var img = this.src;
 
-									var ratio = parseInt(this.width)/parseInt(this.height);
-									var direction;
-									if ( ratio == 1 ) { 
-										direction = 'square';
-									} else if( ratio > 1 ) {
+									// parse integer
+									var width  = parseInt(this.width);
+									var height = parseInt(this.height);
+
+									// gambar terlalu kecil ? max width n height = 403
+									if(width <= 403 && height <= 403) isSmall = true;
+
+									var ratio = width/height;
+									var direction = 'square';
+									if( ratio > 1 ) {
 										direction = 'landscape';
 									} else {
 										direction = 'portrait';
 									}
-
-									// set resized dimension
-									var resize = ConversationTpl.directions[direction];
 
 									// elements
 									var elements = {
@@ -460,19 +464,28 @@ define([
 									};
 									// add attribute ratio & change resized dimension for default template
 									if( $scope.conversation.selected == 0 ){
-										var calcHeight = self.getHeightRatio(direction, parseInt(this.width), parseInt(this.height));
-										console.log('calcHeight ', calcHeight)
-										elements['ratio'] = calcHeight;
-										if(direction == 'landscape'){
-											resize.h = calcHeight.h - 80;
-										} else if(direction == 'portrait') {
-											resize.w = calcHeight.w - 40;
-											resize.h = calcHeight.h - 100;
-										}
-										console.group();
-										console.log('ratio ', elements['ratio'])
-										console.log('resize ', resize)
-										console.groupEnd();
+										var calcHeight = ( isSmall ) ? { w:width, h:height }
+																	 : self.getHeightRatio(direction, width, height);
+										elements['ratio'] = resize = calcHeight;
+										// if(direction == 'landscape'){
+										// 	resize.h = calcHeight.h - 80;
+										// } else if(direction == 'portrait') {
+										// 	resize.w = calcHeight.w - 40;
+										// 	resize.h = calcHeight.h - 100;
+										// }
+										if( direction == 'square' ) {
+											resize = ConversationTpl.directions[direction];
+										} else {
+											if( !isSmall ){
+												resize = {
+													w: calcHeight.w - 40,
+													h: calcHeight.h - 100
+												};
+											}
+										}  
+									} else {
+										// set default resize dimension
+										resize = ConversationTpl.directions[direction];
 									}
 
 									// add queues
@@ -481,7 +494,9 @@ define([
 										blob  : blob,
 										size  : sizes,
 										index : index,
-										resize: resize
+										name  : filename, 
+										resize: resize,
+										direction: direction
 									});
 
 									// add elements to lists
@@ -504,10 +519,10 @@ define([
 					self.getHeightRatio = function(direction, srcWidth, srcHeight) {
 						var width = (direction == 'landscape') ? 550 : 403 ;
 					    var ratio = width / srcWidth;
-					    return { 
-					    	w: parseInt(srcWidth*ratio), 
-					    	h: parseInt(srcHeight*ratio)
-					    };
+					    return {
+							w: parseInt(srcWidth*ratio), 
+				    		h: parseInt(srcHeight*ratio)
+						};
 					}
 					// image validation
 					self.imageValidation = function(file, showAlert){
@@ -566,34 +581,45 @@ define([
 						var dimension = ConversationTpl.directions[data.direction];
 						if( $scope.conversation.selected == 0 ){
 							$svg = $('svg#svg-conversation-default').clone();
-							console.log('ratio ', data.ratio)
+							// console.log('ratio ', data.ratio)
 							if(angular.isDefined(data.ratio))
 							{
 								// console.group();
 								// console.log('ratio ', data.ratio)
 								// console.log('change svg dimension ', dimension.w, data.ratio.h)
 								// console.groupEnd();
+
 								$svg.attr({
 									width : data.ratio.w,
 									height: data.ratio.h
 								});
 								// change svg figure
 								var $figure = $('#figure', $svg).attr('fill', '{{conversation.templateColor}}');
-								if( data.direction == 'landscape' ){
-									$('image.image', $svg).attr({
-										x: 0,
-										y: 80,
-										width : data.ratio.w,
-										height: data.ratio.h - 80
-									});
-									$('#figure', $svg).attr('class','landscape');
-								} else if(data.direction == 'portrait') {
+								// if( data.direction == 'landscape' ){
+								// 	$('image.image', $svg).attr({
+								// 		x: 0,
+								// 		y: 80,
+								// 		width : data.ratio.w,
+								// 		height: data.ratio.h - 80
+								// 	});
+								// 	$('#figure', $svg).attr('class','landscape');
+								// } else if(data.direction == 'portrait') {
+								// 	$('image.image', $svg).attr({
+								// 		x: 20,
+								// 		y: 80,
+								// 		width: data.ratio.w - 40,
+								// 		height: data.ratio.h - 100
+								// 	});
+								// 	$('#figure > .bottom', $svg).attr('y', data.ratio.h - 20);
+								// }
+								if( data.direction != 'square' ){
 									$('image.image', $svg).attr({
 										x: 20,
 										y: 80,
-										width: data.ratio.w - 40,
+										width : data.ratio.w - 40,
 										height: data.ratio.h - 100
 									});
+									if( data.direction == 'landscape' ) $('#figure > .right', $svg).attr('x', data.ratio.w - 20);
 									$('#figure > .bottom', $svg).attr('y', data.ratio.h - 20);
 								}
 							}
@@ -615,18 +641,11 @@ define([
 
 						// poistions
 						var tplDirection = ConversationTpl.directions[data.direction];
-						console.log('tplDirection', tplDirection)
+						// console.log('tplDirection', tplDirection)
 						// default (square)
 						var positions = {};
 						switch(data.direction){
 							case 'landscape':
-								// var x = tplDirection.w;
-								// var lp = parseInt($scope.conversation.logo.position.x / 403 * 100);
-								// positions.logo.x = lp / 100 * x;
-								// var s1p = parseInt($scope.conversation.spot1.position.x / 403 * 100);
-								// positions.spot1.x = s1p / 100 * x;
-								// var s2p = parseInt($scope.conversation.spot2.position.x / 403 * 100);
-								// positions.spot2.x = s2p / 100 * x;
 								positions = {
 									logo: {
 										x: "{{syncPosition('logo', 'landscape')}}",
@@ -643,13 +662,6 @@ define([
 								};
 								break;
 							case 'portrait':
-								// var y = tplDirection.h;
-								// var lp = parseInt($scope.conversation.logo.position.y / 403 * 100);
-								// positions.logo.y = lp / 100 * y;
-								// var s1p = parseInt($scope.conversation.spot1.position.y / 403 * 100);
-								// positions.spot1.y = s1p / 100 * y;
-								// var s2p = parseInt($scope.conversation.spot2.position.y / 403 * 100);
-								// positions.spot2.y = s2p / 100 * y;
 								positions = {
 									logo: {
 										x: '{{conversation.logo.position.x}}',
@@ -683,7 +695,7 @@ define([
 								break;
 						}
 
-						console.log('positions', positions);
+						// console.log('positions', positions);
 
 						// background
 						$('image.image', bg).attr('xlink:href', data.imguri).css('display', 'block');
@@ -731,8 +743,6 @@ define([
 								var $liSVG = $('#li-svg-' + index);
 								var $svg   = $('.thumbnail > svg', $liSVG);
 
-								console.log(index, $svg[0]);
-
 								// change upload views
 								// $liImg.switchClass('wait', 'upload', 0);
 								$liSVG.switchClass('wait', 'upload', 0);
@@ -742,25 +752,35 @@ define([
 								// upload to resize
 								return self.uploadFile({
 									file  : request.blob,
-									name  : 'conversation-bg-' + index,
+									// name  : 'conversation-bg-' + index,
+									name  : request.name,
 									width : request.resize.w,
 									height: request.resize.h,
-									auto  : 0
+									auto  : 0,
+									direction : request.direction
 								}).pipe(function(response){
 									console.log('response', index, response);
-									// change bg image
-									$('#bg > image.image', $svg).attr({
-										'xlink:href':response.dataURI,
-										'width' :response.width,
-										'height':response.height
-									});
+									// sesuaikan attribute 'height' utk svg dan bg image, template default
+									if( $scope.conversation.selected == 0 && response.direction != 'square' ){
+										var h = parseInt(response.height);
+										// var svgH = (response.direction == 'landscape') ? h +  80 : h +  100 ;
+										var svgH = h + 100 ;
+										$svg.attr('height', svgH)
+											.find('#bg > image.image').attr({
+												'xlink:href': response.dataURI,
+												'width'     : response.width,
+												'height'    : h
+											});
+										// ubah position y figure bottom untuk landscape direction
+										if(response.direction == 'landscape') $svg.find('#figure > .bottom').attr('y', svgH - 20);
+									}
 									// change generate views
 									// $liImg.switchClass('upload', 'generate', 0);
 									$liSVG.switchClass('upload', 'generate', 0);
 									// generate image
 									return self.generateImage($svg[0]).done(function(imgDataURI){
 										// add to zip
-										self.ZIPFolder.file('conversation_'+index+'.jpg', imgDataURI, {base64: true});
+										self.ZIPFolder.file(response.image, imgDataURI, {base64: true});
 										// applying finished images
 										$scope.$apply(function(scope){
 											scope.conversation.queue.finished = index;
@@ -788,7 +808,7 @@ define([
 					// upload to resize image
 					// using jQuery Ajax for pipeline in deferred
 					self.uploadFile = function(data){
-						console.log(data);
+						// console.log(data);
 						// create form data
 						var formData = new FormData();
 						formData.append('file', data.file);
@@ -797,6 +817,7 @@ define([
 						formData.append('width', data.width);
 						formData.append('height', data.height);
 						formData.append('auto_width', data.auto);
+						formData.append('direction', data.direction);
 						// ajax upload
 						return $.ajax({
 							// processData and contentType must be false to prevent jQuery
@@ -1206,7 +1227,7 @@ define([
 							var original = evt.originalEvent,
 								files    = original.dataTransfer.files;
 
-							console.log('drop file', files);
+							// console.log('drop file', files);
 
 							// get template
 							var tpl = $scope.template;
