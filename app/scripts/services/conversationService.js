@@ -100,6 +100,10 @@ define(['services/services'], function(services){
 				logo : {
 					hide: false,
 					placeholder: true,
+					dimension: {
+						w: 165,
+						h: 45
+					},
 					position: {
 						x: 18,
 						y: 78

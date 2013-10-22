@@ -1127,11 +1127,12 @@ define([
 						var handlerLogo = function(evt){
 							var file = evt.target.files[0];
 							controller.handleSingleFile(file, 'logo', function(response){
-								// console.log('response logo', response);
-								$scope.$apply(function(scope){
-									scope.conversation.logo.uploaded = true;
-									scope.conversation.logo.image = response.dataURI;
-								});
+								console.log('response logo [default]', response);
+								$scope.conversation.logo.uploaded = true;
+								$scope.conversation.logo.image = response.dataURI;
+								$scope.conversation.logo.dimension.w = response.width;
+								$scope.conversation.logo.dimension.h = response.height;
+								$scope.$apply();
 							});
 						};
 						$(this).next()
@@ -1146,10 +1147,11 @@ define([
 							var file = evt.target.files[0];
 							controller.handleSingleFile(file, 'logo', function(response){
 								// console.log('response logo', response);
-								$scope.$apply(function(scope){
-									scope.conversation.logo.uploaded = true;
-									scope.conversation.logo.image = response.dataURI;
-								});
+								$scope.conversation.logo.uploaded = true;
+								$scope.conversation.logo.image = response.dataURI;
+								$scope.conversation.logo.dimension.w = response.width;
+								$scope.conversation.logo.dimension.h = response.height;
+								$scope.$apply();
 							});
 						};
 						$(this).next()

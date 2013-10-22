@@ -407,9 +407,10 @@ function(angular, app, domReady){
 
 			// authorization ping 
 			// $rootScope.$broadcast('event:auth-ping');
+			console.log('next', next,' current',  current)
 
 			// transition
-			if(current === undefined) {
+			if(current === undefined || next.$$route.controller == "HomeController") {
 				$rootScope.pageService.static = false;
 			} else {
 				// set false start pageService to static page, or doesn't needed services
