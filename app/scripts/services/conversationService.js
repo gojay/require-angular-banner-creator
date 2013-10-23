@@ -19,7 +19,7 @@ define(['services/services'], function(services){
 				dimensions : {
 					logo : {
 						w: 165,
-						h: 62
+						h: 45
 					},
 					spot : {
 						w: 70,

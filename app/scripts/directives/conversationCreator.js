@@ -901,14 +901,17 @@ define([
 						$scope.$apply(function(scope){
 							scope.conversation.selected = index;
 							// scope.template = (index < 4) ? template : template['blue'];
-							if(index == 0){
+							if(index == 0){ // default template
 								scope.conversation.templateColor = '#AAAAAA';
+								scope.conversation.logo.dimension.h = 62;
 							} else if(index > 0 && index < 4){
 								scope.template = template;
 								scope.conversation.templateColor = null;
+								scope.conversation.logo.dimension.h = 45;
 							} else {
 								var color = (scope.conversation.templateColor) ? scope.conversation.templateColor : 'blue' ;
 								scope.template = template[color];
+								scope.conversation.logo.dimension.h = 45;
 							}
 
 							console.log(index, scope)
