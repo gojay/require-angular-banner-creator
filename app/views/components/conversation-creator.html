@@ -124,11 +124,11 @@
 							<image class="image" xlink:href="" width="100%" height="100%" style="display:none"/>					
 							<image class="tpl" xlink:href="{{template.square}}" width="100%" height="100%"/>
 						</g>
-						<svg id="logo" class="g_logo" x="{{conversation.logo.position.x}}" y="{{conversation.logo.position.y}}" cursor="move">
+						<svg class="g_logo" x="{{conversation.logo.position.x}}" y="{{conversation.logo.position.y}}" cursor="move">
 							<rect class="placeholder" fill="white" width="175" height="55" x="0" y="0"/>
 							<image id="SvgjsImage1005" xlink:href="{{conversation.logo.image}}" width="{{conversation.logo.dimension.w}}" height="{{conversation.logo.dimension.h}}" x="5" y="5"/>
 						</svg>
-						<svg id="spot1" class="g_spot1" x="{{conversation.spot1.position.x}}" y="{{conversation.spot1.position.y}}" cursor="move">
+						<svg class="g_spot1" x="{{conversation.spot1.position.x}}" y="{{conversation.spot1.position.y}}" cursor="move">
 							<defs id="SvgjsDefs1002">
 								<clipPath id="spot1-clip-placeholder">
 									<rect id="SvgjsRect1003" width="80" height="80" rx="50" x="0" y="0"/>
@@ -140,7 +140,7 @@
 							<rect class="placeholder" clip-path="url(#spot1-clip-placeholder)" fill="white" width="80" height="80" x="0" y="0"/>
 							<image id="SvgjsImage1008" xlink:href="{{conversation.spot1.image}}" width="70" height="70" clip-path="url(#spot1-clip-image)" x="5" y="5" class="background"/>
 						</svg>
-						<svg id="spot2" class="g_spot2" x="{{conversation.spot2.position.x}}" y="{{conversation.spot2.position.y}}" cursor="move">
+						<svg class="g_spot2" x="{{conversation.spot2.position.x}}" y="{{conversation.spot2.position.y}}" cursor="move">
 							<defs id="SvgjsDefs1003">
 								<clipPath id="spot2-clip-placeholder">
 									<rect id="SvgjsRect1005" width="80" height="80" rx="50" x="0" y="0"/>
@@ -177,10 +177,22 @@
 							<rect height="100%" width="20px" x="383" y="0" class="right" />
 							<rect height="20px" width="100%" x="0" y="383" class="bottom" />
 						</g>
-						<g id="logo" class="g_logo" transform="translate(20,10)">
+						<g class="g_logo" transform="translate(20,10)">
 							<!-- <rect class="placeholder" fill="white" width="185" height="65" x="0" y="0"/> -->
 							<image id="SvgjsImage1005" xlink:href="{{conversation.logo.image}}" width="{{conversation.logo.dimension.w}}" height="{{conversation.logo.dimension.h}}"/>
 						</g>
+						<svg class="g_spot1" x="{{conversation.spot1.position.x}}" y="{{conversation.spot1.position.y}}" cursor="move">
+							<defs id="SvgjsDefs1002">
+								<clipPath id="spot1-clip-placeholder">
+									<rect id="SvgjsRect1003" width="80" height="80" rx="50" x="0" y="0"/>
+								</clipPath>
+								<clipPath id="spot1-clip-image">
+									<rect id="SvgjsRect1004" width="70" height="70" rx="50" x="5" y="5"/>
+								</clipPath>
+							</defs>
+							<rect class="placeholder" clip-path="url(#spot1-clip-placeholder)" fill="white" width="80" height="80" x="0" y="0"/>
+							<image id="SvgjsImage1008" xlink:href="{{conversation.spot1.image}}" width="70" height="70" clip-path="url(#spot1-clip-image)" x="5" y="5" class="background"/>
+						</svg>
 					</svg>
 				</div>
 				<div id="drop-backgrounds" class="background margin-top">

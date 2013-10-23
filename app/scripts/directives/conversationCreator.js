@@ -904,6 +904,8 @@ define([
 							if(index == 0){ // default template
 								scope.conversation.templateColor = '#AAAAAA';
 								scope.conversation.logo.dimension.h = 62;
+								scope.conversation.spot1.position.x = 285;
+								scope.conversation.spot1.position.y = 37;
 							} else if(index > 0 && index < 4){
 								scope.template = template;
 								scope.conversation.templateColor = null;
@@ -1270,8 +1272,8 @@ define([
 					// drag callback svg elements
 
 					var startDragSVG = function(event, ui) {
-						var id   = event.target.id;
-						var type = id.replace(/\d/,'');
+						var className = $(event.target).attr('class').replace('g_', '');
+						var type = className.replace(/\d/,'');
 						var max  = bounds[type];
 						var offset = $('#editor .template').offset();
 						// set X
@@ -1279,11 +1281,11 @@ define([
 						var xVal = (x >= max.x) ? max.x : x;
 						event.target.setAttribute('x', xVal);
 						// simetris X
-						if(id == 'spot1' && $scope.conversation.align.x == 'x1'){
-							var getX = controller.getX(id, xVal);
+						if(className == 'spot1' && $scope.conversation.align.x == 'x1'){
+							var getX = controller.getX(className, xVal);
 							document.getElementById('spot2').setAttribute('x', getX);
-						} else if (id == 'spot2' && $scope.conversation.align.x == 'x2'){
-							var getX = controller.getX(id, xVal);
+						} else if (className == 'spot2' && $scope.conversation.align.x == 'x2'){
+							var getX = controller.getX(className, xVal);
 							document.getElementById('spot1').setAttribute('x', getX);
 						}
 						// set Y
@@ -1291,45 +1293,31 @@ define([
 						var yVal = (y >= max.y) ? max.y : y;
 						event.target.setAttribute('y', yVal);
 						// simetris Y
-						if(id == 'spot1' && $scope.conversation.align.y == 'y1'){
+						if(className == 'spot1' && $scope.conversation.align.y == 'y1'){
 							document.getElementById('spot2').setAttribute('y', yVal);
-						} else if (id == 'spot2' && $scope.conversation.align.y == 'y2'){
+						} else if (className == 'spot2' && $scope.conversation.align.y == 'y2'){
 							document.getElementById('spot1').setAttribute('y', yVal);
 						}
 					};
 					var stopDragSVG = function(event, ui) {
-						var id  = event.target.id;
+						var className = $(event.target).attr('class').replace('g_', '');
 						var offset = $('#editor .template').offset();
 						var y = ui.offset.top - offset.top;
 						var x = ui.offset.left - offset.left;
-						$scope.conversation[id].position = {x:x, y:y};
+						$scope.conversation[className].position = {x:x, y:y};
 						// simetris
 						var align = $scope.conversation.align;
-						if(id == 'spot1' && (align.x !== 'none' || align.y !== 'none')){
+						if(className == 'spot1' && (align.x !== 'none' || align.y !== 'none')){
 							var sId = document.getElementById('spot2');
 							$scope.conversation['spot2'].position = {x:sId.getAttribute('x'), y:sId.getAttribute('y')};
-						} else if (id == 'spot2' && (align.x !== 'none' || align.y !== 'none')){
+						} else if (className == 'spot2' && (align.x !== 'none' || align.y !== 'none')){
 							var sId = document.getElementById('spot1');
 							$scope.conversation['spot1'].position = {x:sId.getAttribute('x'), y:sId.getAttribute('y')};
 						}
 					};
 
 					// draggable
-					$('#logo')
-						.draggable({
-							cursor: "move",
-							containment: "#editor .template",
-							drag: startDragSVG,
-							stop: stopDragSVG
-						});
-					$('#spot1')
-						.draggable({
-							cursor: "move",
-							containment: "#editor .template",
-							drag: startDragSVG,
-							stop: stopDragSVG
-						});
-					$('#spot2')
+					$('.g_logo, .g_spot1, .g_spot2')
 						.draggable({
 							cursor: "move",
 							containment: "#editor .template",
