@@ -910,13 +910,17 @@ define([
 								scope.template = template;
 								scope.conversation.templateColor = null;
 								scope.conversation.logo.dimension.h = 45;
+								scope.conversation.spot1.position.x = 65;
+								scope.conversation.spot1.position.y = 266;
 							} else {
 								var color = (scope.conversation.templateColor) ? scope.conversation.templateColor : 'blue' ;
 								scope.template = template[color];
 								scope.conversation.logo.dimension.h = 45;
+								scope.conversation.spot1.position.x = 65;
+								scope.conversation.spot1.position.y = 266;
 							}
 
-							console.log(index, scope)
+							// console.log(index, scope)
 						});
 						// change breadcumb active title
 						var title = $link.data('title');
