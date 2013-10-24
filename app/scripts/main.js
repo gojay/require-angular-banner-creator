@@ -341,7 +341,7 @@ function(angular, app, domReady){
 				.otherwise({ redirectTo:'/' });
 
 				// enable/disable debuging
-				debugProvider.setDebug(false);
+				debugProvider.setDebug(true);
 
 				// transition config  
 				// transitionProvider.setStartTransition('expandIn');
@@ -357,7 +357,8 @@ function(angular, app, domReady){
 	.run(function($rootScope, $http, $timeout, $location, transition) {
 		window._unsupported = { allow : false, status: false };
 		window._onbeforeunload = true;
-		// show popup for unsopported browsers
+		// only using firefox to run this application.
+		// showing popup for unsopported browsers
 		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow)
 		{
 			window._unsupported.status = true;
@@ -401,7 +402,6 @@ function(angular, app, domReady){
 			status: null,
 			message: ''
 		};
-		// change transition when starting routes 
 		$rootScope.$on('$routeChangeStart', function(scope, next, current) {
 			// authorization ping 
 			// $rootScope.$broadcast('event:auth-ping');
@@ -416,16 +416,18 @@ function(angular, app, domReady){
 			// }
 		});
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
-			// inject page form current route
+			// inject page from current route
 			$rootScope.page = current.$$route.page;
 		});
 		$rootScope.$on('$locationChangeStart', function(event, next, current) {
 			if(window._unsupported.status){
 				$location.path('/');
 			}
-			if(!window._onbeforeunload && current.$$route.controller != 'homeController'){
+			if(!window._onbeforeunload){
 				if(!confirm("You have attempted to leave this page. If you have made any changes to the settings without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?")) {
 					event.preventDefault();
+				} else {
+					window._onbeforeunload = true;
 				}
 			}
 	    });

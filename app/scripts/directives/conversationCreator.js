@@ -51,14 +51,14 @@ define([
 						requests = [];
 
 					// define elements
-					self.navbarPanel = $('.navbar-container');
-					self.btnLogoDefault = $('#btn-input-logo-default');
-					self.btnLogo    = $('#btn-input-logo');
-					self.btnSpot1   = $('#btn-input-spot1');
-					self.btnSpot2   = $('#btn-input-spot2');
-					self.btnBg      = $('#btn-upload-backgrounds');
-					self.sectionBg  = $('#drop-backgrounds');
-					self.inputBgColor  = $('#input-bg-color');
+					self.navbarPanel = $('.navbar-container', $element);
+					self.btnLogoDefault = $('#btn-input-logo-default', $element);
+					self.btnLogo    = $('#btn-input-logo', $element);
+					self.btnSpot1   = $('#btn-input-spot1', $element);
+					self.btnSpot2   = $('#btn-input-spot2', $element);
+					self.btnBg      = $('#btn-upload-backgrounds', $element);
+					self.sectionBg  = $('#drop-backgrounds', $element);
+					self.inputBgColor  = $('#input-bg-color', $element);
 					// define dimensions
 					self.dimensions = ConversationTpl.dimensions;
 					// define jsZip
@@ -888,8 +888,10 @@ define([
 
 					/* ================ handling setting collapse ================ */
 
+					var el = angular.element(iElm);
+
 					var $editorTpl = $('#editor .template');
-					$('.collapse').live('show', function() {
+					$('.collapse', el).live('show', function() {
 						// set collapse class open 
 						var $link = $(this).parent().find('a');
 						$(this).parent().find('a').addClass('open'); //add active state to button on open
@@ -926,7 +928,7 @@ define([
 						var title = $link.data('title');
 						$('nav > ul > li.active').text(title);
 					});
-					$('.collapse').live('hide', function() {
+					$('.collapse', el).live('hide', function() {
 						$(this).parent().find('a').removeClass('open'); //remove active state to button on close
 					});
 					// make clicked, set template selected
@@ -936,7 +938,7 @@ define([
 						$rootScope.pageService.loaded = true;
 						$('a[href="#tpl-'+ $scope.conversation.selected +'"]').click();
 						// use jPicker, firefox doesn't support input color
-						$('#input-bg-color')
+						$('#input-bg-color', el)
 							.jPicker({
 								window : {
 									effects :  { type: 'fade' }

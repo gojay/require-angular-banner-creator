@@ -514,11 +514,10 @@ jqmModule.directive('jqmClass', [function() {
     };
 }]);
 
-jqmModule.directive('jqmPage', ['$rootScope', '$controller', '$scroller', function ($rootScope, $controller, $scroller) {
+jqmModule.directive('jqmPage', ['$rootScope', '$controller', function ($rootScope, $controller) {
     return {
         restrict: 'A',
         require: 'jqmPage',
-        controller: ['$element', JqmPageController],
         // Note: We are not using a template here by purpose,
         // so that other directives like dialog may reuse this directive in a template themselves.
         compile: function (cElement, cAttr) {
@@ -566,27 +565,6 @@ jqmModule.directive('jqmPage', ['$rootScope', '$controller', '$scroller', functi
             }
         }
     };
-    function JqmPageController(element) {
-        var scroller = $scroller(element.children());
-
-        this.scroll = function(newPos, easeTime) {
-            if (arguments.length) {
-                if (arguments.length === 2) {
-                    scroller.transformer.easeTo(newPos, easeTime);
-                } else {
-                    scroller.transformer.setTo(newPos);
-                }
-            }
-            return scroller.transformer.pos;
-        };
-        this.scrollHeight = function() {
-            scroller.calculateHeight();
-            return scroller.scrollHeight;
-        };
-        this.outOfBounds = function(pos) {
-            return scroller.outOfBounds(pos);
-        };
-    }
 }]);
 
 jqmModule.directive('jqmFooter', ['jqmConfig', function (jqmConfig) {

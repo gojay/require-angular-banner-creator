@@ -28,13 +28,13 @@ define([
 			  	}
 			};
 
-			// model banner templates n recents
+			// banner models : templates, badges, recents & detail
 			$scope.fb        = banners.templates.fb;
 			$scope.badges    = banners.templates.badges;
 			$scope.templates = banners.templates.tpl;
 			$scope.banners   = banners.recents;
 
-			// model banner
+			// banner model
 			if(banners.banner === null){
 				$scope.banner 	 = angular.copy(BannerConfig.data);
 				// $scope.banner.ID = new Date().getTime();
@@ -63,18 +63,19 @@ define([
 				}
 			}
 
-			console.group();
+			// debugging
+			/*console.group();
 			console.log('banners', banners);
 			console.log('fb', $scope.fb);
 			console.log('templates', $scope.templates);
 			console.log('recents', $scope.banners);
 			console.log('detail is new ?', isNew);
 			console.log('banner', $scope.banner);
-			console.groupEnd();
+			console.groupEnd();*/
 
 			$scope.banner['range'] = 0;
 
-			/* ================ Handling Panel ================ */
+			/* ================ Handling Panels ================ */
 
 			// set active left panel
 			$('a.handler-left').switchClass('invisible', 'visible', 0);
@@ -205,7 +206,6 @@ define([
 
 			// call this, when template banner settings has been loaded
 			$scope.settingOnLoad = function(){
-				console.log('callback settingOnLoad');
 				// set tab selected
 				$('#templates ul > li:eq('+ $scope.banner.selected +') > a').click();
 				$('#set-overlay').bind('normalize',function(){
@@ -241,7 +241,8 @@ define([
 				var en       = ['one', 'two', 'three'][prize - 1];
 
 				var isSameasEdit = ((cBanner !== false) && (parseInt(cBanner.selected) == selected)) ? true : false ;
-				console.log('choose template', 'selected', selected, 'isSameasEdit', isSameasEdit);
+				
+				// console.log('choose template', 'selected', selected, 'isSameasEdit', isSameasEdit);
 
 				// applying banner images
 				$scope.safeApply(function(scope){
@@ -574,6 +575,7 @@ define([
 				// compile scope
 				return $compile(g)($scope);
 			}
+			// RaphaelJS not working !!
 			self.createBadgeElement2 = function(svg){
 				var svg_xml = (new XMLSerializer()).serializeToString(svg[0]);
 				var paper = Raphael('svg-editor', 810, 381);

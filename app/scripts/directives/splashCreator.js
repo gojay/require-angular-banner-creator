@@ -78,20 +78,23 @@ define([
 						}
 						$('rect', $svg)[0].setAttribute('fill', '#' + all.hex);
 					};
-					// initialize
-					$(controller.inputBgColor)
-						.jPicker({
-							window : {
-								effects :  { type: 'fade' },
-								position : {
-									x : ($(window).width() - $('.jPicker').width()) / 2,
-									y : 177
+
+					$timeout(function(){
+						$('.jPicker.Container').remove();
+						$(controller.inputBgColor)
+							.jPicker({
+								window : {
+									effects :  { type:'slide' },
+									position : {
+										x : 'screenCenter',
+										y : 'top'
+									}
+								},
+								images : {
+									clientPath : 'assets/css/jpicker/images/'
 								}
-							},
-							images : {
-								clientPath : 'assets/css/jpicker/images/'
-							}
-						}, callbackJPicker, callbackJPicker);
+							}, callbackJPicker, callbackJPicker);
+					}, 400);
 
 					/* init slider (reposition) */
 

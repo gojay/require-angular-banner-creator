@@ -10,7 +10,7 @@ define([
 			/* RaphaelJS */
 
 			var selectedEl = null;
-		    var paper = Raphael('svg-editor', 810, 810);
+		    var paper = Raphael('holder', 810, 810);
 
 		    /* rounded square */
 

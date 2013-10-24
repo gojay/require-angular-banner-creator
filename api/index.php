@@ -128,7 +128,7 @@ $banner_templates = array(
 
 $app->get('/banner/template', function() use($app, $banner_fb, $banner_badges, $banner_templates){
 	$app->response()->header('Content-Type', 'application/json');
-	sleep(2);
+	// sleep(2);
 	echo json_encode(array(
 		'fb' => $banner_fb,
 		'badges' => $banner_badges,
@@ -481,7 +481,7 @@ $conversation_templates = array(
 
 $app->get('/conversation/template', function() use($app, $conversation_templates){
 	$app->response()->header('Content-Type', 'application/json');
-	sleep(2);
+	// sleep(2);
 	echo json_encode($conversation_templates);
 });
 
