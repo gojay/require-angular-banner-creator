@@ -419,83 +419,6 @@ function registerPageAnimation(animationType, reverse, direction) {
     }
 }
 
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmCachingView
- * @restrict ECA
- *
- * @description
- * # Overview
- * `jqmCachingView` extends `jqmView` in the following way:
- *
- * - views are only compiled once and then stored in the `jqmViewCache`. By this, changes between views are very fast.
- * - controllers are still instantiated on every route change. Their changes to the scope get cleared
- *   when the view is left.
- *
- * Side effects:
- * - For animations between multiple routes that use the same template add the attribute `allow-same-view-animation`
- *   to the root of your view. Background: The DOM nodes and scope of the compiled template are reused for every view.
- *   With this attribute `jqmCachingView` will create two instances of the template internally.
- *   Example: Click on Moby and directly after this on Gatsby. Both routes use the same template and therefore
- *   the template has to contain `allow-same-view-animation`.
- *
- * @requires jqmViewCache
- *
- * @param {expression=} jqmCachingView angular expression evaluating to a route (optional). See `jqmView` for details.
- * @scope
- * @example
-    <example module="jqmView">
-      <file name="index.html">
-          Choose:
-          <a href="#/Book/Moby">Moby</a> |
-          <a href="#/Book/Moby/ch/1">Moby: Ch1</a> |
-          <a href="#/Book/Gatsby">Gatsby</a> |
-          <a href="#/Book/Gatsby/ch/4?key=value">Gatsby: Ch4</a> |
-          <a href="#/Book/Scarlet">Scarlet Letter</a><br/>
-
-          <div jqm-caching-view style="height:300px"></div>
-      </file>
-
-      <file name="book.html">
-        <div jqm-page allow-same-view-animation>
-          <div jqm-header><h1>Book {{book.params.bookId}}</h1></div>
-          The book contains ...
-        </div>
-      </file>
-
-      <file name="chapter.html">
-        <div jqm-page allow-same-view-animation>
-          <div jqm-header><h1>Chapter {{chapter.params.chapterId}} of {{chapter.params.bookId}}</h1></div>
-          This chapter contains ...
-        </div>
-      </file>
-
-      <file name="script.js">
-        angular.module('jqmView', ['jqm'], function($routeProvider) {
-          $routeProvider.when('/Book/:bookId', {
-            templateUrl: 'book.html',
-            controller: BookCntl,
-            controllerAs: 'book',
-            animation: 'page-slide'
-          });
-          $routeProvider.when('/Book/:bookId/ch/:chapterId', {
-            templateUrl: 'chapter.html',
-            controller: ChapterCntl,
-            controllerAs: 'chapter',
-            animation: 'page-slide'
-          });
-        });
-
-        function BookCntl($routeParams) {
-          this.params = $routeParams;
-        }
-
-        function ChapterCntl($routeParams) {
-          this.params = $routeParams;
-        }
-      </file>
-    </example>
-*/
 jqmModule.directive('jqmCachingView', ['jqmViewDirective', 'jqmViewCache', '$injector',
     function (jqmViewDirectives, jqmViewCache, $injector) {
         return {
@@ -591,26 +514,81 @@ jqmModule.directive('jqmClass', [function() {
     };
 }]);
 
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmFooter
- * @restrict A
- *
- * @description
- * Defines the footer of a `jqm-page`. For a persistent footer, put the footer directly below `jqmView` / `jqmCachingView`.
- *
- * @example
- <example module="jqm">
- <file name="index.html">
- <div jqm-page class="jqm-standalone-page" style="height: 100px;">
-   Hello world!
-   <div jqm-footer>
-     <h1>Footer of Page1</h1>
-   </div>
- </div>
- </file>
- </example>
- */
+jqmModule.directive('jqmPage', ['$rootScope', '$controller', '$scroller', function ($rootScope, $controller, $scroller) {
+    return {
+        restrict: 'A',
+        require: 'jqmPage',
+        controller: ['$element', JqmPageController],
+        // Note: We are not using a template here by purpose,
+        // so that other directives like dialog may reuse this directive in a template themselves.
+        compile: function (cElement, cAttr) {
+            var content = angular.element('<div class="ui-content"></div>');
+            content.append(cElement.contents());
+            cElement.append(content);
+            cElement.addClass("ui-page");
+
+            return function (scope, lElement, lAttr, jqmPageCtrl) {
+                var content = lElement.children();
+                lElement.addClass("ui-body-" + scope.$theme);
+                addAndRemoveParentDependingClasses(scope, lElement, content);
+                if (content.data("jqmHeader")) {
+                    content.addClass('jqm-content-with-header');
+                    lElement.prepend(content.data("jqmHeader"));
+                }
+                if (content.data("jqmFooter")) {
+                    content.addClass('jqm-content-with-footer');
+                    lElement.append(content.data("jqmFooter"));
+                }
+            };
+
+            function addAndRemoveParentDependingClasses(scope, lElement, content) {
+                var viewContentLoadedOff = $rootScope.$on('$viewContentLoaded', function (event, pageNodes) {
+                    // Note: pageNodes may contain text nodes as well as our page.
+                    var pageEl;
+                    angular.forEach(pageNodes, function (pageNode) {
+                        if (pageNode === lElement[0]) {
+                            pageEl = pageNode;
+                        }
+                    });
+                    // Note: checking event.targetScope===scope does not work when we put a jqm-theme on the page.
+                    if (pageEl) {
+                        lElement.parent().addClass("ui-overlay-" + scope.$theme);
+                        if (lElement.parent().data("jqmHeader")) {
+                            content.addClass("jqm-content-with-header");
+                        }
+                        if (lElement.parent().data("jqmFooter")) {
+                            content.addClass("jqm-content-with-footer");
+                        }
+                        lElement.parent().addClass("ui-mobile-viewport");
+                    }
+                });
+                scope.$on('$destroy', viewContentLoadedOff);
+            }
+        }
+    };
+    function JqmPageController(element) {
+        var scroller = $scroller(element.children());
+
+        this.scroll = function(newPos, easeTime) {
+            if (arguments.length) {
+                if (arguments.length === 2) {
+                    scroller.transformer.easeTo(newPos, easeTime);
+                } else {
+                    scroller.transformer.setTo(newPos);
+                }
+            }
+            return scroller.transformer.pos;
+        };
+        this.scrollHeight = function() {
+            scroller.calculateHeight();
+            return scroller.scrollHeight;
+        };
+        this.outOfBounds = function(pos) {
+            return scroller.outOfBounds(pos);
+        };
+    }
+}]);
+
 jqmModule.directive('jqmFooter', ['jqmConfig', function (jqmConfig) {
     return {
         restrict: 'A',
@@ -629,26 +607,6 @@ jqmModule.directive('jqmFooter', ['jqmConfig', function (jqmConfig) {
     };
 }]);
 
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmHeader
- * @restrict A
- *
- * @description
- * Defines the header of a `jqm-page`. For a persistent header, put the header directly below `jqmView` / `jqmCachingView`.
- *
- * @example
- <example module="jqm">
- <file name="index.html">
- <div jqm-page class="jqm-standalone-page" style="height: 100px;">
-   <div jqm-header>
-     <h1>Header of Page1</h1>
-   </div>
-   Hello world!
- </div>
- </file>
- </example>
- */
 jqmModule.directive('jqmHeader', ['jqmConfig', function (jqmConfig) {
     return {
         restrict: 'A',
@@ -688,20 +646,6 @@ function hxDirective() {
     };
 }
 
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmPanel
- * @restrict A
- *
- * @description
- * Creates a jquery mobile panel.  Must be placed inside of a jqm-panel-container.
- *
- * @param {expression=} opened Assignable angular expression to data-bind the panel's open state to.
- * @param {string=} display Default 'reveal'.  What display type the panel has. Available: 'reveal', 'overlay', 'push'.
- * @param {string=} position Default 'left'. What position the panel is in. Available: 'left', 'right'.
- *
- * @require jqmPanelContainer.
- */
 jqmModule.directive('jqmPanel', function() {
     var isDef = angular.isDefined;
     return {
@@ -732,47 +676,6 @@ jqmModule.directive('jqmPanel', function() {
         }
     };
 });
-
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmPanelContainer
- * @restrict A
- *
- * @description
- * A container for jquery mobile panels.
- *
- * If you wish to use this with a view, you want the jqm-panel-container as the
- * parent of your view and your panels. For example:
- * <pre>
- * <div jqm-panel-container="myPanel">
- *   <div jqm-panel>My Panel!</div>
- *   <div jqm-view></div>
- * </div>
- * </pre>
- *
- * @param {expression=} jqmPanelContainer Assignable angular expression to data-bind the panel's open state to.
- *                      This is either `left` (show left panel), `right` (show right panel) or null.
- *
- * @example
-<example module="jqm">
-  <file name="index.html">
-     <div ng-init="state={}"></div>
-     <div jqm-panel-container="state.openPanel" style="height:300px;overflow:hidden">
-        <div jqm-panel position="left">
-          Hello, left panel!
-        </div>
-        <div jqm-panel position="right" display="overlay">
-         Hello, right panel!
-        </div>
-        <div style="background: white">
-           Opened panel: {{state.openPanel}}
-           <button ng-click="state.openPanel='left'">Open left</button>
-           <button ng-click="state.openPanel='right'">Open right</button>
-        </div>
-     </div>
-  </file>
-</example>
- */
 
 jqmModule.directive('jqmPanelContainer', function () {
     return {
@@ -882,295 +785,6 @@ jqmModule.directive('jqmPanelContainer', ['$timeout', '$transitionComplete', '$s
     }
 }]);
 
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmPopup
- * @restrict A
- *
- * @description
- * Creates a popup with the given content.  The popup can be opened and closed on an element using {@link jqm.directive:jqmPopupTarget jqmPopupTarget}.
- *
- * Tip: put a {@link jqm.directive:jqmView jqmView} inside a popup to have full scrollable pages inside.
- * <pre>
- * <div jqm-popup="myPopup">
- *   <div jqm-view="{
- *     templateUrl: 'views/my-popup-content-page.html',
- *     controller: 'MyPopupController'
- *   }"></div>
- * </div>
- * </pre>
- *
- * @param {expression} jqmPopup Assignable angular expression to bind this popup to.  jqmPopupTargets will point to this model.
- * @param {expression=} animation jQuery Mobile animation to use to show/hide this popup.  Default 'fade'.
- * @param {expression=} placement Where to put the popup relative to its target.  Available: 'left', 'right', 'top', 'bottom', 'inside'. Default: 'inside'.
- * @param {expression=} overlay-theme The theme to use for the overlay behind the popup. Defaults to the popup's theme.
- * @param {expression=} corners Whether the popup has corners. Default true.
- * @param {expression=} shadow Whether the popup has shadows. Default true.
- *
- * @example
-<example module="jqm">
-  <file name="index.html">
-      <div jqm-popup="myPopup">
-        Hey guys, here's a popup!
-      </div>
-      <div style="padding: 50px;"
-         jqm-popup-target="myPopup"
-         jqm-popup-model="pageCenterPop">
-
-         <div jqm-button ng-click="pageCenterPop = true">
-            Open Page Center Popup
-         </div>
-         <div jqm-button
-           jqm-popup-target="myPopup"
-           jqm-popup-model="buttonPop"
-           jqm-popup-placement="left"
-           ng-click="buttonPop = true">
-           Open popup left of this button!
-       </div>
-      </div>
-  </file>
-</example>
- */
-jqmModule.directive('jqmPopup', ['$position', '$animationComplete', '$parse', '$rootElement', '$timeout', '$compile', '$rootScope',
-function($position, animationComplete, $parse, $rootElement, $timeout, $compile, $rootScope) {
-    var isDef = angular.isDefined;
-    var popupOverlayTemplate = '<div jqm-popup-overlay></div>';
-
-    return {
-        restrict: 'A',
-        replace: true,
-        transclude: true,
-        templateUrl: 'templates/jqmPopup.html',
-        require: '^?jqmPage',
-        scope: {
-            corners: '@',
-            shadow: '@',
-            placement: '@',
-            animation: '@',
-            overlayTheme: '@',
-            dismissible: '@'
-        },
-        compile: function(elm, attr) {
-            attr.animation = isDef(attr.animation) ? attr.animation : 'fade';
-            attr.corners = isDef(attr.corners) ? attr.corners==='true' : true;
-            attr.shadow = isDef(attr.shadow) ? attr.shadow==='true' : true;
-            attr.dismissible = isDef(attr.dismissible) ? attr.dismissible==='true' : true;
-
-            return postLink;
-        }
-    };
-    function postLink(scope, elm, attr, pageCtrl) {
-        animationComplete(elm, onAnimationComplete);
-
-        var popupModel = $parse(attr.jqmPopup);
-        
-        if (!popupModel.assign) {
-            throw new Error("jqm-popup expected assignable expression for jqm-popup attribute, got '" + attr.jqmPopup + "'");
-        }
-        popupModel.assign(scope.$parent, scope);
-        
-        console.group();
-        console.log('scope', scope);
-        console.groupEnd();
-
-        elm.after( $compile(popupOverlayTemplate)(scope) );
-
-        //Publicly expose show, hide methods
-        scope.show = show;
-        scope.hideForElement = hideForElement;
-        scope.hide = hide;
-        scope.target = null;
-        scope.opened = false;
-
-        function show(target, placement) {
-            scope.target = target;
-            scope.opened = true;
-            placement = placement || scope.placement;
-
-            elm.css( getPosition(elm, target, placement) );
-            scope.$root.$broadcast('$popupStateChanged', scope);
-            if (scope.animation === 'none') {
-                onAnimationComplete();
-            } else {
-                elm.addClass('in').removeClass('out');
-            }
-
-        }
-        function hideForElement(target) {
-            if (scope.target && target && scope.target[0] === target[0]) {
-                scope.hide();
-            }
-        }
-        function hide() {
-            if(!scope.dismissible) return;
-
-            scope.target = null;
-            scope.opened = false;
-            elm.addClass('out').removeClass('in');
-
-            scope.$root.$broadcast('$popupStateChanged', scope);
-            if (scope.animation === 'none') {
-                onAnimationComplete();
-            } else {
-                elm.addClass('out').removeClass('in');
-            }
-
-            scope.dismissible = attr.dismissible;
-        }
-
-        function onAnimationComplete() {
-            elm.toggleClass('ui-popup-active', scope.opened);
-            elm.toggleClass('ui-popup-hidden', !scope.opened);
-            if (!scope.opened) {
-                elm.css('left', '');
-                elm.css('top', '');
-            }
-        }
-
-        function getPosition(elm, target, placement) {
-            var popWidth = elm.prop( 'offsetWidth' );
-            var popHeight = elm.prop( 'offsetHeight' );
-            var pos = $position.position(target);
-
-            var newPosition = {};
-            switch (placement) {
-                case 'right':
-                    newPosition = {
-                        top: pos.top + pos.height / 2 - popHeight / 2,
-                        left: pos.left + pos.width
-                    };
-                    break;
-                case 'bottom':
-                    newPosition = {
-                        top: pos.top + pos.height,
-                        left: pos.left + pos.width / 2 - popWidth / 2
-                    };
-                    break;
-                case 'left':
-                    newPosition = {
-                        top: pos.top + pos.height / 2 - popHeight / 2,
-                        left: pos.left - popWidth
-                    };
-                    break;
-                case 'top':
-                    newPosition = {
-                        top: pos.top - popHeight,
-                        left: pos.left + pos.width / 2 - popWidth / 2
-                    };
-                    break;
-                case 'center':
-                    var page = document.querySelector('.ui-page');
-                    newPosition = {
-                        top: (page.offsetHeight - popHeight) / 2,
-                        left:(page.offsetWidth - popWidth) / 2
-                    };
-                    break;
-                default:
-                    newPosition = {
-                        top: pos.top + pos.height / 2 - popHeight / 2,
-                        left: pos.left + pos.width / 2 - popWidth / 2
-                    };
-                    break;
-            }
-
-            newPosition.top = Math.max(newPosition.top, 0);
-            newPosition.left = Math.max(newPosition.left, 0);
-
-            newPosition.top += 'px';
-            newPosition.left += 'px';
-
-            return newPosition;
-        }
-    }
-}]);
-
-jqmModule.directive('jqmPopupOverlay', function() {
-    return {
-        restrict: 'A',
-        replace: true,
-        templateUrl: 'templates/jqmPopupOverlay.html'
-    };
-});
-
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmPopupTarget
- * @restrict A
- *
- * @description
- * Marks an element as a target for a {@link jqm.directive:jqmPopup jqmPopup}, and assigns a model to toggle to show or hide that popup on the element.
- *
- * See {@link jqm.directive:jqmPopup jqmPopup} for an example.
- *
- * @param {expression} jqmPopupTarget Model of a jqmPopup that this element will be linked to.
- * @param {expression=} jqm-popup-model Assignable angular boolean expression that will say whether the popup from jqmPopupTarget is opened on this element. Default '$popup'.
- * @param {string=} jqm-popup-placement The placement for the popup to pop over this element.  Overrides jqmPopup's placement attribute.  See {@link jqm.directive:jqmPopup jqmPopup} for the available values.
- *
- * @require jqmPopup
- */
-jqmModule.directive('jqmPopupTarget', ['$parse', function($parse) {
-    return {
-        restrict: 'A',
-        link: function(scope, elm, attr) {
-            var jqmPopup;
-            var popupModel = $parse(attr.jqmPopupModel || '$popup');
-
-            var placement;
-            attr.$observe('jqmPopupPlacement', function(p) {
-                placement = p;
-            });
-
-            scope.$watch(attr.jqmPopupTarget, setPopup);
-            scope.$watch(popupModel, popupModelWatch);
-            scope.$on('$popupStateChanged', popupStateChanged);
-
-            function setPopup(newPopup) {
-                jqmPopup = newPopup;
-                popupModelWatch( popupModel(scope) );
-            }
-            function popupModelWatch(isOpen) {
-                if (jqmPopup) {
-                    if (isOpen) {
-                        jqmPopup.show(elm, placement);
-                    } else if (jqmPopup.opened) {
-                        jqmPopup.hideForElement(elm);
-                    }
-                }
-            }
-            function popupStateChanged($e, popup) {
-                //We only care if we're getting change from our popupTarget
-                if (popup === jqmPopup) {
-                    popupModel.assign(
-                        scope,
-                        popup.opened && popup.target && popup.target[0] === elm[0]
-                    );
-                }
-            }
-
-        }
-    };
-}]);
-
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmPositionAnchor
- * @restrict A
- *
- * @description
- * For every child element that has an own scope this will set the property $position in the child's scope
- * and keep that value updated whenever elements are added, moved or removed from the element.
- *
- * @example
- <example module="jqm">
- <file name="index.html">
- <div jqm-position-anchor>
-     <div ng-controller="angular.noop">First child: {{$position}}</div>
-     <div ng-controller="angular.noop">Middle child: {{$position}}</div>
-     <div ng-controller="angular.noop">Last child: {{$position}}</div>
- </div>
- </file>
- </example>
- */
 jqmModule.directive('jqmPositionAnchor', [ '$rootScope', function ($rootScope) {
     return {
         restrict: 'A',
@@ -1238,25 +852,6 @@ jqmModule.directive('jqmScopeAs', [function () {
     };
 }]);
 
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmTheme
- * @restrict A
- *
- * @description
- * Sets the jqm theme for this element and it's children by adding a `$theme` property to the scope.
- * Other directives like `jqmCheckbox` evaluate that property.
- *
- * @example
- <example module="jqm">
- <file name="index.html">
- <div>
-   <div jqm-checkbox jqm-theme="a">Theme a</div>
-   <div jqm-checkbox jqm-theme="b">Theme b</div>
- </div>
- </file>
- </example>
- */
 jqmModule.directive('jqmTheme', [function () {
     return {
         restrict: 'A',
@@ -1276,89 +871,6 @@ jqmModule.directive('jqmTheme', [function () {
     };
 }]);
 
-/**
- * @ngdoc directive
- * @name jqm.directive:jqmView
- * @restrict ECA
- *
- * @description
- * # Overview
- * `jqmView` extends `ngView` in the following way:
- *
- * - animations can also be specified on routes using the `animation` property (see below).
- * - animations can also be specified in the template using the `view-animation` attribute on a root element.
- * - when the user hits the back button, the last animation is executed with the `-reverse` suffix.
- * - instead of using `$route` an expression can be specified as value of the directive. Whenever
- *   the value of this expression changes `jqmView` updates accordingly.
- * - content that has been declared inside of `ngView` stays there, so you can mix dynamically loaded content with
- *   fixed content.
- *
- * @param {expression=} jqmView angular expression evaluating to a route.
- *
- *   * `{string}`: This will be interpreted as the url of a template.
- *   * `{object}`: A route object with the same properties as `$route.current`:
- *     - `templateUrl` - `{string=}` - the url for the template
- *     - `controller` - `{string=|function()=}` - the controller
- *     - `controllerAs` - `{string=}` - the name of the controller in the scope
- *     - `locals` - `{object=}` - locals to be used when instantiating the controller
- *     - `back` - `{boolean=}` - whether the animation should be executed in reverse
- *     - `animation` - `{string=|function()=}` - the animation to use. If `animation` is a function it will
- *        be called using the `$injector` with the extra locals `$routeParams` (`route.params`) and `$scope` (the scope of `jqm-view`).
- *
- * @scope
- * @example
- <example module="jqmView">
- <file name="index.html">
- Choose:
- <a href="#/Book/Moby">Moby</a> |
- <a href="#/Book/Moby/ch/1">Moby: Ch1</a> |
- <a href="#/Book/Gatsby">Gatsby</a> |
- <a href="#/Book/Gatsby/ch/4?key=value">Gatsby: Ch4</a> |
- <a href="#/Book/Scarlet">Scarlet Letter</a><br/>
-
- <div jqm-view style="height:300px"></div>
- </file>
-
- <file name="book.html">
- <div jqm-page>
- <div jqm-header><h1>Book {{book.params.bookId}}</h1></div>
- The book contains ...
- </div>
- </file>
-
- <file name="chapter.html">
- <div jqm-page>
- <div jqm-header><h1>Chapter {{chapter.params.chapterId}} of {{chapter.params.bookId}}</h1></div>
- This chapter contains ...
- </div>
- </file>
-
- <file name="script.js">
- angular.module('jqmView', ['jqm'], function($routeProvider) {
-          $routeProvider.when('/Book/:bookId', {
-            templateUrl: 'book.html',
-            controller: BookCntl,
-            controllerAs: 'book',
-            animation: 'page-slide'
-          });
-          $routeProvider.when('/Book/:bookId/ch/:chapterId', {
-            templateUrl: 'chapter.html',
-            controller: ChapterCntl,
-            controllerAs: 'chapter',
-            animation: 'page-slide'
-          });
-        });
-
- function BookCntl($routeParams) {
-          this.params = $routeParams;
-        }
-
- function ChapterCntl($routeParams) {
-          this.params = $routeParams;
-        }
- </file>
- </example>
- */
 jqmModule.directive('jqmView', ['$templateCache', '$route', '$anchorScroll', '$compile',
     '$controller', '$animator', '$http', '$q', '$injector',
     function ($templateCache, $route, $anchorScroll, $compile, $controller, $animator, $http, $q, $injector) {
@@ -1663,13 +1175,6 @@ jqmModule.factory('$history', ['$window', '$timeout', function $historyFactory($
     }
 }]);
 
-/**
- * @ngdoc object
- * @name jqm.jqmConfigProvider
- *
- * @description Used to configure the default theme.
- */
-
 jqmModule.provider('jqmConfig', function() {
     /**
      * @ngdoc method
@@ -1842,40 +1347,7 @@ jqmModule.provider('jqmViewCache', function () {
     }
 
 });
-/**
- * @ngdoc function
- * @name jqm.$loadDialog
- * @requires $rootElement
- * @requires $rootScope
- *
- * @description
- * Shows a wait dialog to indicate some long running work.
- * @example
-<example module="jqm">
-  <file name="index.html">
-    <div ng-controller="DemoCtrl">
-      <button ng-click="$loadDialog.hide()">Hide</button>
-      <hr />
-      <div jqm-textinput placeholder="Dialog Text" ng-model="dialogText"></div>
-      <button ng-click="$loadDialog.show(dialogText)">Show{{dialogText && ' with text' || ''}}</button>
-      <hr />
-      <button ng-click="showForPromise()">waitFor promise</button>
-    </div>
-  </file>
-  <file name="script.js">
-    function DemoCtrl($scope, $loadDialog, $timeout, $q) {
-      $scope.$loadDialog = $loadDialog;     
 
-      $scope.showForPromise = function() {
-        var deferred = $q.defer();
-        $timeout(deferred.resolve, 1000);
-
-        $loadDialog.waitFor(deferred.promise, 'Showing for 1000ms promise...');
-      };
-    }
-  </file>
-</example>
- */
 jqmModule.factory('$loadDialog', ['$rootElement', '$rootScope', function ($rootElement, $rootScope) {
 
     // var rootElement = $rootElement.clone();
@@ -2284,7 +1756,7 @@ jqmModule.factory('$transitionComplete', ['$sniffer', function ($sniffer) {
     };
 }]);
 
-angular.module('jqm-templates', ['templates/jqmPanel.html', 'templates/jqmPanelContainer.html', 'templates/jqmPopup.html', 'templates/jqmPopupOverlay.html']);
+angular.module('jqm-templates', ['templates/jqmPanel.html', 'templates/jqmPanelContainer.html']);
 
 angular.module("templates/jqmPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/jqmPanel.html",
@@ -2302,26 +1774,6 @@ angular.module("templates/jqmPanelContainer.html", []).run(["$templateCache", fu
     "        ng-click=\"$scopeAs.pc.openPanelName = null\" \n" +
     "        ng-class=\"$scopeAs.pc.openPanelName ? 'ui-panel-dismiss-open ui-panel-dismiss-'+$scopeAs.pc.openPanelName : ''\">\n" +
     "    </div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("templates/jqmPopup.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("templates/jqmPopup.html",
-    "<div jqm-scope-as=\"jqmPopup\" class=\"ui-popup-container {{$scopeAs.jqmPopup.animation}}\" jqm-class=\"{'ui-popup-hidden': !$scopeAs.jqmPopup.opened}\">\n" +
-    "  <div jqm-scope-as=\"jqmPopup\" class=\"ui-popup ui-body-{{$scopeAs.jqmPopup.$theme}}\"\n" +
-    "    jqm-class=\"{'ui-overlay-shadow': $scopeAs.jqmPopup.shadow,\n" +
-    "    'ui-corner-all': $scopeAs.jqmPopup.corners}\"\n" +
-    "    ng-transclude>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("templates/jqmPopupOverlay.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("templates/jqmPopupOverlay.html",
-    "<div view-fixed=\"true\" class=\"ui-popup-screen ui-overlay-{{$scopeAs.jqmPopup.overlayTheme}}\" \n" +
-    "  jqm-class=\"{'ui-screen-hidden': !$scopeAs.jqmPopup.opened, 'in': $scopeAs.jqmPopup.opened}\"\n" +
-    "  ng-click=\"$scopeAs.jqmPopup.hide()\">\n" +
     "</div>\n" +
     "");
 }]);

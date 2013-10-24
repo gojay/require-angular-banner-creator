@@ -1,19 +1,21 @@
+<div jqm-page>
+	
 <div class="row-fluid">
-		<nav>
-			<ul class="breadcrumb">
-				<li>
-					<a href="#!/">Home</a><span class="divider">/</span>
-				</li>
-				<li>
-					<a ng-href="{{$root.page.breadcrumb.link.href}}">
-					{{$root.page.breadcrumb.link.title}}</a><span class="divider">/</span>
-				</li>
-				<li class="active">
-					{{$root.page.breadcrumb.link.active}}
-				</li>
-			</ul>
-		</nav>
-	</div> 
+	<nav>
+		<ul class="breadcrumb">
+			<li>
+				<a href="#!/">Home</a><span class="divider">/</span>
+			</li>
+			<li>
+				<a ng-href="{{$root.page.breadcrumb.link.href}}">
+				{{$root.page.breadcrumb.link.title}}</a><span class="divider">/</span>
+			</li>
+			<li class="active">
+				{{$root.page.breadcrumb.link.active}}
+			</li>
+		</ul>
+	</nav>
+</div> 
 <div class="row-fluid"> 
 	<div id="mobile-splash">
 		<!--Sidebar-->
@@ -99,4 +101,6 @@
 			<splash-creator ng-model="splash"></splash-creator>
 		</section>
 	</div>
+</div>
+
 </div>

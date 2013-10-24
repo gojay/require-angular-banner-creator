@@ -161,6 +161,10 @@ function(angular, app, domReady){
                 	animation   : 'page-slide',
 					resolve: {
 						banners: function($rootScope, $loadDialog, BannerTemplates, RecentBanners, CreatorID){
+
+	                        if(angular.isDefined($rootScope.models.banner))
+	                        	return $rootScope.models.banner;
+
 	                        $loadDialog.show('Loading');
 							// $rootScope.pageService.message = 'Preparing banner templates..';
 							return BannerTemplates().then(function(templates){
@@ -168,14 +172,16 @@ function(angular, app, domReady){
 								// $rootScope.pageService.message = 'Preparing recent banners..';
 								return RecentBanners().then(function(recents){
 									return CreatorID().then(function(creator){
-										$loadDialog.hide();
 										// $rootScope.pageService.start = false;
-										return {
+										$loadDialog.hide();
+										var models = {
 											templates : templates,
 											recents   : recents,
 											banner    : null,
 											ID : creator.ID
 										};
+										$rootScope.models['banner'] = models;
+										return models;
 									});
 								});
 							});
@@ -235,9 +241,13 @@ function(angular, app, domReady){
 					},
 					template   : '<conversation-creator ng-model="data"></conversation-creator>',
 					controller : 'ConversationController',
-                	animation   : 'page-slide',
+                	animation  : 'page-slide',
 					resolve: {
 						conversations: function($rootScope, $loadDialog, ConversationTemplates, RecentConversations, CreatorID){
+							
+							if(angular.isDefined($rootScope.models.conversations))
+	                        	return $rootScope.models.conversations;
+
 							$loadDialog.show('Loading');
 							// $rootScope.pageService.message = 'Preparing conversation templates..';
 							return ConversationTemplates().then(function(templates){
@@ -246,12 +256,16 @@ function(angular, app, domReady){
 									return CreatorID().then(function(creator){
 										// $rootScope.pageService.start = false;
 										$loadDialog.hide();
-										return {
+
+										var models = {
 											templates: templates,
-											recents: recents,
-											detail: null,
-											ID : creator.ID
+											recents  : recents,
+											detail   : null,
+											ID       : creator.ID
 										};
+
+										$rootScope.models['conversations'] = models;
+										return models;
 									});
 								});
 							});
@@ -327,7 +341,7 @@ function(angular, app, domReady){
 				.otherwise({ redirectTo:'/' });
 
 				// enable/disable debuging
-				debugProvider.setDebug(true);
+				debugProvider.setDebug(false);
 
 				// transition config  
 				// transitionProvider.setStartTransition('expandIn');
@@ -364,8 +378,10 @@ function(angular, app, domReady){
 						cursor     : 'default'
 					}
 				})
-			}, 1000);
+			});
 		}
+		// define root scope models
+		$rootScope.models = {};
 		// define root scope panel
 		$rootScope.panel = {
 			right: {
@@ -377,7 +393,7 @@ function(angular, app, domReady){
 				template: null
 			}
 		};
-		// pageService
+		// define root scope pageService
 		$rootScope.pageService = {
 			loaded: false,
 			start : false,
@@ -404,11 +420,10 @@ function(angular, app, domReady){
 			$rootScope.page = current.$$route.page;
 		});
 		$rootScope.$on('$locationChangeStart', function(event, next, current) {
-			// console.log(next);
 			if(window._unsupported.status){
 				$location.path('/');
 			}
-			if(!window._onbeforeunload && next.$$route.controller != 'homeController'){
+			if(!window._onbeforeunload && current.$$route.controller != 'homeController'){
 				if(!confirm("You have attempted to leave this page. If you have made any changes to the settings without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?")) {
 					event.preventDefault();
 				}
