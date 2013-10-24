@@ -11,7 +11,10 @@
 require.config({
 	paths: {
 		// core
-		angular      : 'vendor/angular/angular.min',
+		// angular      : 'vendor/angular/angular.min',
+		angular      : 'vendor/angular/angular.1.1.5.min',
+		angularMobile: 'vendor/angular/angular-mobile',
+		angularJQM   : 'vendor/angular/angular-jqm',
 		angularResource : 'vendor/angular/angular-resource.min',
 		angularCookies  : 'vendor/angular/angular-cookies.min',
 		angularHttpAuthInterceptor  : 'vendor/angular/http-auth-interceptor',
@@ -66,6 +69,8 @@ require.config({
 			deps: ['jquery'],
 			exports: 'angular'
 		},
+		angularMobile : ['angular'],
+		angularJQM    : ['angular'],
 		angularResource : ['angular'],
 		angularCookies : ['angular'],
 		angularHttpAuthInterceptor : ['angular']
@@ -121,6 +126,7 @@ function(angular, app, domReady){
 	app.config(['$compileProvider', '$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
 		function($compileProvider, $routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider){
 
+			// compile sanitazion
 	        $compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto|file):/);
 
 			// router
@@ -135,13 +141,7 @@ function(angular, app, domReady){
 					},
 					templateUrl : 'app/views/home.html',
 					controller  : 'HomeController',
-					// resolve: {
-					// 	delay: function($q, $timeout) {
-					// 		var delay = $q.defer();
-					// 		$timeout(delay.resolve, 1000);
-					// 		return delay.promise;
-					// 	}
-					// }
+                	animation   : 'page-slide'
 				})
 				.when('/facebook/banner', {
 					page: {
@@ -158,14 +158,18 @@ function(angular, app, domReady){
 					},
 					templateUrl : 'app/views/banner.html',
 					controller  : 'BannerController',
+                	animation   : 'page-slide',
 					resolve: {
-						banners: function($rootScope, BannerTemplates, RecentBanners, CreatorID){
-							$rootScope.pageService.message = 'Preparing banner templates..';
+						banners: function($rootScope, $loadDialog, BannerTemplates, RecentBanners, CreatorID){
+	                        $loadDialog.show('Loading');
+							// $rootScope.pageService.message = 'Preparing banner templates..';
 							return BannerTemplates().then(function(templates){
-								$rootScope.pageService.message = 'Preparing recent banners..';
+								// $('.ui-loader > h1').text('Preparing recent banners..');
+								// $rootScope.pageService.message = 'Preparing recent banners..';
 								return RecentBanners().then(function(recents){
 									return CreatorID().then(function(creator){
-										$rootScope.pageService.start = false;
+										$loadDialog.hide();
+										// $rootScope.pageService.start = false;
 										return {
 											templates : templates,
 											recents   : recents,
@@ -175,11 +179,6 @@ function(angular, app, domReady){
 									});
 								});
 							});
-						},
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
 						}
 					}
 				})
@@ -198,15 +197,18 @@ function(angular, app, domReady){
 					},
 					templateUrl : 'app/views/banner.html',
 					controller  : 'BannerController',
+                	animation   : 'page-slide',
 					resolve: {
-						banners: function($rootScope, $route, $timeout, BannerTemplates, RecentBanners, DetailBanner){
-							$rootScope.pageService.message = 'Requesting banner id '+ $route.current.params.bannerId +'..';
+						banners: function($rootScope, $loadDialog, $route, $timeout, BannerTemplates, RecentBanners, DetailBanner){
+							$loadDialog.show('Loading');
+							// $rootScope.pageService.message = 'Requesting banner id '+ $route.current.params.bannerId +'..';
 							return DetailBanner().then(function(banner){
-								$rootScope.pageService.message = 'Preparing banner templates..';
+								// $rootScope.pageService.message = 'Preparing banner templates..';
 								return BannerTemplates().then(function(templates){
-									$rootScope.pageService.message = 'Preparing recent banners..';
+									// $rootScope.pageService.message = 'Preparing recent banners..';
 									return RecentBanners().then(function(recents){
-										$rootScope.pageService.start = false;
+										// $rootScope.pageService.start = false;
+										$loadDialog.hide();
 										return {
 											templates : templates,
 											recents   : recents,
@@ -215,11 +217,6 @@ function(angular, app, domReady){
 									});
 								});
 							});
-						},
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
 						}
 					}
 				})
@@ -238,15 +235,17 @@ function(angular, app, domReady){
 					},
 					template   : '<conversation-creator ng-model="data"></conversation-creator>',
 					controller : 'ConversationController',
+                	animation   : 'page-slide',
 					resolve: {
-						conversations: function($rootScope, ConversationTemplates, RecentConversations, CreatorID){
-							$rootScope.pageService.message = 'Preparing conversation templates..';
+						conversations: function($rootScope, $loadDialog, ConversationTemplates, RecentConversations, CreatorID){
+							$loadDialog.show('Loading');
+							// $rootScope.pageService.message = 'Preparing conversation templates..';
 							return ConversationTemplates().then(function(templates){
-								$rootScope.pageService.message = 'Preparing recent conversations..';
+								// $rootScope.pageService.message = 'Preparing recent conversations..';
 								return RecentConversations().then(function(recents){
 									return CreatorID().then(function(creator){
-										$rootScope.pageService.start = false;
-										console.log('pageService', $rootScope.pageService)
+										// $rootScope.pageService.start = false;
+										$loadDialog.hide();
 										return {
 											templates: templates,
 											recents: recents,
@@ -256,12 +255,6 @@ function(angular, app, domReady){
 									});
 								});
 							});
-							
-						},
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
 						}
 					}
 				})
@@ -280,15 +273,18 @@ function(angular, app, domReady){
 					},
 					template    : '<conversation-creator ng-model="data"></conversation-creator>',
 					controller  : 'ConversationController',
+                	animation   : 'page-slide',
 					resolve: {
-						conversations: function($rootScope, $route, ConversationTemplates, RecentConversations, DetailConversation){
-							$rootScope.pageService.message = 'Requesting conversation id '+ $route.current.params.conversationId +'..';
+						conversations: function($rootScope, $loadDialog, $route, ConversationTemplates, RecentConversations, DetailConversation){
+							$loadDialog.show('Loading');
+							// $rootScope.pageService.message = 'Requesting conversation id '+ $route.current.params.conversationId +'..';
 							return DetailConversation().then(function(conversation){
-								$rootScope.pageService.message = 'Preparing conversation templates..';
+								// $rootScope.pageService.message = 'Preparing conversation templates..';
 								return ConversationTemplates().then(function(templates){
-									$rootScope.pageService.message = 'Preparing recent conversations..';
+									// $rootScope.pageService.message = 'Preparing recent conversations..';
 									return RecentConversations().then(function(recents){
-										$rootScope.pageService.start = false;
+										// $rootScope.pageService.start = false;
+										$loadDialog.hide();
 										return {
 											templates: templates,
 											recents: recents,
@@ -297,11 +293,6 @@ function(angular, app, domReady){
 									});
 								});
 							});
-						},
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(delay.resolve, 1000);
-							return delay.promise;
 						}
 					}
 				})
@@ -320,15 +311,7 @@ function(angular, app, domReady){
 					},
 					templateUrl : 'app/views/mobile.html',
 					controller  : 'MobileController',
-					resolve: {
-						delay: function($q, $timeout) {
-							var delay = $q.defer();
-							$timeout(function(){
-								delay.resolve();
-							}, 1000);
-							return delay.promise;
-						}
-					}
+                	animation   : 'page-slide'
 				})
 				.when('/raphael', {
 					page: {
@@ -345,10 +328,11 @@ function(angular, app, domReady){
 
 				// enable/disable debuging
 				debugProvider.setDebug(true);
+
 				// transition config  
-				transitionProvider.setStartTransition('expandIn');
-				transitionProvider.setPageTransition('slide');
-				transitionProvider.setPage('#wrap-content > .container');
+				// transitionProvider.setStartTransition('expandIn');
+				// transitionProvider.setPageTransition('slide');
+				// transitionProvider.setPage('#wrap-content > .container');
 
 			// Hashbang Mode
    			$locationProvider
@@ -403,23 +387,19 @@ function(angular, app, domReady){
 		};
 		// change transition when starting routes 
 		$rootScope.$on('$routeChangeStart', function(scope, next, current) {
-			// console.log('Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
-
 			// authorization ping 
 			// $rootScope.$broadcast('event:auth-ping');
-			console.log('next', next,' current',  current)
 
 			// transition
-			if(current === undefined || next.$$route.controller == "HomeController") {
-				$rootScope.pageService.static = false;
-			} else {
-				// set false start pageService to static page, or doesn't needed services
-				$rootScope.pageService.static = next.$$route.page.static == undefined ? false : next.$$route.page.static;
-				transition.change();
-			}
+			// if(current === undefined || next.$$route.controller == "HomeController") {
+			// 	$rootScope.pageService.static = false;
+			// } else {
+			// 	// set false start pageService to static page, or doesn't needed services
+			// 	$rootScope.pageService.static = next.$$route.page.static == undefined ? false : next.$$route.page.static;
+			// 	transition.change();
+			// }
 		});
 		$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
-			// console.log('current route', current.$$route)
 			// inject page form current route
 			$rootScope.page = current.$$route.page;
 		});
@@ -428,7 +408,7 @@ function(angular, app, domReady){
 			if(window._unsupported.status){
 				$location.path('/');
 			}
-			if(!window._onbeforeunload){
+			if(!window._onbeforeunload && next.$$route.controller != 'homeController'){
 				if(!confirm("You have attempted to leave this page. If you have made any changes to the settings without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?")) {
 					event.preventDefault();
 				}

@@ -1,5 +1,7 @@
 define([
 	'angular',
+	'angularMobile',
+	'angularJQM',
 	'angularHttpAuthInterceptor',
 	'angularCookies',
 	'controllers/controllers',
@@ -9,6 +11,7 @@ define([
 	'services/services'
 ], function(angular){
 	return angular.module('ImageApp', [
+		'jqm',
 		'http-auth-interceptor', 
 		'ngCookies',
 		'controllers', 
