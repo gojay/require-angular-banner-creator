@@ -51,14 +51,14 @@ define([
 						requests = [];
 
 					// define elements
-					self.navbarPanel = $('.navbar-container', $element);
-					self.btnLogoDefault = $('#btn-input-logo-default', $element);
-					self.btnLogo    = $('#btn-input-logo', $element);
-					self.btnSpot1   = $('#btn-input-spot1', $element);
-					self.btnSpot2   = $('#btn-input-spot2', $element);
-					self.btnBg      = $('#btn-upload-backgrounds', $element);
-					self.sectionBg  = $('#drop-backgrounds', $element);
-					self.inputBgColor  = $('#input-bg-color', $element);
+					self.navbarPanel = $('.navbar-container');
+					self.btnLogoDefault = $('#btn-input-logo-default');
+					self.btnLogo    = $('#btn-input-logo');
+					self.btnSpot1   = $('#btn-input-spot1');
+					self.btnSpot2   = $('#btn-input-spot2');
+					self.btnBg      = $('#btn-upload-backgrounds');
+					self.sectionBg  = $('#drop-backgrounds');
+					self.inputBgColor  = $('#input-bg-color');
 					// define dimensions
 					self.dimensions = ConversationTpl.dimensions;
 					// define jsZip
@@ -96,6 +96,10 @@ define([
 					});
 					$scope.$watch('conversation.spot1.clip', function(clip){
 						self.setClip(clip, 'spot1');
+					});
+					// update spot1 xdiff utk sinkronisasi posisi elemen pd tpl default
+					$scope.$watch('conversation.spot1.position.x', function(x){
+						$scope.conversation.spot1.xdiff = 403 - x;
 					});
 					// spot2
 					$scope.$watch('conversation.spot2.hide', function(checked){
@@ -619,6 +623,7 @@ define([
 									});
 									if( data.direction == 'landscape' ) $('#figure > .right', $svg).attr('x', data.ratio.w - 20);
 									$('#figure > .bottom', $svg).attr('y', data.ratio.h - 20);
+									
 								}
 							}
 						} else {
@@ -760,17 +765,21 @@ define([
 									console.log('response', index, response);
 									// sesuaikan attribute 'height' utk svg dan bg image, template default
 									if( $scope.conversation.selected == 0 && response.direction != 'square' ){
+										var w = parseInt(response.width);
 										var h = parseInt(response.height);
 										// var svgH = (response.direction == 'landscape') ? h +  80 : h +  100 ;
 										var svgH = h + 100 ;
+										var svgW = parseInt($svg.attr('width'));
 										$svg.attr('height', svgH)
 											.find('#bg > image.image').attr({
 												'xlink:href': response.dataURI,
-												'width'     : response.width,
+												'width'     : w,
 												'height'    : h
 											});
 										// ubah position y figure bottom untuk landscape direction
 										if(response.direction == 'landscape') $svg.find('#figure > .bottom').attr('y', svgH - 20);
+										// ubah posisi x element 1 : svg width - xdiff
+										$('.g_spot1', $svg).attr('x', (svgW - $scope.conversation.spot1.xdiff));
 									}
 									// change generate views
 									// $liImg.switchClass('upload', 'generate', 0);
@@ -1311,6 +1320,8 @@ define([
 							var sId = document.getElementById('spot1');
 							$scope.conversation['spot1'].position = {x:sId.getAttribute('x'), y:sId.getAttribute('y')};
 						}
+						console.log($scope.conversation.spot1.position.x);
+						$scope.$apply();
 					};
 
 					// draggable

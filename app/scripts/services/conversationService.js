@@ -119,6 +119,7 @@ define(['services/services'], function(services){
 						x: 65,
 						y: 266
 					},
+					xdiff: null, 
 					uploaded: false,
 					image: 'images/dummy/70x70.png'
 				},
