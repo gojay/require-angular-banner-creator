@@ -275,9 +275,8 @@ define([
 								aZip.download = 'conversation-'+ $scope.conversation.ID +'.zip';
 								aZip.href     = link;
 								// applying isGenerateDisabled to false
-								$scope.$apply(function(scope){
-									scope.isDownloadDisabled = false;
-								});
+								$scope.isDownloadDisabled = false;
+								$scope.$apply();
 								// update completed progress
 								$('.progress').removeClass('progress-striped active').addClass('progress-success');
 								$('.progress > .bar > span').html('<i class="icon-ok"></i> Completed');
@@ -405,10 +404,9 @@ define([
 						}
 						$.when(currentFile).done(function(res) {
 							console.log("Finished add to list", res);
-							$scope.$apply(function(scope){
-								scope.conversation.queue.empty = false;
-								scope.conversation.queue.count = res.length;
-							});
+							$scope.conversation.queue.empty = false;
+							$scope.conversation.queue.count = res.length;
+							$scope.$apply();
 							$timeout(function(){
 								// $('.drop', self.sectionBg).removeClass('loading');
 								$('.drop', self.sectionBg).unblock();
@@ -782,9 +780,8 @@ define([
 										// add to zip
 										self.ZIPFolder.file(response.image, imgDataURI, {base64: true});
 										// applying finished images
-										$scope.$apply(function(scope){
-											scope.conversation.queue.finished = index;
-										});
+										$scope.conversation.queue.finished = index;
+										$scope.$apply();
 										// change success views
 										// $liImg.switchClass('generate', 'success', 0);
 										$liSVG.switchClass('generate', 'success', 0);
@@ -900,30 +897,27 @@ define([
 						var index    = this.id.match(/\d/)[0];
 						var template = controller.templates[index];
 						// applying template
-						$scope.$apply(function(scope){
-							scope.conversation.selected = index;
-							// scope.template = (index < 4) ? template : template['blue'];
-							if(index == 0){ // default template
-								scope.conversation.templateColor = '#AAAAAA';
-								scope.conversation.logo.dimension.h = 62;
-								scope.conversation.spot1.position.x = 285;
-								scope.conversation.spot1.position.y = 37;
-							} else if(index > 0 && index < 4){
-								scope.template = template;
-								scope.conversation.templateColor = null;
-								scope.conversation.logo.dimension.h = 45;
-								scope.conversation.spot1.position.x = 65;
-								scope.conversation.spot1.position.y = 266;
-							} else {
-								var color = (scope.conversation.templateColor) ? scope.conversation.templateColor : 'blue' ;
-								scope.template = template[color];
-								scope.conversation.logo.dimension.h = 45;
-								scope.conversation.spot1.position.x = 65;
-								scope.conversation.spot1.position.y = 266;
-							}
-
-							// console.log(index, scope)
-						});
+						$scope.conversation.selected = index;
+						// $scope.template = (index < 4) ? template : template['blue'];
+						if(index == 0){ // default template
+							$scope.conversation.templateColor = '#AAAAAA';
+							$scope.conversation.logo.dimension.h = 62;
+							$scope.conversation.spot1.position.x = 285;
+							$scope.conversation.spot1.position.y = 37;
+						} else if(index > 0 && index < 4){
+							$scope.template = template;
+							$scope.conversation.templateColor = null;
+							$scope.conversation.logo.dimension.h = 45;
+							$scope.conversation.spot1.position.x = 65;
+							$scope.conversation.spot1.position.y = 266;
+						} else {
+							var color = ($scope.conversation.templateColor) ? $scope.conversation.templateColor : 'blue' ;
+							$scope.template = template[color];
+							$scope.conversation.logo.dimension.h = 45;
+							$scope.conversation.spot1.position.x = 65;
+							$scope.conversation.spot1.position.y = 266;
+						}
+						$scope.$apply();
 						// change breadcumb active title
 						var title = $link.data('title');
 						$('nav > ul > li.active').text(title);
@@ -954,9 +948,8 @@ define([
 						var all = color.val('all');
 						var hex = '#' + all.hex ;
 						console.log('color', hex);
-						$scope.$apply(function(scope){
-							$scope.conversation.templateColor = hex;
-						});
+						$scope.conversation.templateColor = hex;
+						$scope.$apply();
 					};
 					$scope.tplPickColor = function(color){
 						$scope.conversation.templateColor = color;
@@ -1176,10 +1169,9 @@ define([
 							var file = evt.target.files[0];
 							controller.handleSingleFile(file, 'spot1', function(response){
 								// console.log('response spot1', response);
-								$scope.$apply(function(scope){
-									scope.conversation.spot1.uploaded = true;
-									scope.conversation.spot1.image = response.dataURI;
-								});
+								$scope.conversation.spot1.uploaded = true;
+								$scope.conversation.spot1.image = response.dataURI;
+								$scope.$apply();
 							});
 						};
 						$(this).next()
@@ -1193,10 +1185,9 @@ define([
 							var file = evt.target.files[0];
 							controller.handleSingleFile(file, 'spot2', function(response){
 								// console.log('response spot2', response);
-								$scope.$apply(function(scope){
-									scope.conversation.spot2.uploaded = true;
-									scope.conversation.spot2.image = response.dataURI;
-								});
+								$scope.conversation.spot2.uploaded = true;
+								$scope.conversation.spot2.image = response.dataURI;
+								$scope.$apply();
 							});
 						};
 						$(this).next()
