@@ -1373,11 +1373,11 @@ div.ui-mobile-viewport { overflow-x: hidden; }
 }
 .slide.out, .slide.in {
 	-webkit-animation-timing-function: ease-out;
-	-webkit-animation-duration: 350ms;
+	-webkit-animation-duration: 1s;
 	-moz-animation-timing-function: ease-out;
-	-moz-animation-duration: 350ms;
+	-moz-animation-duration: 1s;
 	animation-timing-function: ease-out;
-	animation-duration: 350ms;
+	animation-duration: 1s;
 }
 .slide.out {
 	-webkit-transform: translate3d(-100%,0,0);

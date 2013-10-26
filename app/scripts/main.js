@@ -355,7 +355,7 @@ function(angular, app, domReady){
 		}
 	])
 	.run(function($rootScope, $http, $timeout, $location, transition) {
-		window._unsupported = { allow : false, status: false };
+		window._unsupported = { allow : true, status: false };
 		window._onbeforeunload = true;
 		// only using firefox to run this application.
 		// showing popup for unsopported browsers
@@ -379,7 +379,7 @@ function(angular, app, domReady){
 						cursor     : 'default'
 					}
 				})
-			});
+			}, 400);
 		}
 		// define root scope models
 		$rootScope.models = {};
