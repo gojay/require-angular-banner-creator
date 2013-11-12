@@ -385,6 +385,23 @@ define([
 				// $scope.banner.badge.position.x = (bg.width - value) / 2 ;
 				// $scope.banner.badge.position.y = (bg.height - value) / 2 ;
 			});
+
+			var prizeTopY = [48, 67, 76, 275, 266, 268];
+			var prizeBottomY = [180, 165, 258, 275, 311, 312];
+			$scope.$watch('banner.selected', function(selected){
+				$scope.banner.prize.figure.disabled = (selected == 0 || selected == 4) ? true : false ;
+				if(selected > 0){
+					var max = prizeBottomY[selected - 1];
+					var min = prizeTopY[selected - 1];
+					$scope.banner.prize.figure.top = max;
+					$scope.banner.prize.figure.max = max;
+					$scope.banner.prize.figure.min = min;
+				}
+				// console.log('prize.figure', $scope.banner.prize.figure)
+			});
+			$scope.$watch('banner.prize.figure.top', function(top){
+				console.log('banner.prize.figure.top', top);
+			});
 			
 			self.hideLogo = function(checked){
 				console.info('hide logo', checked);
@@ -1309,25 +1326,34 @@ define([
 				{
 					var _index = 1;
 					$('#price', $svg).children().map(function(i,e){
-						if($(e).attr('id') === undefined) return;
+						if( $(e).attr('id') ){
 
-						if(type == 'enter') {
-							$('#price .prize-description', $svg).attr('ng-bind-html-unsafe', 'banner.prize.header.description.enter');
+							if(type == 'enter') {
+								$('#price .prize-description', $svg).attr('ng-bind-html-unsafe', 'banner.prize.header.description.enter');
+							}
+
+							var bind = [
+								'{{banner.prize.one.image}}',
+								'{{banner.prize.two.image}}',
+								'{{banner.prize.three.image}}'
+							][_index-1];
+
+							$(e).attr('id', function(index, id){
+								return id.replace(/(\d+)/, function(fullMatch, n) {
+									return 'editor-'+ type + '-' + _index;
+								});
+							}).find('image').attr('xlink:href', bind);
+
+							_index++;
+
+						} 
+
+						var className = $(e).attr('class');
+						var pattern = new RegExp("prize-figure");
+						if( className && pattern.test(className) ) {
+							$(e).attr('y', '{{banner.prize.figure.top}}')
 						}
 
-						var bind = [
-							'{{banner.prize.one.image}}',
-							'{{banner.prize.two.image}}',
-							'{{banner.prize.three.image}}'
-						][_index-1];
-
-						$(e).attr('id', function(index, id){
-							return id.replace(/(\d+)/, function(fullMatch, n) {
-								return 'editor-'+ type + '-' + _index;
-							});
-						}).find('image').attr('xlink:href', bind);
-
-						_index++;
 					});
 				}
 
@@ -1425,7 +1451,7 @@ define([
 						name  : imgNameLike,
 						width : 'original',
 						height: 'original',
-						auto: 1
+						auto  : 1
 					}).success(function(response){
 						console.log('response upload banner like', response);
 

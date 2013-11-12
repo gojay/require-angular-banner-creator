@@ -55,6 +55,12 @@ define(['services/services'], function(services){
 						image  : BannerImages.logo[0],
 					},
 					prize : {
+						figure: {
+							disabled: true,
+							top: 0,
+							max: 0,
+							min: 0
+						},
 						header: {
 							title:'This Month\'s Prizes',
 							description: {

@@ -173,6 +173,14 @@
 									<input type="file" id="input-price-3" class="hide" />
 								</div>
 							</div>
+							<div class="control-group" ng-show="tplShowPrice >= 1">
+								<label class="control-label" style="width: 100px; text-align:left;">
+									Position
+								</label>
+								<div class="controls" style="margin-left: 100px;">
+									<input type="range" ng-model="banner.prize.figure.top" value="{{banner.prize.figure.top}}" min="{{banner.prize.figure.min}}" max="{{banner.prize.figure.max}}" ng-disabled="banner.prize.figure.disabled" />
+								</div>
+							</div>
 				      	</div>
 				    </div>
 				</div>

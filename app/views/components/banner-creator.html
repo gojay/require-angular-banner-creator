@@ -180,47 +180,18 @@
 								<span class="prize-description" ng-class="{true:'', false:'prize-black-text'}[banner.background.overlay]" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
 							</body>
 						</foreignObject>
-						<svg id="price-image-1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="450" y="42" width="350" height="193">
+						<svg id="price-image-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="450" y="42" width="350" height="193">
 							<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3" />
 							<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="340" height="183" />
 						</svg>
-						<rect x="455" y="167" width="340" height="50" fill="black" fill-opacity="0.75" />
-						<foreignObject x="455" y="167" width="340" height="50" class="foreign-object-prize-1">
+						<rect x="455" y="{{banner.prize.figure.top}}" width="340" height="50" fill="black" fill-opacity="0.75" class="prize-figure" />
+						<foreignObject x="455" y="{{banner.prize.figure.top}}" width="340" height="50" class="foreign-object-prize-1 prize-figure">
 							<body xmlns="http://www.w3.org/1999/xhtml">
 								<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
 							</body>
 						</foreignObject>
 					</g>
 				</svg>
-				<!-- <g id="description">
-					<rect x="20" y="128" width="404" height="232" fill="black" fill-opacity="0.75" />
-					<foreignObject x="20" y="128" width="404" height="232" class="foreign-object-1">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h3>
-							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
-						</body>
-					</foreignObject>
-				</g>
-				<g id="price">
-					<rect x="504" y="128" width="231" height="38" fill="black" fill-opacity="0.75" />
-					<foreignObject x="504" y="128" width="231" height="38" class="foreign-object-prize-1">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h3 ng-bind-html-unsafe="banner.prize.header.title"></h3>
-							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
-						</body>
-					</foreignObject>
-
-					<svg id="price-image-1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="450" y="170" width="350" height="193">
-						<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3" />
-						<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="340" height="183" />
-					</svg>
-					<rect x="456" y="295" width="328" height="50" stroke="black" stroke-opacity="0.75" />
-					<foreignObject x="456" y="295" width="328" height="50" class="foreign-object-prize-1 prize-black-text">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
-						</body>
-					</foreignObject>
-				</g> -->
 			</svg>
 		</div>
 		<div class="tab-pane" id="svg-tpl-2" ng-class="{true:'active', false:''}[banner.selected == 2]">
@@ -335,8 +306,8 @@
 							<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
 							<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="203" height="130" />
 						</svg>
-						<rect x="379" y="145" width="203" height="30" fill="black" fill-opacity="0.75" />
-						<foreignObject x="379" y="145" width="203" height="30" class="foreign-object-prize-2">
+						<rect x="379" y="{{banner.prize.figure.top}}" width="203" height="30" fill="black" fill-opacity="0.75" class="prize-figure" />
+						<foreignObject x="379" y="{{banner.prize.figure.top}}" width="203" height="30" class="foreign-object-prize-2 prize-figure">
 							<body xmlns="http://www.w3.org/1999/xhtml">
 								<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
 							</body>
@@ -346,58 +317,14 @@
 							<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
 							<image xlink:href="{{banner.prize.two.image}}" x="5" y="5" width="203" height="130" />
 						</svg>
-						<rect x="595" y="145" width="203" height="30" fill="black" fill-opacity="0.75" />
-						<foreignObject x="595" y="145" width="203" height="30" class="foreign-object-prize-2">
+						<rect x="595" y="{{banner.prize.figure.top}}" width="203" height="30" fill="black" fill-opacity="0.75" class="prize-figure" />
+						<foreignObject x="595" y="{{banner.prize.figure.top}}" width="203" height="30" class="foreign-object-prize-2 prize-figure">
 							<body xmlns="http://www.w3.org/1999/xhtml">
 								<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
 							</body>
 						</foreignObject>
 					</g>
 				</svg>
-				<!-- <g id="description">
-					<rect x="20" y="128" width="332" height="195" fill="black" fill-opacity="0.75" />
-					<foreignObject x="20" y="128" width="332" height="195" class="foreign-object-2">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h2>
-							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
-						</body>
-					</foreignObject>
-				</g>
-				<g id="price">
-					<rect x="447" y="129" width="272" height="50" fill="black" fill-opacity="0.75" />
-					<foreignObject x="447" y="129" width="272" height="50" class="foreign-object-prize-2">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.prize.header.title"></h2>
-							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
-						</body>
-					</foreignObject>
-
-					<svg id="price-image-2"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="374" y="189" width="203" height="130">
-						<rect x="0" y="0" width="203" height="130" fill="white"></rect>
-						<image xlink:href="{{banner.prize.one.image}}" x="0" y="0" width="203" height="130" />
-					</svg>
-					<rect x="374" y="189" width="203" height="130" stroke="white" stroke-width="5" fill="transparent" />
-
-					<rect x="376" y="273" width="199" height="30" fill="black" fill-opacity="0.75" />
-					<foreignObject x="376" y="273" width="199" height="30" class="foreign-object-prize-2">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
-						</body>
-					</foreignObject>
-
-					<svg id="price-image-3"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="588" y="189" width="203" height="130">
-						<rect x="0" y="0" width="203" height="130" fill="white"></rect>
-						<image xlink:href="{{banner.prize.two.image}}" x="0" y="0" width="203" height="130" />
-					</svg>
-					<rect x="588" y="189" width="203" height="130" stroke="white" stroke-width="5" fill="transparent" />
-
-					<rect x="590" y="273" width="199" height="30" fill="black" fill-opacity="0.75" />
-					<foreignObject x="590" y="273" width="199" height="50" class="foreign-object-prize-2">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
-						</body>
-					</foreignObject>
-				</g> -->
 			</svg>
 		</div>
 		<div class="tab-pane" id="svg-tpl-3" ng-class="{true:'active', false:''}[banner.selected == 3]">
@@ -517,8 +444,8 @@
 								<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
 								<image xlink:href="{{banner.prize.one.image}}" x="5" y="5" width="250" height="250" />
 							</svg>
-							<rect x="15" y="238" width="250" height="67" fill="black" fill-opacity="0.75" />
-							<foreignObject x="15" y="238" width="250" height="67" class="foreign-object-prize-3">
+							<rect x="15" y="{{banner.prize.figure.top}}" width="250" height="67" fill="black" fill-opacity="0.75" class="prize-figure" />
+							<foreignObject x="15" y="{{banner.prize.figure.top}}" width="250" height="67" class="foreign-object-prize-3 prize-figure">
 								<body xmlns="http://www.w3.org/1999/xhtml">
 									<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
 								</body>
@@ -528,8 +455,8 @@
 								<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
 								<image xlink:href="{{banner.prize.two.image}}" x="5" y="5" width="250" height="250" />
 							</svg>
-							<rect x="280" y="238" width="250" height="67" fill="black" fill-opacity="0.75" />
-							<foreignObject x="280" y="238" width="250" height="67" class="foreign-object-prize-3">
+							<rect x="280" y="{{banner.prize.figure.top}}" width="250" height="67" fill="black" fill-opacity="0.75" class="prize-figure" />
+							<foreignObject x="280" y="{{banner.prize.figure.top}}" width="250" height="67" class="foreign-object-prize-3 prize-figure">
 								<body xmlns="http://www.w3.org/1999/xhtml">
 									<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
 								</body>
@@ -539,8 +466,8 @@
 								<rect x="0" y="0" width="100%" height="100%" fill="white" stroke="black" stroke-width="1" stroke-opacity="0.3"></rect>
 								<image xlink:href="{{banner.prize.three.image}}" x="5" y="5" width="250" height="250" />
 							</svg>
-							<rect x="545" y="238" width="250" height="67" fill="black" fill-opacity="0.75" />
-							<foreignObject x="545" y="238" width="250" height="67" class="foreign-object-prize-3">
+							<rect x="545" y="{{banner.prize.figure.top}}" width="250" height="67" fill="black" fill-opacity="0.75" class="prize-figure" />
+							<foreignObject x="545" y="{{banner.prize.figure.top}}" width="250" height="67" class="foreign-object-prize-3 prize-figure">
 								<body xmlns="http://www.w3.org/1999/xhtml">
 									<p ng-bind-html-unsafe="banner.prize.three.text|newLineToBr"></p>
 								</body>
@@ -548,62 +475,6 @@
 						</g>
 					</svg>
 				</svg>
-				<!-- <g id="description">
-					<rect x="40" y="165" width="730" height="130" fill="black" fill-opacity="0.75" />
-					<foreignObject x="40" y="165" width="730" height="130" class="foreign-object-3">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.mtitle.text|comaToNewLine"></h2>
-							<p ng-bind-html-unsafe="banner.mdescription.text|newLineToDblBr"></p>
-						</body>
-					</foreignObject>
-				</g>
-				<g id="price">
-					<foreignObject x="20" y="335" width="770" height="55" class="foreign-object-prize-3">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<h2 ng-bind-html-unsafe="banner.prize.header.title"></h2>
-							<span class="prize-description" ng-bind-html-unsafe="banner.prize.header.description.like"></span>
-						</body>
-					</foreignObject>
-
-					<svg id="price-image-3"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="20" y="405" width="250" height="250">
-						<rect x="0" y="0" width="250" height="250" fill="white"></rect>
-						<image xlink:href="{{banner.prize.one.image}}" x="0" y="0" width="250" height="250" />
-					</svg>
-					<rect x="20" y="405" width="250" height="250" stroke="white" stroke-width="5" fill="transparent" />
-
-					<rect x="25" y="573" width="240" height="67" fill="black" fill-opacity="0.75" />
-					<foreignObject x="25" y="573" width="240" height="67" class="foreign-object-prize-3">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
-						</body>
-					</foreignObject>
-
-					<svg id="price-image-4"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="280" y="405" width="250" height="250">
-						<rect x="0" y="0" width="250" height="250" fill="white"></rect>
-						<image xlink:href="{{banner.prize.two.image}}" x="0" y="0" width="250" height="250" />
-					</svg>
-					<rect x="280" y="405" width="250" height="250" stroke="white" stroke-width="5" fill="transparent" />
-
-					<rect x="285" y="573" width="240" height="67" fill="black" fill-opacity="0.75" />
-					<foreignObject x="285" y="573" width="240" height="67" class="foreign-object-prize-3">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
-						</body>
-					</foreignObject>
-
-					<svg id="price-image-5"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="540" y="405" width="250" height="250">
-						<rect x="0" y="0" width="250" height="250" fill="white"></rect>
-						<image xlink:href="{{banner.prize.three.image}}" x="0" y="0" width="250" height="250" />
-					</svg>
-					<rect x="540" y="405" width="250" height="250" stroke="white" stroke-width="5" fill="transparent" />
-
-					<rect x="545" y="573" width="240" height="67" fill="black" fill-opacity="0.75" />
-					<foreignObject x="545" y="573" width="240" height="67" class="foreign-object-prize-3">
-						<body xmlns="http://www.w3.org/1999/xhtml">
-							<p ng-bind-html-unsafe="banner.prize.three.text|newLineToBr"></p>
-						</body>
-					</foreignObject>
-				</g> -->
 			</svg>
 		</div>
 		<div class="tab-pane" id="svg-tpl-4" ng-class="{true:'active', false:''}[banner.selected == 4]">
@@ -721,8 +592,8 @@
 					</svg>
 					<rect x="243" y="211" width="208" height="109" stroke="white" stroke-width="5" fill="transparent" />
 
-					<rect x="30" y="275" width="207" height="48" fill="black" fill-opacity="0.75" />
-					<foreignObject x="30" y="275" width="207" height="48" class="foreign-object-prize-4">
+					<rect x="30" y="275" width="207" height="48" fill="black" fill-opacity="0.75" class="prize-figure" />
+					<foreignObject x="30" y="275" width="207" height="48" class="foreign-object-prize-4 prize-figure">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
 						</body>
@@ -843,8 +714,8 @@
 					</svg>
 					<rect x="33" y="264" width="169" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="36" y="311" width="163" height="20" fill="black" fill-opacity="0.75"></rect>
-					<foreignObject x="36" y="311" width="163" height="20" class="foreign-object-prize-5">
+					<rect x="36" y="{{banner.prize.figure.top}}" width="163" height="20" fill="black" fill-opacity="0.75" class="prize-figure"></rect>
+					<foreignObject x="36" y="{{banner.prize.figure.top}}" width="163" height="20" class="foreign-object-prize-5 prize-figure">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
 						</body>
@@ -856,8 +727,8 @@
 					</svg>
 					<rect x="210" y="264" width="169" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="213" y="311" width="163" height="20" fill="black" fill-opacity="0.75"></rect>
-					<foreignObject x="213" y="311" width="163" height="20" class="foreign-object-prize-5">
+					<rect x="213" y="{{banner.prize.figure.top}}" width="163" height="20" fill="black" fill-opacity="0.75" class="prize-figure"></rect>
+					<foreignObject x="213" y="{{banner.prize.figure.top}}" width="163" height="20" class="foreign-object-prize-5 prize-figure">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
 						</body>
@@ -978,8 +849,8 @@
 					</svg>
 					<rect x="30" y="265" width="137" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="33" y="312" width="131" height="20" fill="black" fill-opacity="0.75"></rect>
-					<foreignObject x="33" y="312" width="131" height="20" class="foreign-object-prize-6">
+					<rect x="33" y="{{banner.prize.figure.top}}" width="131" height="20" fill="black" fill-opacity="0.75" class="prize-figure"></rect>
+					<foreignObject x="33" y="{{banner.prize.figure.top}}" width="131" height="20" class="foreign-object-prize-6 prize-figure">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.one.text|newLineToBr"></p>
 						</body>
@@ -991,8 +862,8 @@
 					</svg>
 					<rect x="178" y="265" width="137" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="181" y="312" width="131" height="20" fill="black" fill-opacity="0.75"></rect>
-					<foreignObject x="181" y="312" width="131" height="20" class="foreign-object-prize-6">
+					<rect x="181" y="{{banner.prize.figure.top}}" width="131" height="20" fill="black" fill-opacity="0.75" class="prize-figure"></rect>
+					<foreignObject x="181" y="{{banner.prize.figure.top}}" width="131" height="20" class="foreign-object-prize-6 prize-figure">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.two.text|newLineToBr"></p>
 						</body>
@@ -1004,8 +875,8 @@
 					</svg>
 					<rect x="324" y="265" width="137" height="68" stroke="white" stroke-width="5" fill="transparent"></rect>
 
-					<rect x="327" y="312" width="131" height="20" fill="black" fill-opacity="0.75"></rect>
-					<foreignObject x="327" y="312" width="131" height="20" class="foreign-object-prize-6">
+					<rect x="327" y="{{banner.prize.figure.top}}" width="131" height="20" fill="black" fill-opacity="0.75" class="prize-figure"></rect>
+					<foreignObject x="327" y="{{banner.prize.figure.top}}" width="131" height="20" class="foreign-object-prize-6 prize-figure">
 						<body xmlns="http://www.w3.org/1999/xhtml">
 							<p ng-bind-html-unsafe="banner.prize.three.text|newLineToBr"></p>
 						</body>
