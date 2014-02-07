@@ -95,7 +95,7 @@ define(['services/services'], function(services){
 				qr : null,
 				size: 'A4',
 				disable: {
-					generate : false,
+					generate : true,
 					download : true,
 				},
 				selected:{

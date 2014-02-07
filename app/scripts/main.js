@@ -364,7 +364,7 @@ function(angular, app, domReady){
 		window._onbeforeunload = true;
 		// only using firefox to run this application.
 		// showing popup for unsopported browsers
-		/*if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow)
+		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow)
 		{
 			window._unsupported.status = true;
 			$timeout(function(){
@@ -385,7 +385,7 @@ function(angular, app, domReady){
 					}
 				})
 			}, 400);
-		}*/
+		}
 		// define root scope models
 		$rootScope.models = {};
 		// define root scope panel
