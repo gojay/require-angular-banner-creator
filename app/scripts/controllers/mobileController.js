@@ -4,13 +4,25 @@ define([
 	'jquery',
 	'jqueryui'
 ], function(controllers){
-	controllers.controller('MobileController', ['$scope', '$timeout', '$compile', 'SplashConfig', 'imageReader',
-		function($scope, $timeout, $compile, SplashConfig, imageReader){
+	controllers.controller('MobileController', ['$scope', '$timeout', '$compile', 'SplashConfig', 'SplashFB', 'imageReader',
+		function($scope, $timeout, $compile, SplashConfig, SplashFB, imageReader){
 
 			var ID = new Date().getTime();
 			var self = this;
 			self.zip = new JSZip();
-			self.svgEditor = '#svg-editor';
+
+			self.svgEditor = '#svg-facebook';
+
+			$scope.safeApply = function(fn) {
+			  	var phase = this.$root.$$phase;
+			  	if(phase == '$apply' || phase == '$digest') {
+			    	if(fn && (typeof(fn) === 'function')) {
+			      	fn();
+			    	}
+			  	} else {
+			    	this.$apply(fn);
+			  	}
+			};
 
 			/* collapse listener */
 
@@ -18,22 +30,104 @@ define([
 				.live('show', function() {
 					var $link = $(this).parent().find('a');
 					$(this).parent().find('a').addClass('open'); //add active state to button on open
-				}).live('hide', function() {
+					var title = $(this).parent().find('a').data('title');
+					if( /facebook/i.test(title) ){
+						self.svgEditor = '#svg-facebook';
+						$('#splash-facebook').show();
+						$('#splash-creator').hide();
+					} else {
+						self.svgEditor = '#svg-editor';
+						$('#splash-creator').show();
+						$('#splash-facebook').hide();
+					}
+				})
+				.live('hide', function() {
 					$(this).parent().find('a').removeClass('open'); //remove active state to button on close
 				});
 
 			$scope.splash = SplashConfig;
 			$scope.generateDisabled = false;
+			$scope.isDownloadDisabled = true;
+
+			/* ------------- Facebook controller ------------- */
+
+			$scope.splash['facebook'] = SplashFB;
+
+			var fbname = null;
+			var fburl = null;
+			$('input[name="fbname"]').focus(function(){ fbname = $(this).val() });
+			$('input[name="fbname"]').blur(function(e){
+				var text = e.target.value;
+				if( e.target.validity.valid && fbname != text ){
+					$scope.safeApply(function(){ 
+						$scope.splash.facebook.disable.generate = false; 
+						$scope.splash.facebook.disable.download = true; 
+					});
+				}
+			});
+
+			$('input[type="url"]').focus(function(){ fburl = $(this).val() });
+			$('input[type="url"]').blur(function(e){
+				var $imgLoad = $('#ajax-load-qr');
+				var text = e.target.value;
+				// if url is valid
+				if( e.target.validity.valid && fburl != text ){
+					var $svg = $('svg', self.svgEditor);
+					// disable generate button
+					$scope.safeApply(function(){ 
+						$scope.splash.facebook.disable.generate = true; 
+						$scope.splash.facebook.disable.download = true; 
+						$scope.splash.facebook.selected.qr.image = null; 
+					});
+					// show loading
+					$imgLoad.show();
+					// clear canvas
+					$svg.find('#fb-qrcode-canvas').removeAttr('display');
+					$('#canvas-qrcode').html('');
+
+					$timeout(function(){
+						// generate canvas QR code
+						$('#canvas-qrcode').qrcode({
+							width : $scope.splash.facebook.selected.qr.size,
+							height: $scope.splash.facebook.selected.qr.size, 
+							text  : text 
+						});	
+						// convert canvas QR code to image element
+						var canvasQR   = $('#canvas-qrcode > canvas')[0];
+						var imgDataURI = canvasQR.toDataURL('image/jpeg');
+						// apply image QR code
+						$scope.safeApply(function(){ 
+							$scope.splash.facebook.selected.qr.image = imgDataURI;
+							$scope.splash.facebook.disable.generate = false;
+						});
+						// hide loading
+						$imgLoad.hide();
+					}, 2000);
+				}
+			});
+
+			$scope.setFBSize = function(size){
+				$scope.splash.facebook.size = size;
+			};
+
+			$scope.$watch('splash.facebook.size', function(size){
+				$scope.splash.facebook.selected.background = SplashFB.attributes[size].background;
+				$scope.splash.facebook.selected.dimension  = SplashFB.attributes[size].dimension;
+				$scope.splash.facebook.selected.qr  	   = SplashFB.attributes[size].qr;
+				$scope.splash.facebook.selected.font  	   = SplashFB.attributes[size].font;
+				// generate qr code
+				$('input[type="url"]').trigger('blur');
+			});
+
+			// $scope.$watch('splash.facebook.selected.qr.image', function(imgURI){
+			// 	$('svg', self.svgEditor).find('#fb-qrcode-canvas').remove();
+			// });
+
+			/* ------------- end Facebook ------------- */
 
 			/* scope listener */
 
-			$scope._convert = function(evt){
-				console.log(evt);
-				var el = evt.currentTarget;
-				el.innerHTML = '<i class="icon-refresh icon-spin"></i> ' + el.innerText;
-				$scope.generateDisabled = true;
-			}
-
+			/*
 			$scope.convert = function(evt){
 				// show loading popup
 				$(self.svgEditor).block({
@@ -51,7 +145,7 @@ define([
 				// get SVG element
 				var svg  = $('#svg-editor > svg')[0];
 				// create canvas banner like
-				createCanvas(svg, function(img, imgDataURI){
+				self.createSVG(svg, function(img, imgDataURI){
 					// create download anchor
 					var downloadLink       = document.createElement('a');
 					downloadLink.title     = 'Download '+ splashType +' splash screen';
@@ -90,9 +184,10 @@ define([
 					}, 1000);
 				});
 			};
+			*/
 
-			$scope.build = function(evt){
-				console.log('build', evt);
+			$scope.generateSplashDefault = function(evt){
+				console.log('generate:SplashDefault', evt);
 				// start
 				var el = evt.currentTarget;
 				el.innerHTML = '<i class="icon-refresh icon-spin"></i> Generating images';
@@ -167,8 +262,8 @@ define([
 									$('#generateImage').text('Generate Image');
 									// applying isGenerateDisabled to false
 									$scope.$apply(function(scope){
-										scope.generateDisabled = false;
-										scope.splash.isDownloadDisabled = false;
+										scope.generateDisabled = true;
+										scope.isDownloadDisabled = false;
 									});
 								}, 2000);
 							});
@@ -176,6 +271,85 @@ define([
 					}
 				});
 			};
+
+			$scope.generateSplashFacebook = function(evt){
+				// change button text loading
+				var el = evt.currentTarget;
+				el.innerHTML = '<i class="icon-refresh icon-spin"></i> Generating image';
+				// disable generate button
+				$scope.safeApply(function(){ $scope.splash.facebook.disable.generate = true; });
+				// show loading message
+				$(self.svgEditor).block({
+					overlayCSS: {
+						backgroundColor: '#fff',
+						opacity: 0.8
+					},
+					message: '<i class="icon-spinner icon-spin icon-4x"></i> <br/> <span>Preparing splash screen..<span>',
+					css: {
+						border: 'none',
+						background: 'none',
+						color: '#3685C6'
+					}
+				});
+
+				// convert canvas QR code to image element
+				// var $imageQR = $('svg', self.svgEditor).find('#fb-qrcode-image > image');
+				// var canvasQR   = $('#canvas-qrcode > canvas')[0];
+				// var imgDataURI = canvasQR.toDataURL('image/jpeg');
+				// // apply image QR code
+				// $scope.safeApply(function(){ $scope.splash.facebook.selected.qr.image = imgDataURI;})
+
+				// generate image
+				self.generateImage($('svg', self.svgEditor)[0], 'facebook').done(function(imgDataURI){
+					var name = 'facebook-'+ $scope.splash.facebook.size +'_'+ convertToSlug($scope.splash.facebook.url);
+					// loading info
+					$('span', self.svgEditor).text('Finished generate the facebook splash screen');
+
+					// create object url 
+					var DOMURL = window.URL || window.mozURL;
+					var link   = DOMURL.createObjectURL(dataURItoBlob(imgDataURI));
+					// set anchor link
+					var anchor = document.getElementById('downloadFB');
+					anchor.download = "splash-"+ name +".jpeg";
+					anchor.href     = link;
+
+					// done
+					$timeout(function(){ 
+						// hide loading meesage
+						$(self.svgEditor).unblock();
+						//ready to download
+						$scope.safeApply(function(){ 
+							$scope.splash.facebook.disable.generate = false;
+							$scope.splash.facebook.disable.download = false; 
+						});
+						// set default generate button text
+						el.innerHTML = 'Generate Image';
+					}, 1000);
+				});
+			};
+
+			var dataURItoBlob = function(dataURI) {
+			    var binary = atob(dataURI.split(',')[1]);
+			    var array = [];
+			    for(var i = 0; i < binary.length; i++) {
+			        array.push(binary.charCodeAt(i));
+			    }
+			    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+			}
+
+			var ucwords = function(str) {
+			    return (str + '').replace(/^([a-z])|\s+([a-z])/g, function ($1) {
+			        return $1.toUpperCase();
+			    });
+			}
+
+			var convertToSlug = function(Text) {
+			    return Text
+			        .toLowerCase()
+			        .replace(/[^\w ]+/g,'')
+			        .replace(/ +/g,'-')
+			        ;
+			}
 
 			this.deferredBuildMultiSVG = function( requests ){
 				var deferred = $.Deferred();
@@ -244,12 +418,6 @@ define([
 				return $svg[0];
 			};
 
-			var ucwords = function(str) {
-			    return (str + '').replace(/^([a-z])|\s+([a-z])/g, function ($1) {
-			        return $1.toUpperCase();
-			    });
-			}
-
 			this.generateImage = function( svg, type ){
 				var deferred = $.Deferred();
 
@@ -273,7 +441,7 @@ define([
 					var imgDataURI = canvas.toDataURL('image/jpeg');
 					// send response
 					$timeout(function() {
-						var img = imgDataURI.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+						var img = (type == 'facebook') ? imgDataURI : imgDataURI.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
 						deferred.resolve(img);
 					}, 2000);
 				};

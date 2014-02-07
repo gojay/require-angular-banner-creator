@@ -95,6 +95,11 @@ $creator_columns = array('ID', 'title', 'description', 'preview', 'autosave');
 
 /* ================================ Banner ================================ */
 
+$ss_fb_image = array(
+	// '1' => data_uri(BASE_PATH . '/images/facebook/mobile-fb-A4.png', 'image/png'),
+	'1' => data_uri(BASE_PATH . '/images/facebook/mobile-fb-A5.png', 'image/png')
+);
+
 $banner_fb = array(
 	'1' => data_uri(BASE_PATH . '/images/facebook/fb-like1.png', 'image/png'),
 	'2' => data_uri(BASE_PATH . '/images/facebook/fb-like2.png', 'image/png'),
@@ -125,6 +130,12 @@ $banner_templates = array(
 		'young' => data_uri(BASE_PATH . '/images/banner/3-Prizes-Background-Young.jpg', 'image/jpg')
 	)
 );
+
+$app->get('/mobile/image', function() use($app, $ss_fb_image){
+	$app->response()->header('Content-Type', 'application/json');
+	// sleep(2);
+	echo json_encode($ss_fb_image);
+});
 
 $app->get('/banner/template', function() use($app, $banner_fb, $banner_badges, $banner_templates){
 	$app->response()->header('Content-Type', 'application/json');

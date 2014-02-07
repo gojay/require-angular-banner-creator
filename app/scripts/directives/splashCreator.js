@@ -14,7 +14,8 @@ define([
 				templateUrl: 'app/views/components/splash-creator.html',
 				replace: true,
 				controller: function($scope, $element, $attrs, $transclude){
-
+					
+					$element.hide();
 					var self = this;
 
 					self.inputBgColor        = '#input-bg-color';
@@ -28,6 +29,9 @@ define([
 
 					// default
 					self.splashType  = 'iphone4';
+
+					console.log($scope.splash);
+
 					// define dimensions
 					self.svgDimension  = $scope.splash.dimensions[self.splashType];
 					self.logoDimension = $scope.splash.logo[self.splashType];

@@ -27,6 +27,7 @@ require.config({
 		jszip        : 'vendor/jquery/plugins/jszip',
 		jpicker      : 'vendor/jquery/plugins/jpicker.min',
 		qtip         : 'vendor/jquery/plugins/jquery.qtip',
+		qrcode       : 'vendor/jquery/plugins/jquery.qrcode.min',
 		// SVG
 		SVG          : 'vendor/svg/svg',
 		svgTextFlow  : 'vendor/svg/svg.textflow.min',
@@ -47,6 +48,7 @@ require.config({
 		jszip: ['jquery'],
 		jpicker: ['jquery'],
 		qtip: ['jquery'],
+		qrcode: ['jquery'],
 		// bootstrap
 		bootstrap: ['jquery'],
 		// svg
@@ -91,11 +93,13 @@ require([
 	'filters/newLineToBr',
 	'filters/newLineToDblBr',
 	'filters/ifFilter',
+	'filters/facebookName',
 	// directives
 	'directives/authApplication',
 	'directives/bannerCreator',
 	'directives/conversationCreator',
 	'directives/splashCreator',
+	'directives/splashFacebook',
 	// controllers
 	'controllers/homeController',
 	'controllers/bannerController',
@@ -109,6 +113,7 @@ require([
 	'jszip',
 	'jpicker',
 	'qtip',
+	'qrcode',
 	// svg
 	'SVG',
 	'svgtoDataURL',
@@ -359,7 +364,7 @@ function(angular, app, domReady){
 		window._onbeforeunload = true;
 		// only using firefox to run this application.
 		// showing popup for unsopported browsers
-		if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow)
+		/*if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow)
 		{
 			window._unsupported.status = true;
 			$timeout(function(){
@@ -380,7 +385,7 @@ function(angular, app, domReady){
 					}
 				})
 			}, 400);
-		}
+		}*/
 		// define root scope models
 		$rootScope.models = {};
 		// define root scope panel

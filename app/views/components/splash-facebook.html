@@ -1,0 +1,45 @@
+<div id="splash-facebook" class="row-fluid">
+	<div id="svg-facebook" class="span12 template">
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{{splash.facebook.selected.dimension.width}}" height="{{splash.facebook.selected.dimension.height}}">
+			<defs>
+				<style type="text/css"><![CDATA[
+					.facebook-name h2 {
+						text-align: center;
+						color:#FFFFFF; 
+						font-family: 'Helvetica';
+						font-weight: bold;
+						/*font-size: {{splash.facebook.selected.font.size}};
+						line-height: {{splash.facebook.selected.font.line}};*/
+						vertical-align: middle;
+						margin: 0;
+						padding: 10px 20px;
+					}
+				]]></style>
+			</defs>
+			<g id="background">
+				<image xlink:href="{{splash.facebook.selected.background}}" x="0" y="0" width="100%" height="100%" />
+			</g>
+			<g id="fb-name">
+				<foreignObject x="0" y="40" width="100%" height="100" class="facebook-name">
+					<body xmlns="http://www.w3.org/1999/xhtml">
+						<h2 ng-bind-html-unsafe="splash.facebook.url|facebookName" ng-style="{'font-size':splash.facebook.selected.font.size, 'line-height':splash.facebook.selected.font.line}"></h2>
+					</body>
+				</foreignObject>
+			</g>
+			<g id="fb-qrcode-canvas" display="none">
+				<foreignObject x="{{splash.facebook.selected.qr.x}}" y="{{splash.facebook.selected.qr.y}}" width="{{splash.facebook.selected.qr.size}}" height="{{splash.facebook.selected.qr.size}}">
+					<body xmlns="http://www.w3.org/1999/xhtml">
+						<div id="canvas-qrcode"></div>
+					</body>
+				</foreignObject>
+			</g>
+			<g id="fb-qrcode-image">
+				<image xlink:href="{{splash.facebook.selected.qr.image}}" x="{{splash.facebook.selected.qr.x}}" y="{{splash.facebook.selected.qr.y}}" width="{{splash.facebook.selected.qr.size}}" height="{{splash.facebook.selected.qr.size}}" />
+			</g>
+		</svg>
+		<div id="canvas"></div>
+	</div>
+	<canvas id="canvas-iphone4" class="hide"></canvas>
+	<canvas id="canvas-iphone5" class="hide"></canvas>
+	<canvas id="canvas-ipad" class="hide"></canvas>
+</div>
