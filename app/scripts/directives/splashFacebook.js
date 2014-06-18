@@ -8,16 +8,98 @@ define([
 			// Runs during compile
 			return {
 				scope: {
-					splash : '=ngModel'
+					splash : '=ngModel',
+					generateQr : '='
 				}, // {} = isolate, true = child, false/undefined = no change
 				restrict: 'EAC', // E = Element, A = Attribute, C = Class, M = Comment
 				templateUrl: 'app/views/components/splash-facebook.html',
 				replace: true,
 				controller: function($scope, $element, $attrs, $transclude){
 					var self = this;
+
+					console.log('splashFacebook', $scope.splash);
+
+					var parentId  = ( angular.isDefined($attrs.settingElement) ) ? $attrs.settingElement : '#tpl-facebook' ;
+					self.parentEl = angular.element( parentId );
+
+					$scope.$watch('splash.size', function(size){
+						$scope.splash.selected.background = $scope.splash.attributes[size].background;
+						$scope.splash.selected.dimension  = $scope.splash.attributes[size].dimension;
+						if( $scope.splash.selected.qr ) $scope.splash.selected.qr = $scope.splash.attributes[size].qr;
+						$scope.splash.selected.font  	    = $scope.splash.attributes[size].font;
+						// generate qr code
+						$('input[type="url"]', self.parentEl).trigger('blur');
+					});
+
+					$scope.safeApply = function(fn) {
+					  	var phase = this.$root.$$phase;
+					  	if(phase == '$apply' || phase == '$digest') {
+					    	if(fn && (typeof(fn) === 'function')) {
+					      	fn();
+					    	}
+					  	} else {
+					    	this.$apply(fn);
+					  	}
+					};	
 				},
 				link: function($scope, iElm, iAttrs, controller){
 
+					var fbname = null;
+					$('input[name="fbname"]', controller.parentEl)
+						.focus(function(){ 
+							fbname = $(this).val(); 
+						})
+						.blur(function(e){
+							var text = e.target.value;
+							if( e.target.validity.valid && fbname != text ){
+								$scope.safeApply(function(){ 
+									$scope.splash.disable.generate = false; 
+									$scope.splash.disable.download = true;
+								});
+							}
+						});
+
+					var qrURL = null;
+					$('input[type="url"]', controller.parentEl)
+						.focus(function(e){ 
+							qrURL = $(this).val(); 
+						})
+						.blur(function(e){
+							// show loading
+							var $imgLoad = $(e.target).siblings('.ajax-load-qr');
+							// get url
+							var url = e.target.value;
+
+							// if url is valid && url not same before
+							if( e.target.validity.valid && qrURL != url ){
+								// disable generate & download button
+								// set selected QR image
+								$scope.safeApply(function(){ 
+									$scope.splash.disable.generate = true; 
+									$scope.splash.disable.download = true; 
+									$scope.splash.selected.qr.image = null;
+									console.log('safeApply:$scope.splash', $scope.splash);
+								});
+								// show loading
+								$imgLoad.show();
+
+								// generate QR Code
+								$scope.$apply($scope.generateQr({
+									canvas: angular.element('#canvas-qrcode'),
+									width : $scope.splash.selected.qr.size,
+									height: $scope.splash.selected.qr.size,
+									url   : qrURL
+								}, function( imgDataURI ){
+									// apply image QR code
+									$scope.safeApply(function(){ 
+										$scope.splash.selected.qr.image = imgDataURI;
+										$scope.splash.disable.generate = false;
+									});
+									// hide loading
+									$imgLoad.hide();
+								}));
+							}
+						});
 				}
 			};
 		}

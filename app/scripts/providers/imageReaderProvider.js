@@ -39,7 +39,7 @@ define(['providers/providers'], function(providers){
 							};
 							break;
 						case 'splash':
-							options.changeEl = $('#svg-editor > svg > #logo > image').eq(0)[0];
+							options.changeEl = (options.changeEl) ? options.changeEl : $('#svg-custom > svg > #logo > image').eq(0)[0];
 							break;
 					}
 

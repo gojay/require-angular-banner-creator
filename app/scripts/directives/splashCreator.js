@@ -15,7 +15,6 @@ define([
 				replace: true,
 				controller: function($scope, $element, $attrs, $transclude){
 					
-					$element.hide();
 					var self = this;
 
 					self.inputBgColor        = '#input-bg-color';
@@ -56,7 +55,7 @@ define([
 				link: function($scope, iElm, iAttrs, controller){
 
 					// define svg
-					var $svgEditor = $('#svg-editor'),
+					var $svgEditor = $('#svg-custom'),
 					    $svg = $('svg', $svgEditor);
 
 					var splashType    = controller.splashType;
@@ -193,8 +192,12 @@ define([
 								},
 								multi: true
 							}, function(response){
-								console.log(response);
+
+								console.log('uploadFile', response);
+
 								var $parent = $(changeEl).parent();
+
+								console.log('parent', changeEl, $parent);
 								/* change image src */
 								// ipad
 								var ipadEl = $('#logo-ipad-editor-splash', $parent)[0];

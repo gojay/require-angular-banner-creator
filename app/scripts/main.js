@@ -94,18 +94,20 @@ require([
 	'filters/newLineToDblBr',
 	'filters/ifFilter',
 	'filters/facebookName',
+	'filters/blockquote',
 	// directives
 	'directives/authApplication',
 	'directives/bannerCreator',
 	'directives/conversationCreator',
 	'directives/splashCreator',
 	'directives/splashFacebook',
+	'directives/splashMobile',
 	// controllers
 	'controllers/homeController',
 	'controllers/bannerController',
 	'controllers/conversationController',
 	'controllers/editConversationController',
-	'controllers/mobileController',
+	'controllers/splashController',
 	'controllers/raphaelController',
 	// plugins & helpers
 	'blockUI',
@@ -315,21 +317,21 @@ function(angular, app, domReady){
 						}
 					}
 				})
-				.when('/mobile', {
+				.when('/splash', {
 					page: {
 						static: true,
 						title : '| Mobile SplashScreen',
 						breadcrumb: {
 							show: true,
 							link: {
-								title: 'Mobile SplashScreen & Background',
+								title: 'SplashScreen & Background',
 								href : '',
 								active: 'Splash Screen',
 							}
 						}
 					},
-					templateUrl : 'app/views/mobile.html',
-					controller  : 'MobileController',
+					templateUrl : 'app/views/splash.html',
+					controller  : 'SplashController',
                 	animation   : 'page-slide'
 				})
 				.when('/raphael', {
@@ -346,7 +348,7 @@ function(angular, app, domReady){
 				.otherwise({ redirectTo:'/' });
 
 				// enable/disable debuging
-				debugProvider.setDebug(true);
+				// debugProvider.setDebug(true);
 
 				// transition config  
 				// transitionProvider.setStartTransition('expandIn');
@@ -360,7 +362,7 @@ function(angular, app, domReady){
 		}
 	])
 	.run(function($rootScope, $http, $timeout, $location, transition) {
-		window._unsupported = { allow : true, status: false };
+		window._unsupported = { allow : false, status: false };
 		window._onbeforeunload = true;
 		// only using firefox to run this application.
 		// showing popup for unsopported browsers
