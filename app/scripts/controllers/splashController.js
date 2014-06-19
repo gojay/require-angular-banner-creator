@@ -90,6 +90,41 @@ define([
 			$scope.setFBSize = function(size){
 				$scope.splash[showEditor].size = size;
 			};
+			$scope.setMobileRecentPhotoSelected = function(index, people, evt){
+				var $el     = $(evt.target),
+					$parent = $el.parent();
+
+				console.log($el[0]);
+				console.log($parent[0]);
+				console.log($('.btn', $parent)[0]);
+
+				$('.btn', $parent.parent()).each(function(){ $(this).removeClass('active') });
+				$parent.addClass('active');
+
+				// create canvas
+				var canvas = document.createElement('canvas');
+				// get canvas context
+				var ctx = canvas.getContext("2d");
+				// create image
+				var img = new Image();
+				img.onload = function(){
+					// set canvas dimension
+					canvas.width  = img.width;
+					canvas.height = img.height;
+					// draw image
+					ctx.drawImage(img, 0, 0);
+					// convert to image png
+					var imgDataURI = canvas.toDataURL('image/png');
+					
+					$scope.splash.mobile.selected.peoples[people].avatar = imgDataURI;
+					$scope.$apply();
+				};
+				img.src = "images/dummy/" + $scope.splash.mobile.dummy.avatar[index];
+			}
+			$scope.isDisableGenerateSplashMobile = function(){
+				return false;
+				// return $scope.splash.mobile.screenshot == null || $scope.splash.mobile.selected.qr.android.image == null || $scope.splash.mobile.selected.qr.iphone.image == null
+			}
 
 			$scope.generateSplashCustom = function(evt){
 				console.log('generate:SplashDefault', evt);
@@ -247,6 +282,10 @@ define([
 						color: '#3685C6'
 					}
 				});
+
+				console.log('test datauri dummy image');
+
+				return;
 
 				// generate image
 				self.generateImage($('svg', self.svgEditor)[0], showEditor).done(function(imgDataURI){

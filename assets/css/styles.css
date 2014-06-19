@@ -733,6 +733,9 @@ h3 {
 	font-weight: bold;
 	padding: 8px 20px;
 	margin: 0;
+}
+
+aside h3 {
 	border-bottom: 1px solid #EEE;
 }
 
@@ -927,4 +930,31 @@ h3 {
 	margin-left: 20px;
 }
 
+#mobile-photos .btn {
+	border: none;
+	background: none;
+	box-shadow: none;
+}
 
+#mobile-photos > div {
+	margin-bottom: 5px;
+}
+
+#mobile-photos > div:nth-child(4n+1) {
+	margin-left: 0;
+}
+
+/*#mobile-photos .active > img {
+	border: 2px solid #3685C6;
+}*/
+
+
+.modal-medium{
+   width:640px;
+   margin-left:-320px;
+}
+
+.modal-large{
+   width:940px;
+   margin-left:-470px;
+}

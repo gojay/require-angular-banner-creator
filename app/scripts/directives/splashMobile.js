@@ -23,8 +23,8 @@ define([
 
 					self.svgEditor    = '#svg-mobile';
 					self.inputScreenshot = '#input-screenshot';
-					self.inputAvatar1 = '#input-avatar-1';
-					self.inputAvatar2 = '#input-avatar-2';
+					self.inputAvatar1 = '#input-avatar-0';
+					self.inputAvatar2 = '#input-avatar-1';
 
 					$scope.$watch('splash.size', function(size){
 						$scope.splash.selected.background = $scope.splash.attributes[size].background;
@@ -129,7 +129,7 @@ define([
 					imageReader.init({
 						buttonClass   : 'btn-success',
 						inputFileEl   : controller.inputScreenshot,
-						inputFileText : 'Select an image',
+						inputFileText : 'Upload image',
 						compile       : function(buttonEl, changeEl, blob, image){
 
 							$(controller.svgEditor).block({
@@ -170,8 +170,11 @@ define([
 					imageReader.init({
 						buttonClass   : 'btn-success',
 						inputFileEl   : controller.inputAvatar1,
-						inputFileText : 'Select an image',
+						inputFileText : 'Upload image',
 						compile       : function(buttonEl, changeEl, blob, image){
+
+							var filename = blob.name;
+							filename = filename.substr(0, filename.lastIndexOf('.'));
 
 							$(controller.svgEditor).block({
 								overlayCSS: {
@@ -186,10 +189,12 @@ define([
 								}
 							});
 
+							$(controller.inputAvatar1+'-button').html('<i class="icon-refresh icon-spin"></i> Uploading').attr('disabled', 'disabled');
+
 							// upload image
 							imageReader.uploadFile({
 								file: blob,
-								name: 'mobile-avatar1',
+								name: 'mobile_photo_' + filename,
 								size: {
 									width : $scope.splash.selected.avatar.width,
 									height: $scope.splash.selected.avatar.width
@@ -198,9 +203,14 @@ define([
 								
 								$scope.safeApply(function(){
 									$scope.splash.selected.peoples[0].avatar = response.dataURI;
+									$scope.splash.dummy.avatar.push(response.image);
 								});
 
+								console.log('splash', $scope.splash);
+
 								$(controller.svgEditor).unblock();
+
+								$(controller.inputAvatar1+'-button').html('Upload image').removeAttr('disabled');
 
 							});
 						}
@@ -210,8 +220,11 @@ define([
 					imageReader.init({
 						buttonClass   : 'btn-success',
 						inputFileEl   : controller.inputAvatar2,
-						inputFileText : 'Select an image',
+						inputFileText : 'Upload image',
 						compile       : function(buttonEl, changeEl, blob, image){
+
+							var filename = blob.name;
+							filename = filename.substr(0, filename.lastIndexOf('.'));
 
 							$(controller.svgEditor).block({
 								overlayCSS: {
@@ -226,10 +239,12 @@ define([
 								}
 							});
 
+							$(controller.inputAvatar2+'-button').html('<i class="icon-refresh icon-spin"></i> Uploading').attr('disabled', 'disabled');
+
 							// upload image
 							imageReader.uploadFile({
 								file: blob,
-								name: 'mobile-avatar2',
+								name: 'mobile_photo_' + filename,
 								size: {
 									width : $scope.splash.selected.avatar.width,
 									height: $scope.splash.selected.avatar.width
@@ -238,9 +253,11 @@ define([
 								
 								$scope.safeApply(function(){
 									$scope.splash.selected.peoples[1].avatar = response.dataURI;
+									$scope.splash.dummy.avatar.push(response.image);
 								});
 
 								$(controller.svgEditor).unblock();
+								$(controller.inputAvatar2+'-button').html('Upload image').removeAttr('disabled');
 
 							});
 						}

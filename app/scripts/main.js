@@ -102,6 +102,7 @@ require([
 	'directives/splashCreator',
 	'directives/splashFacebook',
 	'directives/splashMobile',
+	'directives/tbModal',
 	// controllers
 	'controllers/homeController',
 	'controllers/bannerController',

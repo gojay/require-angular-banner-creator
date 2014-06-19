@@ -110,7 +110,7 @@
 							<div class="control-group">
 								<label style="display:inline-block; width:100px">Photo</label>
 								<div class="controls" style="display:inline;">
-									<input type="file" id="input-avatar-1" class="hide" />
+					  				<button class="btn btn-success" title="Insert photo 1" tb-modal-open="insert-photo-0" backdrop="false">Insert Photo</button>
 								</div>
 							</div>
 							<div class="control-group">
@@ -131,7 +131,7 @@
 							<div class="control-group">
 								<label style="display:inline-block; width:100px">Photo</label>
 								<div class="controls" style="display:inline;">
-									<input type="file" id="input-avatar-2" class="hide" />
+					  				<button class="btn btn-success" title="Insert photo 2" tb-modal-open="insert-photo-1" backdrop="false">Insert Photo</button>
 								</div>
 							</div>
 							<div class="control-group">
@@ -166,7 +166,7 @@
 							<div class="control-group margin-top-bottom">
 								<a href class="btn btn-block btn-success" 
 									ng-click="generateSplashmobile($event)"
-									ng-disabled="splash.mobile.screenshot == null || splash.mobile.selected.qr.android.image == null || splash.mobile.selected.qr.iphone.image == null"
+									ng-disabled="isDisableGenerateSplashMobile()"
 									ng-show="splash.mobile.disable.download">Generate Image</a>
 								<a href id="downloadMobile" class="btn btn-success btn-block"  
 									ng-hide="splash.mobile.disable.download"
@@ -257,5 +257,42 @@
 				</div>
 			</div>
 		</section>
+
+		<tb-modal class="modal-medium" modal-id="insert-photo-0" modal-title="Insert Photo 1">
+			<ul class="nav nav-tabs">
+	          <li class="active"><a href="#recents" data-toggle="tab">Recents</a></li>
+	          <li class=""><a href="#upload" data-toggle="tab">Upload</a></li>
+	        </ul>
+	        <div class="tab-content">
+	          <div class="tab-pane fade active in" id="recents">
+				<div id="mobile-photos" class="row-fluid">
+					<div class="span3" ng-repeat="avatar in splash.mobile.dummy.avatar">
+						<img ng-src="images/upload/{{avatar}}" width="100" height="100" class="img-circle" ng-click="setMobileRecentPhotoSelected($index, 0, $event)">
+					</div>
+				</div>
+	          </div>
+	          <div class="tab-pane fade" id="upload">
+					<input type="file" id="input-avatar-0" class="hide" />
+	          </div>
+			</div>
+	  	</tb-modal>
+		<tb-modal class="modal-medium" modal-id="insert-photo-1" modal-title="Insert Photo 2">
+			<ul class="nav nav-tabs">
+	          <li class="active"><a href="#recents-1" data-toggle="tab">Recents</a></li>
+	          <li class=""><a href="#upload-1" data-toggle="tab">Upload</a></li>
+	        </ul>
+	        <div class="tab-content">
+	          <div class="tab-pane fade active in" id="recents-1">
+				<div id="mobile-photos" class="row-fluid">
+					<div class="span3" ng-repeat="avatar in splash.mobile.dummy.avatar">
+						<img ng-src="images/upload/{{avatar}}" width="100" height="100" class="img-circle" ng-click="setMobileRecentPhotoSelected($index, 1, $event)">
+					</div>
+				</div>
+	          </div>
+	          <div class="tab-pane fade" id="upload-1">
+					<input type="file" id="input-avatar-1" class="hide" />
+	          </div>
+			</div>
+	  	</tb-modal>
 	</div>
 </div>
