@@ -110,7 +110,7 @@
 							<div class="control-group">
 								<label style="display:inline-block; width:100px">Photo</label>
 								<div class="controls" style="display:inline;">
-					  				<button class="btn btn-success" title="Insert photo 1" tb-modal-open="insert-photo-0" backdrop="false">Insert Photo</button>
+					  				<button class="btn btn-success" ng-click="splash.mobile.open(0)">Insert Photo</button>
 								</div>
 							</div>
 							<div class="control-group">
@@ -131,7 +131,7 @@
 							<div class="control-group">
 								<label style="display:inline-block; width:100px">Photo</label>
 								<div class="controls" style="display:inline;">
-					  				<button class="btn btn-success" title="Insert photo 2" tb-modal-open="insert-photo-1" backdrop="false">Insert Photo</button>
+					  				<button class="btn btn-success" ng-click="splash.mobile.open(1)">Insert Photo</button>
 								</div>
 							</div>
 							<div class="control-group">
@@ -258,6 +258,36 @@
 			</div>
 		</section>
 
+		<script type="text/ng-template" id="modalInsertPhoto.html">
+	        <div class="modal-header">
+	            <h3 class="modal-title">Im a modal!</h3>
+	        </div>
+	        <div class="modal-body">
+	           <ul class="nav nav-tabs">
+		          <li class="active"><a href="#recents" data-toggle="tab">Recents</a></li>
+		          <li class=""><a href="#upload" data-toggle="tab">Upload</a></li>
+		        </ul>
+		        <div class="tab-content">
+		          <div class="tab-pane fade" id="recents">
+					<div id="mobile-photos" class="row-fluid">
+						<div class="span3" ng-repeat="photo in photos">
+							<i ng-if="photoIndex == $index" class="icon-ok-sign icon-2x"></i>
+							<img ng-src="images/upload/{{photo}}" width="90" height="90" class="img-circle" 
+								 ng-click="selected($index)">
+						</div>
+					</div>
+		          </div>
+		          <div class="tab-pane fade active in" id="upload">
+		          		<a ng-click="insertPhoto($event)" id="btn-input-logo" class="btn btn-success btn-input-photo">Upload image</a>
+						<input type="file" id="input-photo" class="hide" />
+		          </div>
+				</div>
+	        </div>
+	        <div class="modal-footer">
+	            <button class="btn btn-primary" ng-click="ok()">OK</button>
+	            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+	        </div>
+	    </script>
 		<tb-modal class="modal-medium" modal-id="insert-photo-0" modal-title="Insert Photo 1">
 			<ul class="nav nav-tabs">
 	          <li class="active"><a href="#recents" data-toggle="tab">Recents</a></li>
