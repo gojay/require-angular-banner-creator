@@ -72,8 +72,6 @@ define(['providers/providers'], function(providers) {
                         $parent.append(inputFile.outerHTML);
                     }
 
-                    console.log('inputFileEl', config.inputFileEl, $(config.inputFileEl)[0]);
-
                     if ($(config.inputFileEl).is(':visible')) $(config.inputFileEl).addClass('hide');
                     // create the button input file
                     var buttonField = document.createElement('button');
@@ -125,10 +123,10 @@ define(['providers/providers'], function(providers) {
                     var fr = new FileReader();
                     fr.onload = (function(file) {
                         return function(e) {
-                            console.log('onload target', file);
+                            // console.log('onload target', file);
                             var image = new Image();
                             image.onload = function() {
-                                console.log('dimension', image.width, image.height);
+                                // console.log('dimension', image.width, image.height);
                                 var index = config.section ? config.section.match(/\d/) : null;
                                 if (config.compile) config.compile(buttonEl, changeEl, file, image, index);
                             };
@@ -144,7 +142,7 @@ define(['providers/providers'], function(providers) {
 
                     var self = this;
 
-                    console.log('formData', data);
+                    // console.log('formData', data);
 
                     // object XMLHttpRequest
                     var xhr = new XMLHttpRequest();
@@ -152,14 +150,14 @@ define(['providers/providers'], function(providers) {
                     // xhr response
                     xhr.onload = function() {
 
-                        console.log('XHR load', this);
+                        // console.log('XHR load', this);
 
                         // OK
                         if (this.status == 200) {
                             // parse JSON response
                             var response = JSON.parse(this.response);
 
-                            console.log('response', response);
+                            // console.log('response', response);
 
                             if (callback) callback(response);
 

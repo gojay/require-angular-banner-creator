@@ -632,6 +632,16 @@ $app->delete('/conversation/:conversationId', function($conversationId) use ($ap
 	echo json_encode($data);
 });
 
+/* ================================ Splash ================================ */
+
+$directory_mobile_photos = '../images/upload';
+
+$app->get('/splash/mobile', function() use($app, $directory_mobile_photos){
+	$app->response()->header('Content-Type', 'application/json');
+	$photos = glob("{$directory_mobile_photos}/mobile_photo_*.{jpg,jpeg,png}", GLOB_BRACE);
+	echo json_encode(array_map('basename', $photos));
+});
+
 /* ================================ Upload ================================ */
 
 $app->post('/upload', function() use ($app) {

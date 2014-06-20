@@ -14,6 +14,7 @@ require.config({
         // angular      : 'vendor/angular/angular.min',
         angular: 'vendor/angular/angular.1.1.5.min',
         angularBootstrap: 'vendor/angular/ui-bootstrap-tpls.min',
+        angularUtils: 'vendor/angular/ui-utils.min',
         angularMobile: 'vendor/angular/angular-mobile',
         angularJQM: 'vendor/angular/angular-jqm',
         angularResource: 'vendor/angular/angular-resource.min',
@@ -43,15 +44,15 @@ require.config({
     },
     shim: {
         // jquery
-        jqueryui: ['jquery'],
-        blockUI: ['jquery'],
+        jqueryui 	: ['jquery'],
+        blockUI 	: ['jquery'],
         imgareaselect: ['jquery'],
-        jszip: ['jquery'],
-        jpicker: ['jquery'],
-        qtip: ['jquery'],
-        qrcode: ['jquery'],
+        jszip 		: ['jquery'],
+        jpicker 	: ['jquery'],
+        qtip 		: ['jquery'],
+        qrcode 		: ['jquery'],
         // bootstrap
-        bootstrap: ['jquery'],
+        bootstrap 	: ['jquery'],
         // svg
         SVG: {
             deps: ['jquery'],
@@ -63,8 +64,8 @@ require.config({
             deps: ['jquery'],
             exports: 'raphael'
         },
-        raphaelShapes: ['raphael'],
-        raphaelGroup: ['raphael'],
+        raphaelShapes 	: ['raphael'],
+        raphaelGroup 	: ['raphael'],
         raphaelTransform: ['raphael'],
         raphaelSVGImport: ['raphael'],
         // angular
@@ -72,11 +73,12 @@ require.config({
             deps: ['jquery'],
             exports: 'angular'
         },
-        angularMobile: ['angular'],
         angularBootstrap: ['angular'],
-        angularJQM: ['angular'],
-        angularResource: ['angular'],
-        angularCookies: ['angular'],
+        angularUtils    : ['angular'],
+        angularMobile 	: ['angular'],
+        angularJQM 		: ['angular'],
+        angularResource : ['angular'],
+        angularCookies  : ['angular'],
         angularHttpAuthInterceptor: ['angular']
     }
 });

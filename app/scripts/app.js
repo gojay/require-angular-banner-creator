@@ -1,6 +1,7 @@
 define([
     'angular',
     'angularBootstrap',
+    'angularUtils',
     'angularMobile',
     'angularJQM',
     'angularHttpAuthInterceptor',
@@ -13,6 +14,7 @@ define([
 ], function(angular) {
     return angular.module('ImageApp', [
         'ui.bootstrap',
+        'ui.event',
         'jqm',
         'http-auth-interceptor',
         'ngCookies',

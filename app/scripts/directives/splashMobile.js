@@ -1,10 +1,11 @@
 define([
     'directives/directives',
+    'services/splashService',
     'jquery',
     'jqueryui'
 ], function(directives) {
-    directives.directive('splashMobile', ['$compile', '$timeout', 'imageReader', '$modal',
-        function($compile, $timeout, imageReader, $modal) {
+    directives.directive('splashMobile', ['$compile', '$timeout', 'RecentMobilephotos', 'imageReader', '$modal',
+        function($compile, $timeout, RecentMobilephotos, imageReader, $modal) {
             // Runs during compile
             return {
                 scope: {
@@ -23,19 +24,24 @@ define([
 
                     self.svgEditor = '#svg-mobile';
                     self.inputScreenshot = '#input-screenshot';
-                    self.inputAvatar1 = '#input-avatar-0';
-                    self.inputAvatar2 = '#input-avatar-1';
+
+                    // self.dummyImage = 'http://lorempixel.com/100/100/people/';
+                    self.dummyImage = 'http://placehold.it/100x100/';
 
                     $scope.$watch('splash.size', function(size) {
+                    	if( !$scope.splash.screenshot ){
+                    		$scope.splash.screenshot = $scope.splash.attributes[size].screenshot.image;
+                    	}
                         $scope.splash.selected.background = $scope.splash.attributes[size].background;
-                        $scope.splash.selected.dimension = $scope.splash.attributes[size].dimension;
+                        $scope.splash.selected.dimension  = $scope.splash.attributes[size].dimension;
                         $scope.splash.selected.screenshot = $scope.splash.attributes[size].screenshot;
-                        $scope.splash.selected.avatar = $scope.splash.attributes[size].avatar;
-                        //if( !$scope.splash.selected.qr ) 
-                        $scope.splash.selected.qr = $scope.splash.attributes[size].qr;
-                        $scope.splash.selected.font = $scope.splash.attributes[size].font;
+                        $scope.splash.selected.avatar 	  = $scope.splash.attributes[size].avatar;
+                        $scope.splash.selected.qr 		  = $scope.splash.attributes[size].qr;
                         // generate qr code
                         $('input[type="url"]', self.parentEl).trigger('blur');
+
+                        console.log('splash change size', size);
+                        console.log('splash $scope', $scope.splash);
                     });
                     $scope.$watch('splash.selected.peoples[1].text', function(input) {
                         $scope.splash.selected.peoples[1].limit = $scope.splash.selected.peoples[1].counter - input.length;
@@ -63,34 +69,104 @@ define([
                         }
                     };
 
-                    $scope.splash.open = function(peopleIndex, size) {
+		            $scope.splash.isDisableGenerate = function() {
+		                return $scope.splash.screenshot == null || $scope.splash.selected.qr.android.image == null || $scope.splash.selected.qr.iphone.image == null
+		            }
 
-                        $modal.open({
+					/* Ui Event */
+
+                    var fbname = null;
+                    $scope.splash.onFocusFbName = function(e){
+                    	fbname = e.target.value;
+                    };
+                    $scope.splash.onBlurFbName = function(e){
+                    	var text = e.target.value;
+                        if (e.target.validity.valid && fbname != text) {
+                            $scope.safeApply(function() {
+                                $scope.splash.disable.generate = false;
+                                $scope.splash.disable.download = true;
+                            });
+                        }
+                    };
+
+                    var qrURL = {
+                    	iphone : null,
+                    	android: null
+                    };
+                    $scope.splash.onFocusQr = function(e){
+                        // device name
+                        var deviceName = e.target.name;
+                    	qrURL[deviceName] = e.target.value;
+                    };
+                    $scope.splash.onBlurQr = function(e){
+                    	var text = e.target.value;
+                        // device name
+                        var deviceName = e.target.name;
+                        // show loading
+                        var $imgLoad = $(e.target).siblings('.ajax-load-qr');
+                        // get url
+                        var url = e.target.value;
+
+                        // if url is valid && url not same before
+                        if (e.target.validity.valid && qrURL[deviceName] != url && deviceName) {
+                            // disable generate & download button
+                            // set selected QR image
+                            $scope.safeApply(function() {
+                                $scope.splash.disable.generate = true;
+                                $scope.splash.disable.download = true;
+                                $scope.splash.selected.qr[deviceName].image = null;
+                                console.log('safeApply:$scope.splash', $scope.splash);
+                            });
+                            // show loading
+                            $imgLoad.show();
+
+                            // generate QR Code
+                            $scope.$apply($scope.generateQr({
+                                canvas: angular.element('#canvas-qrcode-' + deviceName),
+                                width: $scope.splash.selected.qr[deviceName].size,
+                                height: $scope.splash.selected.qr[deviceName].size,
+                                url: url
+                            }, function(imgDataURI) {
+                                // apply image QR code
+                                $scope.safeApply(function() {
+                                    $scope.splash.selected.qr[deviceName].image = imgDataURI;
+                                    $scope.splash.disable.generate = false;
+                                });
+                                // hide loading
+                                $imgLoad.hide();
+                            }));
+                        }
+                    };
+
+					/* Ui Bootstrap Modal */
+
+                    $scope.splash.open = function(peopleIndex, size) {
+                        var modalInstance = $modal.open({
                             templateUrl: 'modalInsertPhoto.html',
                             controller: function($scope, $modalInstance, $timeout, data, imageReader) {
                                 $scope.splash = data.splash;
-                                $scope.people = data.splash.selected.peoples[peopleIndex];
                                 $scope.photos = data.photos;
-                                $scope.photoIndex = null;
+                                $scope.people = data.splash.selected.peoples[peopleIndex];
+                                $scope.photoIndex = $scope.people.recent.index;
                                 $scope.selected = function($index) {
                                     $scope.photoIndex = $index;
                                     self.setPhoto($index, peopleIndex);
                                 };
-
                                 $scope.ok = function() {
-                                    $modalInstance.close($scope.peopleIndex);
+                                    $modalInstance.close({peopleIndex: peopleIndex, photoIndex:$scope.photoIndex});
                                 };
                                 $scope.cancel = function() {
-                                    if (!$scope.people.avatarOld)
-                                        $scope.people.avatar = 'http://lorempixel.com/100/100/people/' + $scope.photoIndex;
+                                    if ($scope.people.recent.index)
+                                        $scope.people.avatar = $scope.people.recent.avatar;
                                     else
-                                        $scope.people.avatar = $scope.people.avatarOld;
-                                    $modalInstance.dismiss('cancel');
+                                        $scope.people.avatar = self.dummyImage + peopleIndex;
+
+                                    $modalInstance.dismiss('cancel'); 
                                 };
 
                                 $scope.insertPhoto = function(evt) {
                                     var $buttonFile = angular.element(evt.currentTarget),
-                                        $inputFile = $buttonFile.siblings('input[type="file"]');
+                                        $inputFile  = $buttonFile.siblings('input[type="file"]');
 
                                     console.log('$inputFile', $inputFile)
                                     $timeout(function() {
@@ -128,18 +204,19 @@ define([
                                                     file: blob,
                                                     name: 'mobile_photo_' + filename,
                                                     size: {
-                                                        width: $scope.splash.selected.avatar.width,
-                                                        height: $scope.splash.selected.avatar.width
+                                                        width : 100,
+                                                        height: 100
                                                     }
                                                 }, function(response) {
 
                                                     $scope.splash.selected.peoples[peopleIndex].avatar = response.dataURI;
                                                     $scope.photos.push(response.image);
+                                                    $scope.photoIndex = $scope.photos.length - 1;
                                                     $scope.$apply();
 
                                                     $('#svg-mobile').unblock();
 
-                                                    $buttonFile.html('Upload image').removeAttr('disabled');
+                                                    $buttonFile.html('Change image').removeAttr('disabled');
 
                                                 });
                                             }
@@ -149,20 +226,38 @@ define([
                             },
                             size: size,
                             resolve: {
-                                data: function() {
-                                    return {
-                                        splash: $scope.splash,
-                                        photos: $scope.splash.dummy.avatars
-                                    };
+                                data: function(RecentMobilephotos, $loadDialog){
+                                	if( $scope.splash.photos.length ){
+                                		return {
+	                                        splash: $scope.splash,
+	                                        photos: $scope.splash.photos
+	                                    };
+                                	} else {
+                                		// get mobile photos from 'upload' directory with SplashService ('RecentMobilephotos')
+	                                	$loadDialog.show('Loading');
+		                                return RecentMobilephotos().then(function(photos){
+		                                	// set into splash photos
+		                                	$scope.splash.photos = photos;
+		                                	$loadDialog.hide();
+		                                	return {
+		                                        splash: $scope.splash,
+		                                        photos: photos
+		                                    };
+		                                })
+                                	}
                                 }
                             }
-                        })
-                            .result.then(function(peopleIndex) {
-                                $scope.splash.selected.peoples[peopleIndex].avatarOld = $scope.splash.selected.peoples[peopleIndex].avatar;
-                            });
+                        });
+                        modalInstance.result.then(function(index) {
+                        	var selected = index.photoIndex,
+                        		peopleIndex = index.peopleIndex;
+                            $scope.splash.selected.peoples[peopleIndex].recent.index  = selected;
+                            $scope.splash.selected.peoples[peopleIndex].recent.avatar = $scope.splash.selected.peoples[peopleIndex].avatar;
+                        });
                     };
 
                     self.setPhoto = function(photoIndex, people) {
+                    	console.log('setPhoto', $scope.splash.selected.avatar)
                         // create canvas
                         var canvas = document.createElement('canvas');
                         // get canvas context
@@ -171,8 +266,8 @@ define([
                         var img = new Image();
                         img.onload = function() {
                             // set canvas dimension
-                            canvas.width = img.width;
-                            canvas.height = img.height;
+                            canvas.width  = 100;
+                            canvas.height = 100;
                             // draw image
                             ctx.drawImage(img, 0, 0);
                             // convert to image png
@@ -181,74 +276,14 @@ define([
                             $scope.splash.selected.peoples[people].avatar = imgDataURI;
                             $scope.$apply();
                         };
-                        img.src = "images/upload/" + $scope.splash.dummy.avatars[photoIndex];
+                        img.src = "images/upload/" + $scope.splash.photos[photoIndex];
                     }
                 },
                 link: function($scope, iElm, iAttrs, controller) {
-
-                    var fbname = null;
-                    $('input[name="fbname"]', controller.parentEl)
-                        .focus(function() {
-                            fbname = $(this).val();
-                        })
-                        .blur(function(e) {
-                            var text = e.target.value;
-                            if (e.target.validity.valid && fbname != text) {
-                                $scope.safeApply(function() {
-                                    $scope.splash.disable.generate = false;
-                                    $scope.splash.disable.download = true;
-                                });
-                            }
-                        });
-
-                    var qrURL = null;
-                    $('input[type="url"]', controller.parentEl)
-                        .focus(function(e) {
-                            qrURL = $(this).val();
-                        })
-                        .blur(function(e) {
-                            console.log('blur', e.target)
-                            // device name
-                            var deviceName = e.target.name;
-                            // show loading
-                            var $imgLoad = $(e.target).siblings('.ajax-load-qr');
-                            // get url
-                            var url = e.target.value;
-
-                            // if url is valid && url not same before
-                            if (e.target.validity.valid && qrURL != url && deviceName) {
-                                // disable generate & download button
-                                // set selected QR image
-                                $scope.safeApply(function() {
-                                    $scope.splash.disable.generate = true;
-                                    $scope.splash.disable.download = true;
-                                    $scope.splash.selected.qr[deviceName].image = null;
-                                    console.log('safeApply:$scope.splash', $scope.splash);
-                                });
-                                // show loading
-                                $imgLoad.show();
-
-                                // generate QR Code
-                                $scope.$apply($scope.generateQr({
-                                    canvas: angular.element('#canvas-qrcode-' + deviceName),
-                                    width: $scope.splash.selected.qr[deviceName].size,
-                                    height: $scope.splash.selected.qr[deviceName].size,
-                                    url: qrURL
-                                }, function(imgDataURI) {
-                                    // apply image QR code
-                                    $scope.safeApply(function() {
-                                        $scope.splash.selected.qr[deviceName].image = imgDataURI;
-                                        $scope.splash.disable.generate = false;
-                                    });
-                                    // hide loading
-                                    $imgLoad.hide();
-                                }));
-                            }
-                        });
-
+                	
                     /* Read n upload image screenshot */
                     imageReader.init({
-                        buttonClass: 'btn-success',
+                        buttonClass: 'btn-info',
                         inputFileEl: controller.inputScreenshot,
                         inputFileText: 'Upload image',
                         compile: function(buttonEl, changeEl, blob, image) {
@@ -271,8 +306,8 @@ define([
                                 file: blob,
                                 name: 'mobile-screenshot',
                                 size: {
-                                    width: $scope.splash.attributes[$scope.splash.size].screenshot.width,
-                                    height: $scope.splash.attributes[$scope.splash.size].screenshot.height
+                                    width : $scope.splash.selected.screenshot.width,
+                                    height: $scope.splash.selected.screenshot.height
                                 }
                             }, function(response) {
 
@@ -283,102 +318,7 @@ define([
 
                                 $(controller.svgEditor).unblock();
 
-                            });
-                        }
-                    });
-
-                    /* Read n upload image (avatar 1) */
-                    imageReader.init({
-                        buttonClass: 'btn-success',
-                        inputFileEl: controller.inputAvatar1,
-                        inputFileText: 'Upload image',
-                        compile: function(buttonEl, changeEl, blob, image) {
-
-                            var filename = blob.name;
-                            filename = filename.substr(0, filename.lastIndexOf('.'));
-
-                            $(controller.svgEditor).block({
-                                overlayCSS: {
-                                    backgroundColor: '#fff',
-                                    opacity: 0.8
-                                },
-                                message: '<i class="icon-spinner icon-spin icon-4x"></i> <br/> Uploading',
-                                css: {
-                                    border: 'none',
-                                    background: 'none',
-                                    color: '#3685C6'
-                                }
-                            });
-
-                            $(controller.inputAvatar1 + '-button').html('<i class="icon-refresh icon-spin"></i> Uploading').attr('disabled', 'disabled');
-
-                            // upload image
-                            imageReader.uploadFile({
-                                file: blob,
-                                name: 'mobile_photo_' + filename,
-                                size: {
-                                    width: $scope.splash.selected.avatar.width,
-                                    height: $scope.splash.selected.avatar.width
-                                }
-                            }, function(response) {
-
-                                $scope.safeApply(function() {
-                                    $scope.splash.selected.peoples[0].avatar = response.dataURI;
-                                    $scope.splash.dummy.avatar.push(response.image);
-                                });
-
-                                console.log('splash', $scope.splash);
-
-                                $(controller.svgEditor).unblock();
-
-                                $(controller.inputAvatar1 + '-button').html('Upload image').removeAttr('disabled');
-
-                            });
-                        }
-                    });
-
-                    /* Read n upload image (avatar 2) */
-                    imageReader.init({
-                        buttonClass: 'btn-success',
-                        inputFileEl: controller.inputAvatar2,
-                        inputFileText: 'Upload image',
-                        compile: function(buttonEl, changeEl, blob, image) {
-
-                            var filename = blob.name;
-                            filename = filename.substr(0, filename.lastIndexOf('.'));
-
-                            $(controller.svgEditor).block({
-                                overlayCSS: {
-                                    backgroundColor: '#fff',
-                                    opacity: 0.8
-                                },
-                                message: '<i class="icon-spinner icon-spin icon-4x"></i> <br/> Uploading',
-                                css: {
-                                    border: 'none',
-                                    background: 'none',
-                                    color: '#3685C6'
-                                }
-                            });
-
-                            $(controller.inputAvatar2 + '-button').html('<i class="icon-refresh icon-spin"></i> Uploading').attr('disabled', 'disabled');
-
-                            // upload image
-                            imageReader.uploadFile({
-                                file: blob,
-                                name: 'mobile_photo_' + filename,
-                                size: {
-                                    width: $scope.splash.selected.avatar.width,
-                                    height: $scope.splash.selected.avatar.width
-                                }
-                            }, function(response) {
-
-                                $scope.safeApply(function() {
-                                    $scope.splash.selected.peoples[1].avatar = response.dataURI;
-                                    $scope.splash.dummy.avatar.push(response.image);
-                                });
-
-                                $(controller.svgEditor).unblock();
-                                $(controller.inputAvatar2 + '-button').html('Upload image').removeAttr('disabled');
+                                angular.element(buttonEl).text('Change image').removeClass('btn-info').addClass('btn-success');
 
                             });
                         }
