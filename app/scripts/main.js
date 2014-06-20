@@ -355,7 +355,7 @@ require([
                     });
 
                 // enable/disable debuging
-                debugProvider.setDebug(false);
+                debugProvider.setDebug(true);
 
                 // transition config  
                 // transitionProvider.setStartTransition('expandIn');
@@ -370,7 +370,7 @@ require([
         ])
         .run(function($rootScope, $http, $timeout, $location, transition) {
             window._unsupported = {
-                allow : true,
+                allow : false,
                 status: false
             };
             window._onbeforeunload = true;

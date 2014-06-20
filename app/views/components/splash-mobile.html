@@ -19,10 +19,10 @@
 					.foreign-object p {
 						text-align: left;
 						color: #7f7b7b;
-						font-family: 'Nexalight';
+						font-family: 'Arial';
 						font-weight: normal;
 						font-size: 13px;
-						line-height: 14px;
+						line-height: 15px;
 						margin: 0;
 						padding: 0;
 					}
@@ -77,9 +77,9 @@
 			    </clipPath>
 			    <image x="{{splash.selected.avatar.pos[0].x}}" y="{{splash.selected.avatar.pos[0].y}}" xlink:href="{{splash.selected.peoples[0].avatar}}" height="{{splash.selected.avatar.height}}" width="{{splash.selected.avatar.width}}" clip-path="url(#cut-off-bottom-1)" ></image>
 			    
-				<foreignObject x="{{splash.selected.avatar.text[0].x}}" y="{{splash.selected.avatar.text[0].y}}" width="{{splash.selected.avatar.text[0].width}}" height="{{splash.selected.avatar.text[0].height}}" class="foreign-object">
+				<foreignObject x="{{splash.selected.avatar.text[0].x}}" y="{{splash.selected.avatar.text[0].y}}" width="{{splash.selected.avatar.text[0].width}}" height="{{splash.selected.avatar.text[0].height}}" class="foreign-object {{splash.size}}">
 					<body xmlns="http://www.w3.org/1999/xhtml">
-						<p ng-bind-html-unsafe="splash.selected.peoples[0].text|blockquote" class="{{splash.size}}"></p>
+						<p ng-bind-html-unsafe="splash.selected.peoples[0].text|blockquote"></p>
 						<p class="people-name" ng-bind-html-unsafe="splash.selected.peoples[0].name" class="{{splash.size}}"></p>
 					</body>
 				</foreignObject>
@@ -89,9 +89,9 @@
 			      <circle cx="{{splash.selected.avatar.pos[1].x + splash.selected.avatar.radius}}" cy="{{splash.selected.avatar.pos[1].y + splash.selected.avatar.radius}}" r="{{splash.selected.avatar.radius}}" />
 			    </clipPath>
 			    <image x="{{splash.selected.avatar.pos[1].x}}" y="{{splash.selected.avatar.pos[1].y}}" xlink:href="{{splash.selected.peoples[1].avatar}}" height="{{splash.selected.avatar.height}}" width="{{splash.selected.avatar.width}}" clip-path="url(#cut-off-bottom-2)" ></image>
-				<foreignObject x="{{splash.selected.avatar.text[1].x}}" y="{{splash.selected.avatar.text[1].y}}" width="{{splash.selected.avatar.text[1].width}}" height="{{splash.selected.avatar.text[1].height}}" class="foreign-object">
+				<foreignObject x="{{splash.selected.avatar.text[1].x}}" y="{{splash.selected.avatar.text[1].y}}" width="{{splash.selected.avatar.text[1].width}}" height="{{splash.selected.avatar.text[1].height}}" class="foreign-object {{splash.size}}">
 					<body xmlns="http://www.w3.org/1999/xhtml">
-						<p ng-bind-html-unsafe="splash.selected.peoples[1].text|blockquote" class="{{splash.size}}"></p>
+						<p ng-bind-html-unsafe="splash.selected.peoples[1].text|blockquote"></p>
 						<p class="people-name" ng-bind-html-unsafe="splash.selected.peoples[1].name" class="{{splash.size}}"></p>
 					</body>
 				</foreignObject>

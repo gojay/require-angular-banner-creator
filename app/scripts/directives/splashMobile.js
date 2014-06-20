@@ -249,6 +249,7 @@ define([
                             }
                         });
                         modalInstance.result.then(function(index) {
+                        	console.log(index);
                         	var selected = index.photoIndex,
                         		peopleIndex = index.peopleIndex;
                             $scope.splash.selected.peoples[peopleIndex].recent.index  = selected;
