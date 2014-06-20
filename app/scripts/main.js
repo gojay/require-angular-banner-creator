@@ -355,7 +355,7 @@ require([
                     });
 
                 // enable/disable debuging
-                // debugProvider.setDebug(true);
+                debugProvider.setDebug(false);
 
                 // transition config  
                 // transitionProvider.setStartTransition('expandIn');
@@ -368,86 +368,86 @@ require([
                     .hashPrefix('!');
             }
         ])
-            .run(function($rootScope, $http, $timeout, $location, transition) {
-                window._unsupported = {
-                    allow: false,
-                    status: false
-                };
-                window._onbeforeunload = true;
-                // only using firefox to run this application.
-                // showing popup for unsopported browsers
-                if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow) {
-                    window._unsupported.status = true;
-                    $timeout(function() {
-                        $.blockUI({
-                            message: $('#popup-unsupported'),
-                            overlayCSS: {
-                                backgroundColor: '#000',
-                                opacity: 0.8,
-                                cursor: 'default'
-                            },
-                            css: {
-                                background: 'transparent',
-                                border: 'none',
-                                top: ($(window).height() - 479) / 2 + 'px',
-                                left: ($(window).width() - 649) / 2 + 'px',
-                                width: '649px',
-                                cursor: 'default'
-                            }
-                        })
-                    }, 400);
-                }
-                // define root scope models
-                $rootScope.models = {};
-                // define root scope panel
-                $rootScope.panel = {
-                    right: {
-                        model: null,
-                        template: null
-                    },
-                    left: {
-                        model: null,
-                        template: null
-                    }
-                };
-                // define root scope pageService
-                $rootScope.pageService = {
-                    loaded: false,
-                    start: false,
-                    reject: false,
-                    status: null,
-                    message: ''
-                };
-                $rootScope.$on('$routeChangeStart', function(scope, next, current) {
-                    // authorization ping 
-                    // $rootScope.$broadcast('event:auth-ping');
-
-                    // transition
-                    // if(current === undefined || next.$$route.controller == "HomeController") {
-                    // 	$rootScope.pageService.static = false;
-                    // } else {
-                    // 	// set false start pageService to static page, or doesn't needed services
-                    // 	$rootScope.pageService.static = next.$$route.page.static == undefined ? false : next.$$route.page.static;
-                    // 	transition.change();
-                    // }
-                });
-                $rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
-                    // inject page from current route
-                    $rootScope.page = current.$$route.page;
-                });
-                $rootScope.$on('$locationChangeStart', function(event, next, current) {
-                    if (window._unsupported.status) {
-                        $location.path('/');
-                    }
-                    if (!window._onbeforeunload) {
-                        if (!confirm("You have attempted to leave this page. If you have made any changes to the settings without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?")) {
-                            event.preventDefault();
-                        } else {
-                            window._onbeforeunload = true;
+        .run(function($rootScope, $http, $timeout, $location, transition) {
+            window._unsupported = {
+                allow : true,
+                status: false
+            };
+            window._onbeforeunload = true;
+            // only using firefox to run this application.
+            // showing popup for unsopported browsers
+            if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && window._unsupported.allow) {
+                window._unsupported.status = true;
+                $timeout(function() {
+                    $.blockUI({
+                        message: $('#popup-unsupported'),
+                        overlayCSS: {
+                            backgroundColor: '#000',
+                            opacity: 0.8,
+                            cursor: 'default'
+                        },
+                        css: {
+                            background: 'transparent',
+                            border: 'none',
+                            top: ($(window).height() - 479) / 2 + 'px',
+                            left: ($(window).width() - 649) / 2 + 'px',
+                            width: '649px',
+                            cursor: 'default'
                         }
-                    }
-                });
+                    })
+                }, 400);
+            }
+            // define root scope models
+            $rootScope.models = {};
+            // define root scope panel
+            $rootScope.panel = {
+                right: {
+                    model: null,
+                    template: null
+                },
+                left: {
+                    model: null,
+                    template: null
+                }
+            };
+            // define root scope pageService
+            $rootScope.pageService = {
+                loaded: false,
+                start: false,
+                reject: false,
+                status: null,
+                message: ''
+            };
+            $rootScope.$on('$routeChangeStart', function(scope, next, current) {
+                // authorization ping 
+                // $rootScope.$broadcast('event:auth-ping');
+
+                // transition
+                // if(current === undefined || next.$$route.controller == "HomeController") {
+                // 	$rootScope.pageService.static = false;
+                // } else {
+                // 	// set false start pageService to static page, or doesn't needed services
+                // 	$rootScope.pageService.static = next.$$route.page.static == undefined ? false : next.$$route.page.static;
+                // 	transition.change();
+                // }
             });
+            $rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
+                // inject page from current route
+                $rootScope.page = current.$$route.page;
+            });
+            $rootScope.$on('$locationChangeStart', function(event, next, current) {
+                if (window._unsupported.status) {
+                    $location.path('/');
+                }
+                if (!window._onbeforeunload) {
+                    if (!confirm("You have attempted to leave this page. If you have made any changes to the settings without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?")) {
+                        event.preventDefault();
+                    } else {
+                        window._onbeforeunload = true;
+                    }
+                }
+            });
+        });
         domReady(function() {
             angular.bootstrap(document, ['ImageApp']);
             $('html').attr('ng-app', 'ImageApp');
