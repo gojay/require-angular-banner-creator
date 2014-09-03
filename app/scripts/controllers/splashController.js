@@ -387,6 +387,33 @@ define([
             $scope.fabric = {};
             $scope.FabricConstants = FabricConstants;
 
+            $scope.downloadPoster = function( id ){
+                var fabric = $scope.fabric;
+
+                // Stops active object outline from showing in image
+                fabric.deactivateAll();
+
+                var initialCanvasScale = fabric.canvasScale;
+                fabric.resetZoom();
+
+                var name = 'poster-default';
+                if( fabric.presetSize.type ){
+                    name = $scope.splash.mobile.text.app.replace(/\s/g, '-') + ' ' + fabric.presetSize.name;
+                    name = name.replace(/\s/g, '_');
+                }
+
+                // get anchor link
+                var anchor = document.getElementById(id);
+                anchor.download = name + ".png";
+                anchor.href = fabric.canvas.toDataURL('png');
+
+                $scope.splash.mobile.disable.generate = false;
+                $scope.splash.mobile.disable.download = false;
+
+                fabric.canvasScale = initialCanvasScale;
+                fabric.setZoom();
+            }
+
             //
             // Watchers
             // ================================================================

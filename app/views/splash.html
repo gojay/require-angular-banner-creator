@@ -272,16 +272,11 @@
 							  	</div>
 							</div>
 							<div class="control-group margin-top-bottom">
-								<!-- <a href class="btn btn-block" 
-									ng-class="splash.mobile.isDisableGenerate() ? 'btn-info' : 'btn-success'"
-									ng-click="generateSplashmobile($event)"
-									ng-disabled="splash.mobile.isDisableGenerate()"
-									ng-show="splash.mobile.disable.download">Generate Image</a> -->
-								<a id="downloadMobile" class="btn btn-success btn-block"  
-									ng-hide="splash.mobile.disable.download"
-									ng-disabled="fabric.presetSize == null"
-									ng-click="fabric.download()"
-									>
+								<a href class="btn btn-block" 
+									ng-class="splash.mobile.disable.generate ? 'btn-info' : 'btn-success'"
+									ng-click="downloadPoster('downloadMobile')">Generate Image</a>
+								<a id="downloadMobile" class="btn btn-success btn-block"
+									ng-hide="splash.mobile.disable.download">
 									<i class="icon-download-alt"></i> Download
 								</a>
 							</div>

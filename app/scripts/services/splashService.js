@@ -327,6 +327,10 @@ define(['services/services'], function(services) {
                 app: null,
                 testimonial : null,
                 qr : null
+            },
+            disable: {
+                generate: true,
+                download: true,
             }
         };
     })
