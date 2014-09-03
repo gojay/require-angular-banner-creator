@@ -3,6 +3,8 @@ Raphael.fn.group = function() {
 	var r = this,
 		cfg = (arguments[0] instanceof Array) ? {} : arguments[0],
 		items = (arguments[0] instanceof Array) ? arguments[0] : arguments[1];
+
+	console.log('group', r)
 	
 	function Group(cfg, items) {
 		var inst,

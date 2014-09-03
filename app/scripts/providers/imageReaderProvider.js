@@ -116,7 +116,7 @@ define(['providers/providers'], function(providers) {
                         throw new Error('File is too big!!');
                     }
 
-                    console.log('file', file);
+                    console.log('[file]', file);
 
                     var buttonEl = config.buttonEl ? config.buttonEl : null;
                     var changeEl = config.changeEl ? config.changeEl : null;

@@ -3,6 +3,9 @@ session_start();
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); 
 ini_set('display_errors','on');
 
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, AuthToken");
+
 include '../config.php';
 include 'vendor/nocsrf/nocsrf.php';
 // Autoload
@@ -38,6 +41,31 @@ $app->get('/test', function() use($app, $pdo){
 		data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
 	));
 
+});
+
+$app->options('/upload-test', function() use ($app){
+	$AuthToken = $app->request()->headers('AuthToken');
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode(array(
+		'data' => array(
+			'HEADERS' => $AuthToken,
+			'REQUEST' => $_REQUEST,
+			'POST' => $_POST,
+			'FILES' => $_FILES
+		)
+	));
+});
+$app->post('/upload-test', function() use ($app){
+	$AuthToken = $app->request()->headers('AuthToken');
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode(array(
+		'data' => array(
+			'HEADERS' => $AuthToken,
+			'REQUEST' => $_REQUEST,
+			'POST' => $_POST,
+			'FILES' => $_FILES
+		)
+	));
 });
 
 /* ================================ Authorization ================================ */
@@ -643,6 +671,8 @@ $app->get('/splash/mobile', function() use($app, $directory_mobile_photos){
 });
 
 /* ================================ Upload ================================ */
+
+
 
 $app->post('/upload', function() use ($app) {
 	$app->response()->header('Content-Type', 'application/json');

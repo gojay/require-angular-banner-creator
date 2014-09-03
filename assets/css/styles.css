@@ -38,6 +38,9 @@ a:hover {
 	visibility: visible;
 }
 
+.text-left {
+	text-align: left !important;
+}
 .text-center {
 	text-align: center;
 }
@@ -293,7 +296,7 @@ header nav {
 	margin-bottom: 0;
 }
 
-#sidebar + #editor {
+#sidebar + #editor:not(.editor-mobile) {
 	text-align: center; 
 	margin-top: 58px;
 }
@@ -969,4 +972,78 @@ aside h3 {
 .modal-large{
    width:940px;
    margin-left:-470px;
+}
+
+#mobile-splash #splash-mobile {
+	padding: 20px 0;
+	background: #CACACA;
+	box-sizing: border-box;
+	border: 1px solid #CACACA;
+	min-height: 460px;
+	text-align: center;
+	position: relative;
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
+.image-builder-container {
+    position: relative;
+}
+.image-builder {
+    background: #cacaca;
+    box-sizing: border-box;
+    border: 1px solid #cacaca;
+    min-height: 460px;
+    text-align: center;
+    position: relative;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: auto;
+    margin-top: 10px;
+}
+.image-cover {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    position: absolute;
+    z-index: 2;
+}
+.fabric-container {
+    background: white;
+    border-radius: 1px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, .4);
+    display: inline-block;
+    margin: 50px;
+    position: relative;
+    vertical-align: middle;
+    z-index: 0;
+}
+.image-loading {
+    background: rgba(255, 255, 255, .4);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+
+legend.small {
+	border-bottom: 0;
+	margin-bottom: 0;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#objects > button {
+	margin-bottom: 10px;
+}
+#objects button:nth-child(4n+1) {
+	margin-left: 0;
+}
+
+a:disabled,
+.accordion-heading a:disabled {
+	color: rgba(0,0,0,0.5) !important;
 }
