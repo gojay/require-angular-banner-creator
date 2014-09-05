@@ -16,7 +16,7 @@ define([
 ], function(angular) {
     return angular.module('ImageApp', [
         'ui.bootstrap',
-        'ui.event',
+        'ui.utils',
         'jqm',
         'http-auth-interceptor',
 

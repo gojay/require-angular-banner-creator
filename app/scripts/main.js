@@ -136,9 +136,9 @@ require([
         'directives/authApplication',
         'directives/bannerCreator',
         'directives/conversationCreator',
-        'directives/splashCreator',
+        'directives/splashCustom',
         'directives/splashFacebook',
-        'directives/splashMobile',
+        'directives/splashMobileFabric',
         'directives/tbModal',
         // controllers
         'controllers/homeController',

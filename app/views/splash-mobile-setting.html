@@ -1,0 +1,289 @@
+<div class="accordion" id="accordion2" style="margin-bottom:0">
+	<div class="accordion-group">
+		<div class="accordion-heading">
+	  		<a class="accordion-toggle open" data-toggle="collapse" data-parent="#accordion2" href="#setting-basic" style="padding: 10px 0;" ng-click="splash.mobile.fabric.toggleControlObject(false)">
+	    		Basic
+	  		</a>
+		</div>
+		<div id="setting-basic" class="accordion-body collapse in">
+	  		<div class="accordion-inner" style="padding:10px 0;">
+					<div style="min-height:130px">
+	 				<div class="row-fluid">
+		 				<div class="span12 btn-group">
+							<button class="btn btn-block btn-info dropdown-toggle" data-toggle="dropdown">
+								{{ splash.mobile.fabric.presetSize.name ? splash.mobile.fabric.presetSize.name : 'Select poster size' }}
+							    <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li ng-click='splash.mobile.fabric.presetSize = size; splash.mobile.fabric.setCanvasSize(size.width, size.height); splash.mobile.fabric.setDirty(true); dropdown.sizeIsOpen = !dropdown.sizeIsOpen' ng-repeat='size in splash.mobile.FabricConstants.presetSizes'><a>{{ size.name }}</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="row-fluid" ng-hide="!splash.mobile.fabric.presetSize">
+						<!-- Screenshot -->
+
+		 				<div class="control-group">
+							<legend>Screenshot</legend>
+							<label>Upload application screenshot</label>
+							<div class="controls">
+								<input type="file" id="input-screenshot" class="hide">
+							</div>
+						</div>
+
+						<!-- Application -->
+
+		 				<div class="control-group">
+							<legend>Application</legend>
+							<label>Application Name</label>
+							<div class="controls">
+								<input type="text" name="fbname" class="input-large" required 
+									   	ng-model="splash.mobile.text.app"
+										ui-event="{
+											focus:'splash.mobile.fabric.setActiveObjectByName(\'app-name\')', 
+											blur :'splash.mobile.fabric.deactivateAll()'
+										}"/>
+							</div>
+						</div>
+		 				<div class="control-group" 
+		 					 ng-class="{
+		 					 	'error': !splash.mobile.qr.iphone.valid,
+		 					 	'success': splash.mobile.qr.iphone.valid
+		 					 }">
+							<label>Iphone QR Code URL</label>
+							<div class="controls" style="position:relative">
+								<input type="url" name="iphone" class="input-large" required
+									   ng-model="splash.mobile.qr.iphone.url" 
+									   ui-event="{ 
+									   		focus: 'splash.mobile.onFocusQR($event)', 
+										   	keyup: 'splash.mobile.onKeyUpQR($event)',
+									   		blur : 'splash.mobile.onBlurQR($event)' 
+									   	}"
+									   ng-disabled="splash.mobile.qr.iphone.loading">
+								<img class="ajax-load-qr" src="assets/img/ajax-loader.gif" width="16" height="16" 
+								style="position:absolute; right:13px; top:6px;"
+								ng-show="splash.mobile.qr.iphone.loading">
+							</div>
+						</div>
+		 				<div class="control-group"
+		 					 ng-class="{
+		 					 	'error': !splash.mobile.qr.android.valid,
+		 					 	'success': splash.mobile.qr.android.valid
+		 					 }">
+							<label>Android QR Code URL</label>
+							<div class="controls" style="position:relative">
+								<input type="url" name="android" class="input-large" required
+									   ng-model="splash.mobile.qr.android.url" 
+									   ui-event="{ 
+									   		focus: 'splash.mobile.onFocusQR($event)', 
+										   	keyup: 'splash.mobile.onKeyUpQR($event)',
+									   		blur:'splash.mobile.onBlurQR($event)' 
+									   	}"
+									   ng-disabled="splash.mobile.qr.android.loading">
+								<img class="ajax-load-qr" src="assets/img/ajax-loader.gif" width="16" height="16" 
+								style="position:absolute; right:13px; top:6px;"
+								ng-show="splash.mobile.qr.android.loading">
+							</div>
+						</div>
+
+						<!-- Testimonials -->
+
+						<legend style="margin-bottom:0px">Testimonials</legend>
+						<div class="control-group">
+							<label style="display:inline-block; width:100px">Photo</label>
+							<div class="controls" style="display:inline;">
+				  				<button class="btn" ng-click="splash.mobile.open('left')">Photo</button>
+							</div>
+							<!-- <div class="controls">
+								<input type="file" id="input-testimonial-photo-left" class="hide">
+							</div> -->
+						</div>
+						<div class="control-group">
+							<label style="display:inline-block; width:100px">Testimoni</label>
+							<div class="controls" style="display:inline;">
+								<textarea class="input-large" placeholder="Enter text here.." rows="4" 
+									ng-model="splash.mobile.text.left"
+									ui-event="{
+										focus:'splash.mobile.fabric.setActiveObjectByName(\'testimoni-text-left\')', 
+										blur:'splash.mobile.fabric.deactivateAll()'
+									}"></textarea>
+							</div>
+						</div>
+						<hr/>
+
+						<div class="control-group">
+							<label style="display:inline-block; width:100px">Photo</label>
+							<div class="controls" style="display:inline;">
+				  				<button class="btn" ng-click="splash.mobile.open('right')">Photo</button>
+							</div>
+							<!-- <div class="controls">
+								<input type="file" id="input-testimonial-photo-right" class="hide">
+							</div> -->
+						</div>
+						<div class="control-group">
+							<label style="display:inline-block; width:100px">Testimoni</label>
+							<div class="controls" style="display:inline;">
+								<textarea class="input-large" placeholder="Enter text here.." rows="4" 
+									ng-model="splash.mobile.text.right"
+									ui-event="{
+										focus:'splash.mobile.fabric.setActiveObjectByName(\'testimoni-text-right\')', 
+										blur:'splash.mobile.fabric.deactivateAll()'
+									}"></textarea>
+							</div>
+						</div>
+					</div>
+					</div>
+
+	  		</div>
+	  	</div>
+	</div>
+	<div class="accordion-group">
+		<div class="accordion-heading">
+	  		<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#setting-advance" style="padding: 10px 0;" ng-click="splash.mobile.fabric.toggleControlObject(true)">
+	    		Advanced
+	  		</a>
+		</div>
+		<div id="setting-advance" class="accordion-body collapse">
+	  		<div class="accordion-inner" style="padding:10px 0;">
+	  			<div ng-show="splash.mobile.fabric.selectedObject">
+	      		    <!-- Text -->
+	      			<div ng-if="splash.mobile.fabric.selectedObject.type == 'text' || splash.mobile.fabric.selectedObject.type == 'i-text'">
+						<legend class="small">Color</legend>
+		        		<div class="row-fluid">
+	                    	<input type='color' class="span4 form-control" ng-model="splash.mobile.fabric.selectedObject.fill" />
+	                    	<input type='text' class="span8 form-control" ng-model="splash.mobile.fabric.selectedObject.fill" />
+						</div>
+
+						<legend class="small">Stroke</legend>
+						<div class="row-fluid">
+							<div class="span8">
+								<label for="">Color</label>
+	                        	<input type='color' class="span4 form-control" ng-model="splash.mobile.fabric.selectedObject.stroke"/>
+	                        	<input type='text' class="span8 form-control" ng-model="splash.mobile.fabric.selectedObject.stroke" />
+							</div>
+							<!-- <div class="span4">
+								<label for="">Width</label>
+	                        	<input type='number' class="span12 form-control" ng-model="splash.mobile.fabric.selectedObject.strokeWidth" />
+							</div> -->
+						</div>
+
+						<legend class="small">Font</legend>
+						<div class="row-fluid">
+							<div class="span12 btn-group">
+								<button class="btn btn-block btn-info dropdown-toggle" data-toggle="dropdown">
+									<span class='object-font-family-preview' style='font-family: "{{ splash.mobile.fabric.selectedObject.fontFamily }}";'>
+	                                    {{ splash.mobile.fabric.selectedObject.fontFamily }}
+	                                </span>
+								    <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+								    <li ng-repeat='font in splash.mobile.FabricConstants.fonts' ng-click='splash.mobile.fabric.setFontFamily(font.name); dropdown.fontIsOpen = !dropdown.fontIsOpen' style='font-family: "{{ font.name }}";'>
+	                                    <a><span class='object-font-family-preview' style='font-family: {{ font.name }};'>
+	                                    {{ font.name }}
+	                                </span></a>
+	                                </li>
+								</ul>
+							</div>
+						</div>
+						<p/>
+						<div class="row-fluid">
+							<div class="span6">
+								<i class="icon-text-height"></i>
+	                        	<input type='number' class="span12 form-control" ng-model="splash.mobile.fabric.selectedObject.fontSize"/>
+							</div>
+							<div class="span6">
+								<i class="icon-align-left"></i>
+	                        	<input type='number' class="span12 form-control" ng-model="splash.mobile.fabric.selectedObject.lineHeight" step=".1" />
+							</div>
+						</div>
+
+						<legend class="small">Font Style & Align</legend>
+						<div class="row-fluid">
+							<div class="span6 btn-group">
+								<button ng-class="{ 'btn-primary': splash.mobile.fabric.selectedObject.textAlign == 'left' }" ng-click="splash.mobile.fabric.selectedObject.textAlign = 'left'" class='btn btn-small'><i class="icon-align-left"></i></button>
+								<button ng-class="{ 'btn-primary': splash.mobile.fabric.selectedObject.textAlign == 'center' }" ng-click="splash.mobile.fabric.selectedObject.textAlign = 'center'" class='btn btn-small'><i class="icon-align-center"></i></button>
+								<button ng-class="{ 'btn-primary': splash.mobile.fabric.selectedObject.textAlign == 'right' }" ng-click="splash.mobile.fabric.selectedObject.textAlign = 'right'" class='btn btn-small'><i class="icon-align-right"></i></button>
+							</div>
+							<div class="span6 btn-group">
+								<button ng-class="{ 'btn-primary': splash.mobile.fabric.isBold() }" ng-click="splash.mobile.fabric.toggleBold()" class='btn btn-small'><i class="icon-bold"></i></button>
+								<button ng-class="{ 'btn-primary': splash.mobile.fabric.isBold() }" ng-click="splash.mobile.fabric.toggleItalic()" class='btn btn-small'><i class="icon-italic"></i></button>
+								<button ng-class="{ 'btn-primary': splash.mobile.fabric.isBold() }" ng-click="splash.mobile.fabric.toggleUnderline()" class='btn btn-small'><i class="icon-underline"></i></button>
+							</div>
+						</div>
+	      			</div>
+					<!-- Controls -->
+	      			<div class="margin-top-bottom">
+	      				<legend class="small">Controls</legend>
+	      				<div class="row-fluid form-horizontal">
+	      					<label class="control-label text-left span5">Transparent</label>
+	      					<input type="range" class="span5 form-control" min="0" max="1" step=".1" ng-model="splash.mobile.fabric.selectedObject.opacity" />
+	      					<input type="number" class="span2 form-control" min="0" max="1" step=".1" ng-model="splash.mobile.fabric.selectedObject.opacity" />
+	      				</div>
+	      				<div class="row-fluid form-horizontal">
+	      					<label class="control-label text-left span3">Angle</label>
+	      					<input type="range" class="span6 form-control" min="-90" max="90" ng-model="splash.mobile.fabric.controls.angle" />
+	      					<input type="number" class="span3 form-control" min="-90" max="90" ng-model="splash.mobile.fabric.controls.angle" />
+	      				</div>
+	      				<div class="row-fluid form-horizontal">
+	      					<label class="control-label text-left span3">Top</label>
+	      					<input type="range" class="span6 form-control" min="0" max="{{splash.mobile.fabric.maxBounding.top}}" ng-model="splash.mobile.fabric.controls.top" />
+	      					<input type="number" class="span3 form-control" min="0" max="{{splash.mobile.fabric.maxBounding.top}}" ng-model="splash.mobile.fabric.controls.top" />
+	      				</div>
+	      				<div class="row-fluid form-horizontal">
+	      					<label class="control-label text-left span3">Left</label>
+	      					<input type="range" class="span6 form-control" min="0" max="{{splash.mobile.fabric.maxBounding.left}}" ng-model="splash.mobile.fabric.controls.left" />
+	      					<input type="number" class="span3 form-control" min="0" max="{{splash.mobile.fabric.maxBounding.left}}" ng-model="splash.mobile.fabric.controls.left" />
+	      				</div>
+	      			</div>
+	      			<!-- Positions -->
+	      			<div class="margin-top-bottom">
+	      				<legend class="small">Positions</legend>
+		      			<div class="btn-group btn-group-vertical span12 prefix">
+			              <button type="button" class="btn btn-block" ng-click='splash.mobile.fabric.center()'>Center</button>
+			              <button type="button" class="btn btn-block" ng-click='splash.mobile.fabric.centerH()'>Center Horizontally</i></button>
+			              <button type="button" class="btn btn-block" ng-click='splash.mobile.fabric.centerV()'>Center Vertically</button>
+			            </div>
+	      				<legend class="small">Lock</legend>
+		      			<div class="btn-group btn-group-vertical span12 prefix">
+			              <button type="button" class="btn btn-block" ng-click='splash.mobile.fabric.toggleLockActiveObject(); splash.mobile.fabric.setDirty(true)' ng-class="{ 'btn-primary': splash.mobile.fabric.selectedObject.lockObject }">Lock All</button>
+			              <button type="button" class="btn btn-block" ng-click='splash.mobile.fabric.toggleLockMovementXActiveObject(); splash.mobile.fabric.setDirty(true)' ng-class="{ 'btn-primary': splash.mobile.fabric.selectedObject.lockMovementX }"><i class="icon-resize-horizontal"></i> Lock MovementX</i></button>
+			              <button type="button" class="btn btn-block" ng-click='splash.mobile.fabric.toggleLockMovementYActiveObject(); splash.mobile.fabric.setDirty(true)' ng-class="{ 'btn-primary': splash.mobile.fabric.selectedObject.lockMovementY }"><i class="icon-resize-vertical"></i> Lock MovementY</button>
+			            </div>
+		            </div>
+	  			</div>
+	  		</div>
+		</div>
+	</div>
+</div>
+<div class="control-group margin-top-bottom">
+	<a href class="btn btn-block" 
+		ng-class="splash.mobile.disable.generate ? 'btn-info' : 'btn-success'"
+		ng-click="splash.mobile.downloadPoster('downloadMobile')">Generate Image</a>
+	<a id="downloadMobile" class="btn btn-success btn-block"
+		ng-hide="splash.mobile.disable.download">
+		<i class="icon-download-alt"></i> Download
+	</a>
+</div>
+
+<script type="text/ng-template" id="modalInsertPhoto.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Insert Photo</h3>
+    </div>
+    <div class="modal-body">
+    	<div id="mobile-photos" class="row-fluid">
+			<div class="span3" ng-repeat="photo in photos">
+				<i ng-if="photoIndex == $index" class="icon-ok-sign icon-2x"></i>
+				<img ng-src="images/upload/{{photo}}" width="90" height="90" class="img-circle" 
+					 ng-click="selected($index)">
+			</div>
+		</div>
+		<div class="row-fluid margin-top">
+      		<a class="btn btn-success btn-input-photo" ng-click="insertPhoto($event)">Upload image</a>
+			<input type="file" id="input-photo" class="hide" />
+      	</div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

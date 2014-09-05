@@ -11,8 +11,8 @@ define([
                 scope: {
                     splash: '=ngModel',
                     generateQr: '='
-                }, // {} = isolate, true = child, false/undefined = no change
-                restrict: 'EAC', // E = Element, A = Attribute, C = Class, M = Comment
+                }, 
+                restrict: 'EAC',
                 templateUrl: 'app/views/components/splash-mobile.html',
                 replace: true,
                 controller: function($scope, $element, $attrs, $transclude) {
@@ -168,7 +168,6 @@ define([
                                     var $buttonFile = angular.element(evt.currentTarget),
                                         $inputFile  = $buttonFile.siblings('input[type="file"]');
 
-                                    console.log('$inputFile', $inputFile)
                                     $timeout(function() {
                                         $inputFile
                                             .unbind('change')

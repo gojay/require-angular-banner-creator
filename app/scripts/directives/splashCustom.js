@@ -3,15 +3,15 @@ define([
 	'jquery',
 	'jqueryui'
 ], function(directives){
-	directives.directive('splashCreator', ['$compile', '$timeout', 'imageReader',
+	directives.directive('splashCustom', ['$compile', '$timeout', 'imageReader',
 		function($compile, $timeout, imageReader){
 			// Runs during compile
 			return {
 				scope: {
-					splash : '=ngModel'
+					splash : '='
 				}, // {} = isolate, true = child, false/undefined = no change
 				restrict: 'EAC', // E = Element, A = Attribute, C = Class, M = Comment
-				templateUrl: 'app/views/components/splash-creator.html',
+				templateUrl: 'app/views/components/splash-custom.html',
 				replace: true,
 				controller: function($scope, $element, $attrs, $transclude){
 					

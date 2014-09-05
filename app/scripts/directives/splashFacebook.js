@@ -8,7 +8,7 @@ define([
 			// Runs during compile
 			return {
 				scope: {
-					splash : '=ngModel',
+					splash : '=',
 					generateQr : '='
 				}, // {} = isolate, true = child, false/undefined = no change
 				restrict: 'EAC', // E = Element, A = Attribute, C = Class, M = Comment

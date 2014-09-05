@@ -1,0 +1,41 @@
+<div class="control-group">
+	<label>Facebook URL</label>
+	<div class="controls">
+		<input type="text" name="fbname" class="input-large" ng-model="splash.facebook.url"
+			ui-event="{ focus: 'splash.facebook.onFocusFbName($event)', blur:'splash.facebook.onBlurFbName($event)' }">
+	</div>
+</div>
+	<div class="control-group">
+	<label>QR Code URL</label>
+	<div class="controls">
+		<input type="url" class="input-large" required 
+			   ng-model="splash.facebook.qr"
+			   ui-event="{ focus: 'splash.facebook.onFocusQr($event)', blur:'splash.facebook.onBlurQr($event)' }">
+		<img class="ajax-load-qr" src="assets/img/ajax-loader.gif" width="16" height="16" style="vertical-align:top; padding:5px; display:none">
+	</div>
+</div>
+	<div class="control-group">
+	<label class="control-label">Sticker Size</label>
+	<div class="controls">
+	    <div id="set-overlay" class="btn-group">
+		    <button class="btn" 
+		    		ng-repeat="f in ['A4','A5']"
+		    		ng-class="{'active':splash.facebook.size == f}"
+		    		ng-click="setFBSize(f)">
+				{{f}}
+		    </button>
+	    </div>
+	</div>
+</div>
+<div class="control-group margin-top-bottom">
+	<a href class="btn btn-block" 
+		ng-class="splash.facebook.disable.generate ? 'btn-info' : 'btn-success'"
+		ng-click="generateSplashFacebook($event)"
+		ng-disabled="splash.facebook.disable.generate"
+		ng-show="splash.facebook.disable.download">Generate Image</a>
+	<a href id="downloadFB" class="btn btn-success btn-block"  
+		ng-hide="splash.facebook.disable.download"
+		ng-disabled="splash.facebook.disable.download">
+		<i class="icon-download-alt"></i> Download
+	</a>
+</div>

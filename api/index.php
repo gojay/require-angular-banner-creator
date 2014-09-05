@@ -672,8 +672,6 @@ $app->get('/splash/mobile', function() use($app, $directory_mobile_photos){
 
 /* ================================ Upload ================================ */
 
-
-
 $app->post('/upload', function() use ($app) {
 	$app->response()->header('Content-Type', 'application/json');
 
