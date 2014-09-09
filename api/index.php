@@ -36,36 +36,86 @@ $app->get('/test', function() use($app, $pdo){
 	// echo str_pad($table['Auto_increment'], 9, '0', STR_PAD_LEFT);
 
 	echo json_encode(array(
-		data_uri(BASE_PATH . '/images/facebook/fb-like1.png', 'image/png'),
-		data_uri(BASE_PATH . '/images/facebook/fb-like2.png', 'image/png'),
-		data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
+		count(glob(UPLOAD_PATH . "/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE)),
+		// data_uri(BASE_PATH . '/images/facebook/fb-like1.png', 'image/png'),
+		// data_uri(BASE_PATH . '/images/facebook/fb-like2.png', 'image/png'),
+		// data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
 	));
 
 });
 
-$app->options('/upload-test', function() use ($app){
-	$AuthToken = $app->request()->headers('AuthToken');
-	$app->response()->header('Content-Type', 'application/json');
-	echo json_encode(array(
-		'data' => array(
-			'HEADERS' => $AuthToken,
-			'REQUEST' => $_REQUEST,
-			'POST' => $_POST,
-			'FILES' => $_FILES
-		)
-	));
-});
+$app->options('/upload-test', function() use ($app){});
 $app->post('/upload-test', function() use ($app){
-	$AuthToken = $app->request()->headers('AuthToken');
-	$app->response()->header('Content-Type', 'application/json');
-	echo json_encode(array(
-		'data' => array(
-			'HEADERS' => $AuthToken,
-			'REQUEST' => $_REQUEST,
-			'POST' => $_POST,
-			'FILES' => $_FILES
-		)
-	));
+	$upload_path = UPLOAD_PATH;
+	$upload_url  = UPLOAD_URL;
+
+	$name   = $_REQUEST['name'];
+	$id     = isset($_REQUEST['id']) ? $_REQUEST['id'] : null ;
+	$width  = isset($_REQUEST['width']) ? $_REQUEST['width'] : null ;
+	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null ;
+	$sizes  = isset($_REQUEST['size']) ? $_REQUEST['size'] : false ;
+	$autoWidth = isset($_REQUEST['auto_width']) ? (boolean) $_REQUEST['auto_width'] : false ;
+	$direction = isset($_REQUEST['direction']) ? $_REQUEST['direction'] : null ;
+
+	$unique = isset($_REQUEST['unique']) ? $_REQUEST['unique'] : null ;
+
+	$files = $_FILES['file'];
+	$fileImg  = $files['tmp_name'];
+	$fileType = $files['type'];
+
+	if( $unique && $unique['key'] ) {
+		$name .= '_' . count(glob(UPLOAD_PATH . "/". $unique['key'] ."_*.{jpg,jpeg,png}", GLOB_BRACE));
+	}
+
+	try{
+		if( $id !== null ){
+			$upload_path .= '/' . $id;
+			$upload_url  .= '/' . $id;
+			if(!is_dir($upload_path)){
+				if(false === mkdir($upload_path, 0777, true)){
+					throw new Exception(sprintf('Unable to create the %s directory', $upload_path));
+				}
+			}
+		}
+
+		$response = array();
+		// upload screenshot
+		if( $width == 'original' && $height == 'original' ){
+			$name = str_replace('-', '_', $name) . '.jpg';
+			$target = $upload_path . DIRECTORY_SEPARATOR . $name;
+			move_uploaded_file($fileImg, $target);
+			// create response
+			$response = array(
+				'image'     => $name,
+				'url'       => $upload_url . '/' . $name
+			);
+		} else {
+			// upload splash screen
+			if( $sizes !== false ){
+				foreach ($sizes as $key => $dimension) {
+					$image = do_upload($files, $upload_path, $name . '_' . $key , $dimension['w'], $dimension['h'], $autoWidth);
+					$response[$key] = data_uri($image->file_dst_pathname, $fileType);
+				}
+			} else {
+				$image = do_upload($files, $upload_path, $name, $width, $height, $autoWidth);
+				// create response
+				$response = array(
+					'image'     => $image->file_dst_name,
+					'file_dst_pathname'     => $image->file_dst_pathname,
+					'height'    => $image->image_dst_y,
+					'width'     => $image->image_dst_x,
+					'url'       => $upload_url . '/' . $image->file_dst_name,
+					'dataURI'   => data_uri($image->file_dst_pathname, $fileType),
+					'direction' => $direction
+				);
+			}
+		}
+		// send response
+		echo json_encode($response);
+	} 
+	catch(Exception $e) {
+		$app->halt(500, $e->getMessage());
+	}
 });
 
 /* ================================ Authorization ================================ */
@@ -666,12 +716,15 @@ $directory_mobile_photos = '../images/upload';
 
 $app->get('/splash/mobile', function() use($app, $directory_mobile_photos){
 	$app->response()->header('Content-Type', 'application/json');
-	$photos = glob("{$directory_mobile_photos}/mobile_photo_*.{jpg,jpeg,png}", GLOB_BRACE);
+	$photos = glob("{$directory_mobile_photos}/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE);
 	echo json_encode(array_map('basename', $photos));
 });
 
 /* ================================ Upload ================================ */
 
+$app->options('/upload', function() use ($app){
+
+});
 $app->post('/upload', function() use ($app) {
 	$app->response()->header('Content-Type', 'application/json');
 

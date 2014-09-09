@@ -12,7 +12,10 @@ class CSRFAuth extends \Slim\Middleware
 	{
 		$this->_allowedRoutes = array(
     	    // 'GET/ping',
-    	    'GET/test',
+    	    // 'GET/test',
+    	    // 'GET/ID',
+    	    // 'GET/banner',
+    	    // 'GET/banner/template',
     	    'POST/login',
     	    'POST/logout'
     	);  

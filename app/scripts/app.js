@@ -316,10 +316,8 @@ define([
                 message: ''
             };
             $rootScope.$on('$routeChangeStart', function(scope, next, current) {
-                $rootScope.$broadcast('test');
-    
                 // authorization ping 
-                // $rootScope.$broadcast('event:auth-ping');
+                $rootScope.$broadcast('event:auth-ping');
     
                 // transition
                 // if(current === undefined || next.$$route.controller == "HomeController") {
