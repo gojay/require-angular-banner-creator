@@ -34,6 +34,7 @@ $app->get('/test', function() use($app, $pdo){
 
 	echo json_encode(array(
 		count(glob(UPLOAD_PATH . "/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE)),
+		strtotime('now'),
 		// data_uri(BASE_PATH . '/images/facebook/fb-like1.png', 'image/png'),
 		// data_uri(BASE_PATH . '/images/facebook/fb-like2.png', 'image/png'),
 		// data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
@@ -52,7 +53,25 @@ $app->post('/upload-test', function() use ($app){
 	$upload_path = UPLOAD_PATH;
 	$upload_url  = UPLOAD_URL;
 
-	$name   = $_REQUEST['name'];
+	$files    = $_FILES['file'];
+	$filename = $files['name'];
+	$fileImg  = $files['tmp_name'];
+	$fileType = $files['type'];
+	
+	$extension = null;
+	switch ($fileType) { 
+	    case IMAGETYPE_GIF: 
+	        $extension = '.gif';
+	        break; 
+	    case IMAGETYPE_JPEG: 
+	        $extension = '.jpeg';
+	        break; 
+	    case IMAGETYPE_PNG: 
+	        $extension = '.png';
+	        break; 
+	} 
+
+	$name   = isset($_REQUEST['name']) ? $_REQUEST['name'] : null ;
 	$id     = isset($_REQUEST['id']) ? $_REQUEST['id'] : null ;
 	$width  = isset($_REQUEST['width']) ? $_REQUEST['width'] : null ;
 	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null ;
@@ -63,6 +82,7 @@ $app->post('/upload-test', function() use ($app){
 	$unique = isset($_REQUEST['unique']) ? $_REQUEST['unique'] : null ;
 
 	$files = $_FILES['file'];
+	$filename = $files['name'];
 	$fileImg  = $files['tmp_name'];
 	$fileType = $files['type'];
 
@@ -84,7 +104,7 @@ $app->post('/upload-test', function() use ($app){
 		$response = array();
 		// upload screenshot
 		if( $width == 'original' && $height == 'original' ){
-			$name = str_replace('-', '_', $name) . '.jpg';
+			$name   = 'mobile_screenshot_'.$filename . '.jpeg';
 			$target = $upload_path . DIRECTORY_SEPARATOR . $name;
 			move_uploaded_file($fileImg, $target);
 			// create response
@@ -717,13 +737,81 @@ $app->delete('/conversation/:conversationId', function($conversationId) use ($ap
 
 $directory_mobile_photos = '../images/upload';
 
-$app->get('/splash/mobile', function() use($app, $directory_mobile_photos){
+$app->get('/splash/mobile/photos', function() use($app, $directory_mobile_photos){
 	$app->response()->header('Content-Type', 'application/json');
 	$photos = glob("{$directory_mobile_photos}/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE);
 	echo json_encode(array_map('basename', $photos));
 });
+$app->get('/splash/mobile', function() use($app, $db){
+	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
+	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+	$app->response()->header('Content-Type', 'application/json');
+
+	try {
+		$creators = $db->creators()
+		    		->select("*")
+		    		->where('type', 'splash-mobile')
+				    ->order("creator_id DESC")
+				    ->limit(10);
+		$data = array();
+		foreach ($creators as $creator) {
+		   $data[] = array(
+				'ID'          => $creator['creator_id'],
+				'title'       => $creator['title'],
+				'preview'	  => $creator['image'],
+				'description' => html_entity_decode($creator['description'], ENT_COMPAT, 'UTF-8'),
+				'autosave'	  => (boolean) $creator['autosave']
+			);
+		}
+		// sleep(2);
+		echo json_encode($data);
+	}
+	catch(Exception $e){
+		$app->halt(500, $e->getMessage());
+	}
+	
+});
+$app->get('/splash/mobile/:conversationId', function($conversationId) use($app, $db){
+	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
+	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+	$app->response()->header('Content-Type', 'application/json');
+
+	try {
+		$creator = $db->creators[$conversationId];
+		if($creator && $creator['type'] == 'splash-mobile'){
+			$data = array(
+				'ID'          => $creator['creator_id'],
+				'title'       => $creator['title'],
+				'preview'	  => $creator['image'],
+				'description' => html_entity_decode($creator['description'], ENT_COMPAT, 'UTF-8'),
+				'autosave'	  => (boolean) $creator['autosave']
+			);
+			if($creator->creator_meta()){
+				foreach ($creator->creator_meta() as $meta){
+					$value = @unserialize($meta['meta_value']);
+					$data[$meta['meta_key']] = ($value === false) ? 
+												preg_match('/\d/', $meta['meta_value']) ? (int) $meta['meta_value'] : $meta['meta_value'] :
+												convert_image_uri($value) ;
+				}
+			}
+			// sleep(2);
+			echo json_encode($data);
+		}
+		else {
+			// sleep(2);
+			throw new NotFoundException("Splash Mobile not found");
+		}
+	}
+	catch(NotFoundException $e){
+		$app->halt(404, $e->getMessage());
+	}
+	catch(Exception $e) {
+		$app->halt(500, $e->getMessage());
+	}
+	
+});
 $app->options('/splash/mobile', function() use($app){});
-$app->post('/splash/mobile', function() use($app){
+$app->post('/splash/mobile', function() use($app, $db){
 	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
 	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
 	$app->response()->header('Content-Type', 'application/json');
@@ -731,8 +819,33 @@ $app->post('/splash/mobile', function() use($app){
 	$body = $app->request()->getBody();
 	$data = json_decode($body);
 
-	$data->serialize = serialize($data->value);
-	echo json_encode($data);
+	$creator = $db->creators()->insert(array(
+		'creator_id'  => strtotime('now'),
+		'title'       => $data->title,
+		'image'       => $data->image,
+		'type'        => 'splash-mobile',
+		'description' => 'Lorem ipsum dolor sit amet',
+		'autosave'    => 1
+	));
+	if( $data->meta ){
+		foreach ($data->meta as $key => $value) {
+			// insert creator meta
+			$creator->creator_meta()->insert(array(
+				'meta_key'   => $key,
+				'meta_value' => serialize($value)
+			));
+		}
+	}
+
+	// send response
+	echo json_encode(true);
+
+	// $serialize = serialize($data->value);
+	// // strtotime('now');
+	// echo json_encode(array(
+	// 	'data' => $data,
+	// 	'unserialize' => unserialize($serialize)
+	// ));
 });
 
 /* ================================ Upload ================================ */
