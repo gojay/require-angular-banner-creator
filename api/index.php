@@ -3,9 +3,6 @@ session_start();
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); 
 ini_set('display_errors','on');
 
-header('Access-Control-Allow-Origin: *');
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, AuthToken");
-
 include '../config.php';
 include 'vendor/nocsrf/nocsrf.php';
 // Autoload
@@ -44,8 +41,14 @@ $app->get('/test', function() use($app, $pdo){
 
 });
 
-$app->options('/upload-test', function() use ($app){});
+$app->options('/upload-test', function() use ($app){
+	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
+	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+});
 $app->post('/upload-test', function() use ($app){
+	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
+	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+
 	$upload_path = UPLOAD_PATH;
 	$upload_url  = UPLOAD_URL;
 
@@ -718,6 +721,18 @@ $app->get('/splash/mobile', function() use($app, $directory_mobile_photos){
 	$app->response()->header('Content-Type', 'application/json');
 	$photos = glob("{$directory_mobile_photos}/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE);
 	echo json_encode(array_map('basename', $photos));
+});
+$app->options('/splash/mobile', function() use($app){});
+$app->post('/splash/mobile', function() use($app){
+	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
+	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+	$app->response()->header('Content-Type', 'application/json');
+	
+	$body = $app->request()->getBody();
+	$data = json_decode($body);
+
+	$data->serialize = serialize($data->value);
+	echo json_encode($data);
 });
 
 /* ================================ Upload ================================ */
