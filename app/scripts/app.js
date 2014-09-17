@@ -30,6 +30,11 @@ define([
         'providers',
         'services'
     ])
+    .constant('PusherConfig', {
+        apiID: '89723',
+        apiKey: '43fd3eef0863aaee13db',
+        apiSecret: 'fb0125d8a8073f280f4e'
+    })
     .config(['$compileProvider', '$routeProvider', '$locationProvider', 'debugProvider', 'transitionProvider', 'imageReaderProvider',
             function($compileProvider, $routeProvider, $locationProvider, debugProvider, transitionProvider, imageReaderProvider) {
 
@@ -244,6 +249,17 @@ define([
                         },
                         templateUrl: 'app/views/raphael.html',
                         controller: 'RaphaelController'
+                    })
+                    .when('/pusher', {
+                        page: {
+                            static: true,
+                            title: '| Pusher',
+                            breadcrumb: {
+                                show: false
+                            }
+                        },
+                        templateUrl: 'app/views/pusher.html',
+                        controller: 'PusherController'
                     })
                     .otherwise({
                         redirectTo: '/'

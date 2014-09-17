@@ -5,6 +5,8 @@ ini_set('display_errors','on');
 
 include '../config.php';
 include 'vendor/nocsrf/nocsrf.php';
+// Pusher
+include 'vendor/pusher/Pusher.php';
 // Autoload
 include 'vendor/autoload.php';
 require 'vendor/slim/slim/Slim/Middleware.php';
@@ -137,6 +139,27 @@ $app->post('/upload-test', function() use ($app){
 		echo json_encode($response);
 	} 
 	catch(Exception $e) {
+		$app->halt(500, $e->getMessage());
+	}
+});
+
+/* ================================ Pusher ================================ */
+
+$pusher = new Pusher(PUSHER_APP_KEY, PUSHER_APP_SECRET, PUSHER_APP_ID);
+$app->post('/message', function() use($app, $pusher){
+	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
+	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+
+	try {
+		$body = $app->request()->getBody();
+		$message = json_decode($body);
+		$request = array('message' => $message->message);
+		$response = $pusher->trigger('messages', 'new_message', $request);
+		echo json_encode(array(
+			'$request'  => $request,
+			'$response' => $response
+		));
+	} catch (Exception $e) {
 		$app->halt(500, $e->getMessage());
 	}
 });

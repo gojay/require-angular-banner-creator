@@ -60,5 +60,24 @@ define([
 					return deferred.promise;
 				};
 			}
+		])
+		.factory('PushMessage', ['authResource', '$q', '$rootScope',
+			function(authResource, $q, $rootScope){
+				return function( data ){
+					var deferred = $q.defer();
+					authResource.authentifiedRequest('POST', 'api/message', data, function(response){
+						deferred.resolve(response);
+					}, function(err){
+						$rootScope.pageService = {
+							start  : false,
+							reject : true,
+							status : err.status,
+							message: err.data
+						};
+						deferred.reject('Unable to push message : ' + err);
+					})
+					return deferred.promise;
+				};
+			}
 		]);
 });

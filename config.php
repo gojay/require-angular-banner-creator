@@ -12,6 +12,10 @@ define('ABS_URL', 'http://angularjs/require-angular-banner-creator');
 // define('ABS_URL', 'http://dev.angularjs/_learn_/require-angular-banner-creator-master');
 define('UPLOAD_URL', 'images/upload');
 
+define('PUSHER_APP_ID', '89723');
+define('PUSHER_APP_KEY', '43fd3eef0863aaee13db');
+define('PUSHER_APP_SECRET', 'fb0125d8a8073f280f4e');
+
 /* DB Config */
 $db_config = array(
 	'host'     => 'localhost',

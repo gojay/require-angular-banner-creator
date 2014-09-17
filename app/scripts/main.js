@@ -54,7 +54,9 @@ require.config({
         'fabricDirective': 'vendor/fabric/fabricDirective',
         'fabricDirtyStatus': 'vendor/fabric/fabricDirtyStatus',
         'fabricUtilities': 'vendor/fabric/fabricUtilities',
-        'fabricWindow': 'vendor/fabric/fabricWindow'
+        'fabricWindow': 'vendor/fabric/fabricWindow',
+
+        'pusher': 'http://js.pusher.com/2.2/pusher.min'
     },
     shim: {
         // jquery
@@ -147,6 +149,7 @@ require([
         'controllers/editConversationController',
         'controllers/splashController',
         'controllers/raphaelController',
+        'controllers/pusherController',
         // plugins & helpers
         'blockUI',
         'imgareaselect',

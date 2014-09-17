@@ -1,0 +1,40 @@
+<style>
+	.connection-status {
+	  position: absolute;
+	  display: block;
+	  right: 0;
+	  top: 0;
+	  background-color: red;
+	  width: 40px;
+	  height: 40px;
+	  
+	  -webkit-border-radius: 20px;
+	  -moz-border-radius: 20px;
+	  border-radius: 20px;
+	}
+
+	.connection-status.connecting {
+	  background-color: orange;
+	}
+
+	.connection-status.connected {
+	  background-color: green;
+	}
+</style>
+<div class="jumbotron">
+	<div class="container" style="position:relative;">
+		<span class="connection-status {{connectionStatus}}"></span>
+		<h1>Hello, world!</h1>
+		<p>Contents ...</p>
+		
+		<div class="input-group">
+			<input type="text" class="form-control" ng-model="data.message">
+			<div class="input-group-btn">
+				<button class="btn btn-default" ng-click="send()">Send</button>
+			</div>
+		</div>
+		<ul class="list-group">
+			<li class="list-group-item bouncy-slide-down" ng-repeat="list in lists">{{ list.message }}</li>
+		</ul>
+	</div>
+</div>
