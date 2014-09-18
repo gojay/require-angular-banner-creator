@@ -146,17 +146,26 @@ $app->post('/upload-test', function() use ($app){
 /* ================================ Pusher ================================ */
 
 $pusher = new Pusher(PUSHER_APP_KEY, PUSHER_APP_SECRET, PUSHER_APP_ID);
-$app->post('/message', function() use($app, $pusher){
+$app->post('/pusher/auth/socket', function() use($app, $pusher){
+	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
+	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+
+	$socket_id = $_POST['socket_id'];
+	$channel_name = $_POST['channel_name'];
+
+	$auth = $pusher->socket_auth( $channel_name, $socket_id );
+	echo( $auth );
+});
+$app->post('/pusher/message', function() use($app, $pusher){
 	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
 	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
 
 	try {
 		$body = $app->request()->getBody();
 		$message = json_decode($body);
-		$request = array('message' => $message->message);
-		$response = $pusher->trigger('messages', 'new_message', $request);
+		$response = $pusher->trigger(PUSHER_PRIVATE_SUBSCRIBE, PUSHER_PRIVATE_EVENT, (array) $message);
 		echo json_encode(array(
-			'$request'  => $request,
+			'$request'  => (array) $message,
 			'$response' => $response
 		));
 	} catch (Exception $e) {

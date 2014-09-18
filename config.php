@@ -15,6 +15,7 @@ define('UPLOAD_URL', 'images/upload');
 define('PUSHER_APP_ID', '89723');
 define('PUSHER_APP_KEY', '43fd3eef0863aaee13db');
 define('PUSHER_APP_SECRET', 'fb0125d8a8073f280f4e');
+define('PUSHER_PRIVATE_SUBSCRIBE', 'private-messages');
 
 /* DB Config */
 $db_config = array(
