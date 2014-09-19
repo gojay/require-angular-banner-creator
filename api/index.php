@@ -26,6 +26,9 @@ if( ENABLE_AUTHORIZATION ){
 	$app->add(new \CSRFAuth());
 }
 
+$app->response()->header('Access-Control-Allow-Origin', 'http://localhost:9000/'); //Allow JSON data to be consumed
+$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+
 /* ================================ Test ================================ */
 
 $app->get('/test', function() use($app, $pdo){
@@ -33,24 +36,20 @@ $app->get('/test', function() use($app, $pdo){
 
 	// $table = $pdo->query("SHOW TABLE STATUS LIKE 'creators'")->fetch();
 	// echo str_pad($table['Auto_increment'], 9, '0', STR_PAD_LEFT);
-
 	echo json_encode(array(
-		count(glob(UPLOAD_PATH . "/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE)),
-		strtotime('now'),
+		// count(glob(UPLOAD_PATH . "/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE)),
+		'NOW' => strtotime('now'),
+		'$_SESSION' => $_SESSION
 		// data_uri(BASE_PATH . '/images/facebook/fb-like1.png', 'image/png'),
 		// data_uri(BASE_PATH . '/images/facebook/fb-like2.png', 'image/png'),
 		// data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
 	));
-
+	echo json_encode($_SESSION);
 });
 
-$app->options('/upload-test', function() use ($app){
-	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
-	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
-});
+$app->options('/upload-test', function() use ($app){});
 $app->post('/upload-test', function() use ($app){
-	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
-	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+	
 
 	$upload_path = UPLOAD_PATH;
 	$upload_url  = UPLOAD_URL;
@@ -145,27 +144,68 @@ $app->post('/upload-test', function() use ($app){
 
 /* ================================ Pusher ================================ */
 
+$app->get('/pusher/login', function() use($app){
+	$app->response()->header('Content-Type', 'application/json');
+
+	if( isset($_SESSION['login']) ) {
+		$info = array(
+			'message' => 'sudah login!',
+			'info' => $_SESSION['login']
+		);
+		echo json_encode($info);
+	} else {
+		if( !isset($_GET['email']) ){
+			$app->halt(500, 'email not found!!');
+			exit;
+		}
+		$_SESSION['login'] = array(
+			'username' => $_GET['username'] ? $_GET['username'] : uniqid('guest_'),
+			'email'    => $_GET['email']
+		);
+		echo json_encode($_SESSION['login']);
+	}
+});
+$app->get('/pusher/test', function() use($app){
+	$app->response()->header('Access-Control-Allow-Credentials', 'true'); //Allow Credentials
+	$app->response()->header('Content-Type', 'application/json');
+
+	if( isset($_SESSION['login']) ) {
+		$info = array(
+			'message' => 'sudah login!',
+			'info'    => $_SESSION['login']
+		);
+		echo json_encode($info);
+	} else {
+		$app->halt(401, 'Your not logged in!!');
+		exit;
+	}
+});
+
 $pusher = new Pusher(PUSHER_APP_KEY, PUSHER_APP_SECRET, PUSHER_APP_ID);
 $app->post('/pusher/auth/socket', function() use($app, $pusher){
-	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
-	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
-
-	$socket_id = $_POST['socket_id'];
+	$socket_id    = $_POST['socket_id'];
 	$channel_name = $_POST['channel_name'];
 
 	$auth = $pusher->socket_auth( $channel_name, $socket_id );
 	echo( $auth );
 });
-$app->post('/pusher/message', function() use($app, $pusher){
-	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
-	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+$app->post('/pusher/auth/presence', function() use($app, $pusher){
+	$socket_id = $_POST['socket_id'];
+	$channel_name = $_POST['channel_name'];
 
+	$auth = $pusher->presence_auth( $channel_name, $socket_id, $user_id, $user_info );
+	echo( $auth );
+});
+$app->options('/pusher/message', function() use($app, $pusher){});
+$app->post('/pusher/message', function() use($app, $pusher){
 	try {
 		$body = $app->request()->getBody();
 		$message = json_decode($body);
-		$response = $pusher->trigger(PUSHER_PRIVATE_SUBSCRIBE, PUSHER_PRIVATE_EVENT, (array) $message);
+		$message->published = date('r');
+		$_message = (array) $message;
+		$response = $pusher->trigger(PUSHER_PRIVATE_CHANNEL, PUSHER_PRIVATE_EVENT, $_message);
 		echo json_encode(array(
-			'$request'  => (array) $message,
+			'$request'  => $_message,
 			'$response' => $response
 		));
 	} catch (Exception $e) {
@@ -175,11 +215,13 @@ $app->post('/pusher/message', function() use($app, $pusher){
 
 /* ================================ Authorization ================================ */
 
+$app->options('/ping', function() use($app){});
 $app->get('/ping', function() use($app){
-	$hash = $app->request()->headers('AuthToken');
+	$hash = $app->request()->headers('X-Auth-Token');
 	echo json_encode($hash);
 });
 
+$app->options('/login', function() use($app){});
 $app->post('/login', function() use($app){
 	$request = json_decode($app->request()->getBody());
 	if($request->username == 'admin' && $request->password == 'admin')
@@ -775,8 +817,6 @@ $app->get('/splash/mobile/photos', function() use($app, $directory_mobile_photos
 	echo json_encode(array_map('basename', $photos));
 });
 $app->get('/splash/mobile', function() use($app, $db){
-	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
-	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
 	$app->response()->header('Content-Type', 'application/json');
 
 	try {
@@ -804,8 +844,6 @@ $app->get('/splash/mobile', function() use($app, $db){
 	
 });
 $app->get('/splash/mobile/:conversationId', function($conversationId) use($app, $db){
-	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
-	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
 	$app->response()->header('Content-Type', 'application/json');
 
 	try {
@@ -844,8 +882,6 @@ $app->get('/splash/mobile/:conversationId', function($conversationId) use($app, 
 });
 $app->options('/splash/mobile', function() use($app){});
 $app->post('/splash/mobile', function() use($app, $db){
-	$app->response()->header('Access-Control-Allow-Origin', '*'); //Allow JSON data to be consumed
-	$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
 	$app->response()->header('Content-Type', 'application/json');
 	
 	$body = $app->request()->getBody();

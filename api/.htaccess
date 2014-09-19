@@ -6,5 +6,5 @@ RewriteRule ^.*$ - [NC,L]
 RewriteRule ^.*$ index.php [NC,L]
 
 <IfModule mod_headers.c>
-Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Origin "http://127.0.0.1:9000"
 </IfModule>

@@ -12,11 +12,13 @@ class CSRFAuth extends \Slim\Middleware
 	{
 		$this->_allowedRoutes = array(
     	    // 'GET/ping',
+    	    'OPTIONS/ping',
     	    // 'GET/test',
     	    // 'GET/ID',
     	    // 'GET/banner',
     	    // 'GET/banner/template',
     	    'POST/login',
+    	    'OPTIONS/login',
     	    'POST/logout'
     	);  
 	}
@@ -51,7 +53,7 @@ class CSRFAuth extends \Slim\Middleware
     	    $this->next->call();
     	else 
     	{
-    		$token = $req->headers('AuthToken');
+    		$token = $req->headers('X-Auth-Token');
     		if ( $token ) 
     		{
 	    		try {
