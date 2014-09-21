@@ -1,6 +1,6 @@
 <?php
 /* AUTHORIZATION */
-define('ENABLE_AUTHORIZATION', false);
+define('ENABLE_AUTHORIZATION', true);
 
 /* PATH */
 define('BASE_PATH', dirname(__FILE__));
@@ -23,6 +23,6 @@ define('PUSHER_PRIVATE_EVENT', 'new_message');
 $db_config = array(
 	'host'     => 'localhost',
 	'username' => 'root',
-	'password' => 'root',
+	'password' => '',
 	'dbname'   => 'ch',
 );

@@ -26,6 +26,7 @@ if( ENABLE_AUTHORIZATION ){
 	$app->add(new \CSRFAuth());
 }
 
+$app->response()->header('Access-Control-Allow-Credentials', 'true'); //Allow JSON data to be consumed
 $app->response()->header('Access-Control-Allow-Origin', 'http://localhost:9000/'); //Allow JSON data to be consumed
 $app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
 
@@ -47,10 +48,7 @@ $app->get('/test', function() use($app, $pdo){
 	echo json_encode($_SESSION);
 });
 
-$app->options('/upload-test', function() use ($app){});
 $app->post('/upload-test', function() use ($app){
-	
-
 	$upload_path = UPLOAD_PATH;
 	$upload_url  = UPLOAD_URL;
 
@@ -144,35 +142,14 @@ $app->post('/upload-test', function() use ($app){
 
 /* ================================ Pusher ================================ */
 
-$app->get('/pusher/login', function() use($app){
-	$app->response()->header('Content-Type', 'application/json');
+$pusher = new Pusher(PUSHER_APP_KEY, PUSHER_APP_SECRET, PUSHER_APP_ID);
 
-	if( isset($_SESSION['login']) ) {
+$app->options('/pusher/user', function() use($app){});
+$app->get('/pusher/user', function() use($app){
+	if( isset($_SESSION) ) {
 		$info = array(
 			'message' => 'sudah login!',
-			'info' => $_SESSION['login']
-		);
-		echo json_encode($info);
-	} else {
-		if( !isset($_GET['email']) ){
-			$app->halt(500, 'email not found!!');
-			exit;
-		}
-		$_SESSION['login'] = array(
-			'username' => $_GET['username'] ? $_GET['username'] : uniqid('guest_'),
-			'email'    => $_GET['email']
-		);
-		echo json_encode($_SESSION['login']);
-	}
-});
-$app->get('/pusher/test', function() use($app){
-	$app->response()->header('Access-Control-Allow-Credentials', 'true'); //Allow Credentials
-	$app->response()->header('Content-Type', 'application/json');
-
-	if( isset($_SESSION['login']) ) {
-		$info = array(
-			'message' => 'sudah login!',
-			'info'    => $_SESSION['login']
+			'info'    => $_SESSION['user']
 		);
 		echo json_encode($info);
 	} else {
@@ -181,7 +158,7 @@ $app->get('/pusher/test', function() use($app){
 	}
 });
 
-$pusher = new Pusher(PUSHER_APP_KEY, PUSHER_APP_SECRET, PUSHER_APP_ID);
+$app->options('/pusher/auth/socket', function() use($app){});
 $app->post('/pusher/auth/socket', function() use($app, $pusher){
 	$socket_id    = $_POST['socket_id'];
 	$channel_name = $_POST['channel_name'];
@@ -196,12 +173,13 @@ $app->post('/pusher/auth/presence', function() use($app, $pusher){
 	$auth = $pusher->presence_auth( $channel_name, $socket_id, $user_id, $user_info );
 	echo( $auth );
 });
+
 $app->options('/pusher/message', function() use($app, $pusher){});
 $app->post('/pusher/message', function() use($app, $pusher){
 	try {
 		$body = $app->request()->getBody();
 		$message = json_decode($body);
-		$message->published = date('r');
+		$message->published = date('c');
 		$_message = (array) $message;
 		$response = $pusher->trigger(PUSHER_PRIVATE_CHANNEL, PUSHER_PRIVATE_EVENT, $_message);
 		echo json_encode(array(
@@ -218,18 +196,33 @@ $app->post('/pusher/message', function() use($app, $pusher){
 $app->options('/ping', function() use($app){});
 $app->get('/ping', function() use($app){
 	$hash = $app->request()->headers('X-Auth-Token');
-	echo json_encode($hash);
+	echo json_encode(array(
+		'user' => array(
+			'username' => 'admin',
+			'email' => 'dani.gojay@gmail.com'
+		),
+		'token' => $hash
+	));
 });
-
 $app->options('/login', function() use($app){});
 $app->post('/login', function() use($app){
 	$request = json_decode($app->request()->getBody());
-	if($request->username == 'admin' && $request->password == 'admin')
+
+	if( ($request->email == 'dani.gojay@gmail.com'  && $request->password == 'admin') || 
+		($request->email == 'gojay_rocks@yahoo.com' && $request->password == 'admin') )
 	{
-		echo json_encode(array(
-			'username' => $request->username,
-			'token' => CSRFAuth::create_token()
-		));
+		$email = $request->email;
+		$token = CSRFAuth::create_token();
+		$data = array(
+			'user'  => array(
+				'email' => $email,
+				'username' => $email == 'dani.gojay@gmail.com' ? 'Dani' : 'Gojay'
+			),
+			'token' => $token
+		);
+
+		$_SESSION['user'] = $data;
+		echo json_encode($data);
 	}
 	else {
 		$app->response()->status(401);
@@ -239,7 +232,6 @@ $app->post('/login', function() use($app){
 	    ));
 	}
 });
-
 $app->post('/logout', function() use($app){
 	
 });

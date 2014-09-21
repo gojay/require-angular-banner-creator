@@ -12,13 +12,12 @@ class CSRFAuth extends \Slim\Middleware
 	{
 		$this->_allowedRoutes = array(
     	    // 'GET/ping',
-    	    'OPTIONS/ping',
     	    // 'GET/test',
     	    // 'GET/ID',
     	    // 'GET/banner',
     	    // 'GET/banner/template',
+    	    'POST/pusher/auth/socket',
     	    'POST/login',
-    	    'OPTIONS/login',
     	    'POST/logout'
     	);  
 	}
@@ -49,7 +48,7 @@ class CSRFAuth extends \Slim\Middleware
 	{
 		$req = $this->app->request();
 	
-    	if($this->check_allowed_routes($req->headers('REQUEST_METHOD').$req->getResourceUri()))	
+    	if($req->headers('REQUEST_METHOD') == "OPTIONS" || $this->check_allowed_routes($req->headers('REQUEST_METHOD').$req->getResourceUri()))	
     	    $this->next->call();
     	else 
     	{
@@ -60,14 +59,18 @@ class CSRFAuth extends \Slim\Middleware
 	    			
 	    			$origin = array(self::$tokenName => $token);
 	    			$authorized = NoCSRF::check( self::$tokenName, $origin, true, self::$max_time, true );
-    		   		if( !$authorized ) throw new Exception( 'You are not authorized' );
-    		   		
+    		   		// if( !$authorized ) throw new Exception( 'You are not authorized' );  
+    		   		  		   		
     		   		$this->next->call();
 
 	    		} catch (Exception $e) {
 
 	    			$this->deny_access(array(
 				        'type'    => 0,
+				        'info' => array(
+				        	'token' => $token,
+				        	'SESSION' => $_SESSION
+				        ),
 				        'message' => '<strong>' . $e->getMessage() . ' </strong>. Please logged in'
 				    ));
 	    			
@@ -76,6 +79,7 @@ class CSRFAuth extends \Slim\Middleware
     		else {
     		    $this->deny_access(array(
 			        'type'    => 0,
+			        'info'	  => 'Token is empty',
 			        'message' => '<strong>You are not authorized</strong> Please logged in'
 			    ));
 		    }
