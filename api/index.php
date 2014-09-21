@@ -213,16 +213,15 @@ $app->post('/login', function() use($app){
 	{
 		$email = $request->email;
 		$token = CSRFAuth::create_token();
-		$data = array(
-			'user'  => array(
-				'email' => $email,
-				'username' => $email == 'dani.gojay@gmail.com' ? 'Dani' : 'Gojay'
-			),
-			'token' => $token
+
+		$user = array(
+			'email' 	=> $email,
+			'username' 	=> $email == 'dani.gojay@gmail.com' ? 'Dani' : 'Gojay',
+			'token' 	=> $token
 		);
 
-		$_SESSION['user'] = $data;
-		echo json_encode($data);
+		$_SESSION['user'] = $user;
+		echo json_encode($user);
 	}
 	else {
 		$app->response()->status(401);
@@ -232,6 +231,7 @@ $app->post('/login', function() use($app){
 	    ));
 	}
 });
+
 $app->post('/logout', function() use($app){
 	
 });
