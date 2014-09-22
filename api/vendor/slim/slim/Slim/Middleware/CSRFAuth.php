@@ -4,7 +4,7 @@ class CSRFAuth extends \Slim\Middleware
 {
 	protected $_allowedRoutes;
 
-	static $max_time = 600; // 10 minutes
+	static $max_time = 3600; // 10 minutes
 
 	static $tokenName = 'auth_token';
 
@@ -17,6 +17,7 @@ class CSRFAuth extends \Slim\Middleware
     	    // 'GET/banner',
     	    // 'GET/banner/template',
     	    'POST/pusher/auth/socket',
+    	    'POST/pusher/auth/presence',
     	    'POST/login',
     	    'POST/logout'
     	);  

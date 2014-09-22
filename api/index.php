@@ -48,7 +48,12 @@ $app->get('/test', function() use($app, $pdo){
 	echo json_encode($_SESSION);
 });
 
-$app->post('/upload-test', function() use ($app){
+$app->map('/upload-test', function() {
+	$app = Slim\Slim::getInstance();
+	$method = $app->request()->getMethod();
+	if( $method == 'OPTIONS' ) 
+		$app->response(200);
+
 	$upload_path = UPLOAD_PATH;
 	$upload_url  = UPLOAD_URL;
 
@@ -138,103 +143,262 @@ $app->post('/upload-test', function() use ($app){
 	catch(Exception $e) {
 		$app->halt(500, $e->getMessage());
 	}
+})->via('POST', 'OPTIONS');
+
+/* ================================ Authorization ================================ */
+
+// PING
+// =========================
+$app->map('/ping', function() {
+	// get SLIM (Singleton)
+	$app = Slim\Slim::getInstance();
+	$res = array();
+	try
+	{
+		$hash = $app->request()->headers('X-Auth-Token');
+		// get method of REST
+		$method = $app->request()->getMethod();
+		switch ( $method ) 
+		{
+			// method OPTIONS
+			case 'OPTIONS':
+				$app->response(200);
+				break;
+			// method GET	
+			case 'GET':
+				$res = array(
+					'username' => 'admin',
+					'email' => 'dani.gojay@gmail.com',
+					'token' => $hash
+				);
+				break;
+		}
+
+		// create JSON
+		// and set callback of JSON if exists
+        $json = json_encode($res);
+        $cb   = isset($_GET['callback']) ? $_GET['callback'] : false;
+        if($cb) {
+			$app->response()->header('Content-Type', 'application/javascript');
+        	$json = "$cb($json)";
+        } else {
+			$app->response()->header('Content-Type', 'application/json');
+        }
+		
+		// set JSON header for response
+        echo $json;
+	}
+	catch (Exception $e){
+		$app->halt(500, $e->getMessage());
+	}
+})->via('GET', 'OPTIONS');
+
+// LOGIN
+// =========================
+$app->map('/login', function() {
+	// get SLIM (Singleton)
+	$app = Slim\Slim::getInstance();
+	$res = array();
+	try
+	{
+		$request = json_decode($app->request()->getBody());
+		// get method of REST
+		$method = $app->request()->getMethod();
+		switch ( $method ) 
+		{
+			// method OPTIONS
+			case 'OPTIONS':
+				$app->response(200);
+				break;
+			// method GET	
+			case 'POST':
+				if( ($request->email == 'dani.gojay@gmail.com'  && $request->password == 'admin') || 
+					($request->email == 'gojay_rocks@yahoo.com' && $request->password == 'admin') )
+				{
+					$email = $request->email;
+					$token = CSRFAuth::create_token();
+
+					$res = array(
+						'email' 	=> $email,
+						'username' 	=> $email == 'dani.gojay@gmail.com' ? 'Dani' : 'Gojay',
+						'token' 	=> $token
+					);
+					$_SESSION['user'] = $res;
+				}
+				else {
+					$res = json_encode(array(
+				        'type'    => 1,
+				        'message' => '<strong>Login Failure !!</strong> User not found'
+				    ));
+					throw new NotFoundException($res);
+				}
+				break;
+		}
+
+		// create JSON
+		// and set callback of JSON if exists
+        $json = json_encode($res);
+        $cb   = isset($_GET['callback']) ? $_GET['callback'] : false;
+        if($cb) {
+			$app->response()->header('Content-Type', 'application/javascript');
+        	$json = "$cb($json)";
+        } else {
+			$app->response()->header('Content-Type', 'application/json');
+        }
+		
+		// set JSON header for response
+        echo $json;
+	}
+	catch (NotFoundException $e){
+		$app->halt(401, $e->getMessage());
+	}
+	catch (Exception $e){
+		$app->halt(500, $e->getMessage());
+	}
+})->via('POST', 'OPTIONS');
+
+// LOGOUT
+// =========================
+$app->post('/logout', function() use($app){
 });
 
 /* ================================ Pusher ================================ */
 
 $pusher = new Pusher(PUSHER_APP_KEY, PUSHER_APP_SECRET, PUSHER_APP_ID);
 
-$app->options('/pusher/user', function() use($app){});
-$app->get('/pusher/user', function() use($app){
-	if( isset($_SESSION) ) {
-		$info = array(
-			'message' => 'sudah login!',
-			'info'    => $_SESSION['user']
-		);
+// PUSH GET USER
+// =========================
+$app->map('/pusher/user', function() {
+	// get SLIM (Singleton)
+	$app = Slim\Slim::getInstance();
+	$info = array();
+	try{
+		// get method of REST
+		$method = $app->request()->getMethod();
+		switch ( $method ) 
+		{
+			// method OPTIONS
+			case 'OPTIONS':
+				$app->response(200);
+				break;
+			// method POST	
+			case 'GET':
+				if( isset($_SESSION) ) {
+					$info = array(
+						'message' => 'sudah login!',
+						'info'    => $_SESSION['user']
+					);
+				} else {
+					throw new NotFoundException('Your not logged in!!');
+				}
+				break;
+		}
+		
+		$app->response()->header('Content-Type', 'application/json');
 		echo json_encode($info);
-	} else {
-		$app->halt(401, 'Your not logged in!!');
-		exit;
+		
+	} 
+	catch (NotFoundException $e){
+		$app->halt(401, $e->getMessage());
 	}
-});
-
-$app->options('/pusher/auth/socket', function() use($app){});
-$app->post('/pusher/auth/socket', function() use($app, $pusher){
-	$socket_id    = $_POST['socket_id'];
-	$channel_name = $_POST['channel_name'];
-
-	$auth = $pusher->socket_auth( $channel_name, $socket_id );
-	echo( $auth );
-});
-$app->post('/pusher/auth/presence', function() use($app, $pusher){
-	$socket_id = $_POST['socket_id'];
-	$channel_name = $_POST['channel_name'];
-
-	$auth = $pusher->presence_auth( $channel_name, $socket_id, $user_id, $user_info );
-	echo( $auth );
-});
-
-$app->options('/pusher/message', function() use($app, $pusher){});
-$app->post('/pusher/message', function() use($app, $pusher){
-	try {
-		$body = $app->request()->getBody();
-		$message = json_decode($body);
-		$message->published = date('c');
-		$_message = (array) $message;
-		$response = $pusher->trigger(PUSHER_PRIVATE_CHANNEL, PUSHER_PRIVATE_EVENT, $_message);
-		echo json_encode(array(
-			'$request'  => $_message,
-			'$response' => $response
-		));
-	} catch (Exception $e) {
+	catch (Exception $e){
 		$app->halt(500, $e->getMessage());
 	}
-});
+})->via('GET', 'OPTIONS');
 
-/* ================================ Authorization ================================ */
+// PUSH AUTHENTICATION CHANNEL
+// =========================
+$app->map('/pusher/auth/:channel', function($channel) use($pusher) {
+	// get SLIM (Singleton)
+	$app = Slim\Slim::getInstance();
+	$auth = null;
+	try{
+		// get method of REST
+		$method = $app->request()->getMethod();
+		switch ( $method ) 
+		{
+			// method OPTIONS
+			case 'OPTIONS':
+				$app->response(200);
+				break;
+			// method POST	
+			case 'POST':
+				if( !$channel || !isset($_POST) ) throw new ForbiddenException("Pusher authentiocation forbidden!!");
 
-$app->options('/ping', function() use($app){});
-$app->get('/ping', function() use($app){
-	$hash = $app->request()->headers('X-Auth-Token');
-	echo json_encode(array(
-		'user' => array(
-			'username' => 'admin',
-			'email' => 'dani.gojay@gmail.com'
-		),
-		'token' => $hash
-	));
-});
-$app->options('/login', function() use($app){});
-$app->post('/login', function() use($app){
-	$request = json_decode($app->request()->getBody());
+				$socket_id    = $_POST['socket_id'];
+				$channel_name = $_POST['channel_name'];
 
-	if( ($request->email == 'dani.gojay@gmail.com'  && $request->password == 'admin') || 
-		($request->email == 'gojay_rocks@yahoo.com' && $request->password == 'admin') )
+				if( $channel == 'socket' ){
+					$auth = $pusher->socket_auth( $channel_name, $socket_id );
+				} elseif( $channel == 'presence' ){
+					$user_id = $_GET['username'];
+					$user_info = array(
+						'email' => $_GET['email']
+					);
+					$auth = $pusher->presence_auth( $channel_name, $socket_id, $user_id, $user_info );
+				}
+				break;
+		}
+		
+		echo( $auth ); 
+		
+	} 
+	catch (ForbiddenException $e){
+		$app->halt(403, $e->getMessage());
+	}
+	catch (Exception $e){
+		$app->halt(500, $e->getMessage());
+	}
+})->via('POST', 'OPTIONS');
+
+// PUSH MESSAGE
+// =========================
+$app->map('/pusher/message', function() use($pusher) {
+	// get SLIM (Singleton)
+	$app = Slim\Slim::getInstance();
+	$res = array();
+	try
 	{
-		$email = $request->email;
-		$token = CSRFAuth::create_token();
+		$body = $app->request()->getBody();
+		// get method of REST
+		$method = $app->request()->getMethod();
+		switch ( $method ) 
+		{
+			// method OPTIONS
+			case 'OPTIONS':
+				$app->response(200);
+				break;
+			// method POST	
+			case 'POST':
+				$message = json_decode($body);
+				$message->published = date('c');
+				$_message = (array) $message;
+				$_response = $pusher->trigger(PUSHER_PRESENCE_CHANNEL, PUSHER_PRIVATE_EVENT, $_message);
+				$res = array(
+					'$request'  => $_message,
+					'$response' => $_response
+				);
+				break;
+		}
 
-		$user = array(
-			'email' 	=> $email,
-			'username' 	=> $email == 'dani.gojay@gmail.com' ? 'Dani' : 'Gojay',
-			'token' 	=> $token
-		);
-
-		$_SESSION['user'] = $user;
-		echo json_encode($user);
+		// create JSON
+		// and set callback of JSON if exists
+        $json = json_encode($res);
+        $cb = isset($_GET['callback']) ? $_GET['callback'] : false;
+        if($cb) {
+			$app->response()->header('Content-Type', 'application/javascript');
+        	$json = "$cb($json)";
+        } else {
+			$app->response()->header('Content-Type', 'application/json');
+        }
+		
+		// set JSON header for response
+        echo $json;
 	}
-	else {
-		$app->response()->status(401);
-	    echo json_encode(array(
-	        'type'    => 1,
-	        'message' => '<strong>Login Failure !!</strong> User not found'
-	    ));
+	catch (Exception $e){
+		$app->halt(500, $e->getMessage());
 	}
-});
-
-$app->post('/logout', function() use($app){
-	
-});
+})->via('POST', 'OPTIONS');
 
 /* ================================ Config ================================ */
 
