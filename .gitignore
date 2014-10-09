@@ -1,5 +1,6 @@
 # vendor
 api/vendor/*
+api/composer.lock
 
 # app/cache/*
 # app/logs/*
