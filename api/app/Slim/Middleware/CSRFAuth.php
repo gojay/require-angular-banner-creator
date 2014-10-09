@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Slim\Middleware;
+
 class CSRFAuth extends \Slim\Middleware
 {
 	protected $_allowedRoutes;
@@ -12,7 +14,7 @@ class CSRFAuth extends \Slim\Middleware
 	{
 		$this->_allowedRoutes = array(
     	    // 'GET/ping',
-    	    // 'GET/test',
+    	    'GET/test',
     	    // 'GET/ID',
     	    // 'GET/banner',
     	    // 'GET/banner/template',
@@ -25,8 +27,8 @@ class CSRFAuth extends \Slim\Middleware
 
 	public static function create_token()
 	{
-		// NoCSRF::enableOriginCheck();
-		return NoCSRF::generate( self::$tokenName );
+		// \NoCSRF::enableOriginCheck();
+		return \NoCSRF::generate( self::$tokenName );
 	}
 
 	public function deny_access( $message )
@@ -35,21 +37,18 @@ class CSRFAuth extends \Slim\Middleware
 		echo json_encode( $message );
 	}
 
-	public function check_allowed_routes( $route )
+	public function check_allowed_routes()
 	{
-		foreach ($this->_allowedRoutes as $routeString) {
-    	    if($route == $routeString)
-    		return true;
-    	}
-    	
-    	return false;
+		$req = $this->app->request();
+        $route = $req->getMethod() . $req->getResourceUri() ;
+        return in_array($route, $this->_allowedRoutes);
 	}
 
 	public function call()
 	{
 		$req = $this->app->request();
 	
-    	if($req->headers('REQUEST_METHOD') == "OPTIONS" || $this->check_allowed_routes($req->headers('REQUEST_METHOD').$req->getResourceUri()))	
+    	if($req->isOptions() || $this->check_allowed_routes())	
     	    $this->next->call();
     	else 
     	{
@@ -59,12 +58,12 @@ class CSRFAuth extends \Slim\Middleware
 	    		try {
 	    			
 	    			$origin = array(self::$tokenName => $token);
-	    			$authorized = NoCSRF::check( self::$tokenName, $origin, true, self::$max_time, true );
+	    			$authorized = \NoCSRF::check( self::$tokenName, $origin, true, self::$max_time, true );
     		   		// if( !$authorized ) throw new Exception( 'You are not authorized' );  
     		   		  		   		
     		   		$this->next->call();
 
-	    		} catch (Exception $e) {
+	    		} catch (\Exception $e) {
 
 	    			$this->deny_access(array(
 				        'type'    => 0,

@@ -1,9 +1,14 @@
 {
     "require": {
         "slim/slim": "2.*",
-        "vrana/notorm": "dev-master"
+        "vrana/notorm": "dev-master",
+        "pusher/pusher-php-server": "dev-master",
+        "bkcore/nocsrf": "dev-master",
+        "newerton/verot-upload": "dev-master"
     },
     "autoload": {
-        "files": ["vendor/vrana/notorm/NotORM.php"]
-	}
+    	"psr-0": {
+            "App": "."
+        }
+    }
 }

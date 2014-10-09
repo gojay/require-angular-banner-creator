@@ -5,6 +5,9 @@ RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
 RewriteRule ^.*$ index.php [NC,L]
 
-<IfModule mod_headers.c>
-Header set Access-Control-Allow-Origin "http://127.0.0.1:9000"
-</IfModule>
+<ifModule mod_headers.c>
+	Header always set Access-Control-Allow-Origin: "http://127.0.0.1:9000"
+	Header always set Access-Control-Allow-Methods: "GET,POST,OPTIONS,PATCH,DELETE,PUT"
+	Header always set Access-Control-Allow-Headers: "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Auth-Token"
+	Header always set Access-Control-Allow-Credentials: "true"
+</ifModule>

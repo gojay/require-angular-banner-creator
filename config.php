@@ -2,15 +2,11 @@
 /* AUTHORIZATION */
 define('ENABLE_AUTHORIZATION', true);
 
-/* PATH */
+/* PATH / URL */
 define('BASE_PATH', dirname(__FILE__));
 define('UPLOAD_PATH', BASE_PATH . '/images/upload');
-
-/* URL */
-// my ubuntu URL
-define('ABS_URL', 'http://angularjs/require-angular-banner-creator');
-// define('ABS_URL', 'http://dev.angularjs/_learn_/require-angular-banner-creator-master');
-define('UPLOAD_URL', 'images/upload');
+define('ABS_URL', 'http://localhost:8080');
+define('UPLOAD_URL', ABS_URL . '/images/upload');
 
 define('PUSHER_APP_ID', '89723');
 define('PUSHER_APP_KEY', '43fd3eef0863aaee13db');
@@ -23,6 +19,6 @@ define('PUSHER_PRIVATE_EVENT', 'new_message');
 $db_config = array(
 	'host'     => 'localhost',
 	'username' => 'root',
-	'password' => 'root',
+	'password' => '',
 	'dbname'   => 'ch',
 );

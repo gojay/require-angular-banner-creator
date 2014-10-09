@@ -1,3 +1,10 @@
+# vendor
+api/vendor/*
+
+# app/cache/*
+# app/logs/*
+
+# upload images
 images/upload/*
 
-/config.php
+# /config.php

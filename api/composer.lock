@@ -1,22 +1,54 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "3a4c7abf28e970742cf7954ce1ad3502",
+    "hash": "fcd8a88aece56510b050a13d0ea75827",
     "packages": [
         {
-            "name": "slim/slim",
-            "version": "2.2.0",
+            "name": "bkcore/nocsrf",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim",
-                "reference": "2.2.0"
+                "url": "https://github.com/BKcore/NoCSRF.git",
+                "reference": "b627c4b8b1f9fe87e8b703d6692f52070466c612"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/codeguy/Slim/archive/2.2.0.zip",
-                "reference": "2.2.0",
+                "url": "https://api.github.com/repos/BKcore/NoCSRF/zipball/b627c4b8b1f9fe87e8b703d6692f52070466c612",
+                "reference": "b627c4b8b1f9fe87e8b703d6692f52070466c612",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    ""
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A simple anti-CSRF token generation/checking class written in PHP5.",
+            "homepage": "http://bkcore.com/blog/code/nocsrf-php-class.html",
+            "time": "2012-12-20 23:28:01"
+        },
+        {
+            "name": "newerton/verot-upload",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/newerton/verot-upload.git",
+                "reference": "fe9a436b2db44c8d2b12aaee29488c087b7e42eb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/newerton/verot-upload/zipball/fe9a436b2db44c8d2b12aaee29488c087b7e42eb",
+                "reference": "fe9a436b2db44c8d2b12aaee29488c087b7e42eb",
                 "shasum": ""
             },
             "require": {
@@ -24,11 +56,89 @@
             },
             "type": "library",
             "autoload": {
+                "classmap": [
+                    "lib/class.upload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL v2"
+            ],
+            "description": "This PHP script uploads by Verot",
+            "homepage": "http://www.verot.net/php_class_upload.htm",
+            "time": "2014-09-15 14:14:23"
+        },
+        {
+            "name": "pusher/pusher-php-server",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pusher/pusher-php-server.git",
+                "reference": "d5b4e8bec7fc5e53651c879495a74e96b1bc2cea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pusher/pusher-php-server/zipball/d5b4e8bec7fc5e53651c879495a74e96b1bc2cea",
+                "reference": "d5b4e8bec7fc5e53651c879495a74e96b1bc2cea",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Library for interacting with the Pusher REST API",
+            "homepage": "https://github.com/pusher/pusher-php-server",
+            "keywords": [
+                "events",
+                "php-pusher-server",
+                "publish",
+                "pusher",
+                "realtime",
+                "rest",
+                "trigger"
+            ],
+            "time": "2014-06-11 19:32:01"
+        },
+        {
+            "name": "slim/slim",
+            "version": "2.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeguy/Slim.git",
+                "reference": "4906b77a07c7bd6ff1a99aea903e940a2d4fa106"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codeguy/Slim/zipball/4906b77a07c7bd6ff1a99aea903e940a2d4fa106",
+                "reference": "4906b77a07c7bd6ff1a99aea903e940a2d4fa106",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-mcrypt": "Required for HTTP cookie encryption"
+            },
+            "type": "library",
+            "autoload": {
                 "psr-0": {
                     "Slim": "."
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -36,7 +146,7 @@
                 {
                     "name": "Josh Lockhart",
                     "email": "info@joshlockhart.com",
-                    "homepage": "https://github.com/codeguy/"
+                    "homepage": "http://www.joshlockhart.com/"
                 }
             ],
             "description": "Slim Framework, a PHP micro framework",
@@ -46,7 +156,7 @@
                 "rest",
                 "router"
             ],
-            "time": "2012-12-13 02:15:50"
+            "time": "2014-04-05 18:33:59"
         },
         {
             "name": "vrana/notorm",
@@ -54,12 +164,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vrana/notorm.git",
-                "reference": "1ada05874f99d491568ab252b9364c6fbbc9f13d"
+                "reference": "67996dff1fca3abf601c2678912842ae480fc4a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vrana/notorm/zipball/1ada05874f99d491568ab252b9364c6fbbc9f13d",
-                "reference": "1ada05874f99d491568ab252b9364c6fbbc9f13d",
+                "url": "https://api.github.com/repos/vrana/notorm/zipball/67996dff1fca3abf601c2678912842ae480fc4a6",
+                "reference": "67996dff1fca3abf601c2678912842ae480fc4a6",
                 "shasum": ""
             },
             "type": "library",
@@ -68,7 +178,7 @@
                     "NotORM.php"
                 ]
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache-2.0",
                 "GPL-2.0+"
@@ -85,23 +195,19 @@
                 "database",
                 "dbal"
             ],
-            "time": "2013-01-23 11:05:23"
+            "time": "2014-09-15 04:51:29"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "vrana/notorm": 20
+        "vrana/notorm": 20,
+        "pusher/pusher-php-server": 20,
+        "bkcore/nocsrf": 20,
+        "newerton/verot-upload": 20
     },
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "prefer-stable": false,
+    "platform": [],
+    "platform-dev": []
 }

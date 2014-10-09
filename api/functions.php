@@ -1,6 +1,6 @@
 <?php
 // class upload
-include 'vendor/class.upload.php';
+// include 'vendor/class.upload.php';
 
 function objectToArray($d) {
 	if (is_object($d)) {

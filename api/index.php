@@ -4,49 +4,54 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 ini_set('display_errors','on');
 
 include '../config.php';
-include 'vendor/nocsrf/nocsrf.php';
-// Pusher
-include 'vendor/pusher/Pusher.php';
-// Autoload
 include 'vendor/autoload.php';
-require 'vendor/slim/slim/Slim/Middleware.php';
-require 'vendor/slim/slim/Slim/Middleware/CSRFAuth.php';
-// class Exception
-include 'Exception.php';
-// class DB NotORM
-include 'db/config.php';
-// functions
-include 'functions.php';
+include 'Functions.php';
+
+use App\Slim\Middleware\CSRFAuth;
+use App\Exception\NotFoundException;
+use App\Exception\ForbiddenException;
+use App\Exception\ValidationException;;
+
+// Config NotORM 
+$dsn = sprintf("mysql:dbname=%s;host=%s", $db_config['dbname'], $db_config['host']);
+$pdo = new PDO($dsn, $db_config['username'], $db_config['password']);
+$db  = new NotORM($pdo, new NotORM_Structure_Convention(
+    $primary = "%s_id", // $table_id
+    $foreign = "%s_id",  // $table_id
+    $table   = "%ss"	// {$table}s
+));
 
 /* RESTFUL API */
 
 Slim\Slim::registerAutoLoader();
 $app = new Slim\Slim();
 if( ENABLE_AUTHORIZATION ){
-	$app->add(new \CSRFAuth());
+	$app->add(new CSRFAuth());
 }
 
-$app->response()->header('Access-Control-Allow-Credentials', 'true'); //Allow JSON data to be consumed
-$app->response()->header('Access-Control-Allow-Origin', 'http://localhost:9000/'); //Allow JSON data to be consumed
-$app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
+// $app->response()->header('Access-Control-Allow-Credentials', 'true'); //Allow JSON data to be consumed
+// $app->response()->header('Access-Control-Allow-Origin', 'http://localhost:9000/'); //Allow JSON data to be consumed
+// $app->response()->header('Access-Control-Allow-Headers', 'X-Requested-With, X-authentication, X-client, X-Auth-Token'); //Allow JSON data to be consumed
 
 /* ================================ Test ================================ */
 
-$app->get('/test', function() use($app, $pdo){
+$app->map('/test', function() use($app, $pdo){
+
+    if( $app->request->isOptions() ) $app->response(200);
+
 	$app->response()->header('Content-Type', 'application/json');
 
-	// $table = $pdo->query("SHOW TABLE STATUS LIKE 'creators'")->fetch();
-	// echo str_pad($table['Auto_increment'], 9, '0', STR_PAD_LEFT);
+	$table = $pdo->query("SHOW TABLE STATUS LIKE 'creators'")->fetch();
+	$incrementID = str_pad($table['Auto_increment'], 9, '0', STR_PAD_LEFT);
+	$count = count(glob(UPLOAD_PATH . "/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE));
 	echo json_encode(array(
-		// count(glob(UPLOAD_PATH . "/mobile_testimonial_*.{jpg,jpeg,png}", GLOB_BRACE)),
+		'count' => $count,
+		'incrementID' => $incrementID,
 		'NOW' => strtotime('now'),
 		'$_SESSION' => $_SESSION
-		// data_uri(BASE_PATH . '/images/facebook/fb-like1.png', 'image/png'),
-		// data_uri(BASE_PATH . '/images/facebook/fb-like2.png', 'image/png'),
-		// data_uri(BASE_PATH . '/images/facebook/fb-like3.png', 'image/png')
 	));
-	echo json_encode($_SESSION);
-});
+
+})->via('GET', 'OPTIONS');
 
 $app->map('/upload-test', function() {
 	$app = Slim\Slim::getInstance();
@@ -56,6 +61,12 @@ $app->map('/upload-test', function() {
 
 	$upload_path = UPLOAD_PATH;
 	$upload_url  = UPLOAD_URL;
+
+	if(!is_dir($upload_path)){
+		if(false === mkdir($upload_path, 0777, true)){
+			throw new Exception(sprintf('Unable to create the %s directory', $upload_path));
+		}
+	}
 
 	$files    = $_FILES['file'];
 	$filename = $files['name'];
@@ -75,9 +86,9 @@ $app->map('/upload-test', function() {
 	        break; 
 	} 
 
-	$name   = isset($_REQUEST['name']) ? $_REQUEST['name'] : null ;
-	$id     = isset($_REQUEST['id']) ? $_REQUEST['id'] : null ;
-	$width  = isset($_REQUEST['width']) ? $_REQUEST['width'] : null ;
+	$name   = isset($_REQUEST['name'])   ? $_REQUEST['name'] : null ;
+	$id     = isset($_REQUEST['id'])     ? $_REQUEST['id'] : null ;
+	$width  = isset($_REQUEST['width'])  ? $_REQUEST['width'] : null ;
 	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null ;
 	$sizes  = isset($_REQUEST['size']) ? $_REQUEST['size'] : false ;
 	$autoWidth = isset($_REQUEST['auto_width']) ? (boolean) $_REQUEST['auto_width'] : false ;
